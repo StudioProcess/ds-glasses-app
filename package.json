@@ -1,0 +1,26 @@
+{
+  "name": "ds-glasses-app",
+  "version": "0.1.0",
+  "description": "",
+  "repository": "github:StudioProcess/ds-glasses-app",
+  "author": "Marie Dvorzak <dvorzak.marie@gmx.at> (http://http://www.mariedvorzak.at)",
+  "contributors": ["Martin Grödl <martin@process.studio> (https://process.studio)"],
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "rm -rf dist; parcel build index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "three": "^0.110.0",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}
