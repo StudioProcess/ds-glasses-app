@@ -4,7 +4,9 @@
   "description": "",
   "repository": "github:StudioProcess/ds-glasses-app",
   "author": "Marie Dvorzak <dvorzak.marie@gmx.at> (http://http://www.mariedvorzak.at)",
-  "contributors": ["Martin Grödl <martin@process.studio> (https://process.studio)"],
+  "contributors": [
+    "Martin Grödl <martin@process.studio> (https://process.studio)"
+  ],
   "engines": {
     "node": ">=10.0.0",
     "npm": ">=6.0.0"
@@ -18,9 +20,14 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "three": "^0.110.0",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-hot-reload-api": "^2.3.4",
+    "vue-router": "^3.1.3"
   },
   "devDependencies": {
-    "parcel": "^1.12.4"
+    "@vue/component-compiler-utils": "^3.0.1",
+    "parcel": "^1.12.4",
+    "sass": "^1.23.3",
+    "vue-template-compiler": "^2.6.10"
   }
 }
