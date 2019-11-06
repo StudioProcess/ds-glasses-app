@@ -1,10 +1,13 @@
 import * as util from './util.js';
-import * as THREE from '../node_modules/three/build/three.module.js';
+// import * as THREE from '../node_modules/three/build/three.module.js';
 import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import { OBJLoader } from '../node_modules/three/examples/js/loaders/OBJLoader.js';
+
 import Vue from '../node_modules/vue/dist/vue.esm.browser.js';
 import VueRouter from 'vue-router'
-
 import App from './App.vue'
+import model from "./src/assets/models/model3.obj";
+
 
 new Vue({render: createElement => createElement(App)}).$mount('#app');
 Vue.use(VueRouter)
@@ -45,6 +48,40 @@ function setup() {
   let mesh = new THREE.Mesh( geo, mat );
   scene.add( mesh );
   
+
+  // let mtlLoader = new MTLLoader();
+  // this.THREE = THREE;
+  const loader = new THREE.OBJLoader();
+
+  // load a resource
+  loader.load(
+    // resource URL
+    model,
+    // called when resource is loaded
+    function ( object ) {
+  
+      scene.add( object );
+  
+    },
+    // called when loading is in progresses
+    function ( xhr ) {
+  
+      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+  
+    },
+    // called when loading has errors
+    function ( error ) {
+  
+      console.log( 'An error happened' );
+  
+    }
+  );
+
+
+
+
+
+
 }
 
 

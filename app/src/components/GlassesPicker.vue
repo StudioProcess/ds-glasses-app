@@ -62,8 +62,7 @@ export default {
     },
     hoveringGlasses: function(index) {},
     getUrl: function(url) {
-      //  var images = require.context('../assets/' + url)
-      // return images('./' + pet + ".png")
+
       let temp = "../assets/" + url.toString();
       console.log(url);
       return require("../assets/glasses-dummy.png");
