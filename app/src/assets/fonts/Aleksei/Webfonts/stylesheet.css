@@ -1,0 +1,64 @@
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-Thin.woff2') format('woff2'),
+        url('Aleksei-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-ThinItalic.woff2') format('woff2'),
+        url('Aleksei-ThinItalic.woff') format('woff');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-BoldItalic.woff2') format('woff2'),
+        url('Aleksei-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-Regular.woff2') format('woff2'),
+        url('Aleksei-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-Bold.woff2') format('woff2'),
+        url('Aleksei-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-BlackItalic.woff2') format('woff2'),
+        url('Aleksei-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-Black.woff2') format('woff2'),
+        url('Aleksei-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aleksei';
+    src: url('Aleksei-Italic.woff2') format('woff2'),
+        url('Aleksei-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+

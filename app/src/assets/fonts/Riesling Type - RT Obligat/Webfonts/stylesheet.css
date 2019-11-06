@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'RT Obligat';
+    src: url('RTObligat-Light.woff2') format('woff2'),
+        url('RTObligat-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RT Obligat';
+    src: url('RTObligat-Regular.woff2') format('woff2'),
+        url('RTObligat-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+

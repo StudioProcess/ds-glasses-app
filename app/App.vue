@@ -3,19 +3,20 @@
   <div id="three-model">{{model}}</div>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
+    <Materials></Materials>
   </div>
 
 
 </template>
 
 <script>
-import Glasses from './src/components/GlassesPicker.vue'
-// import Material from './components/MaterialPicker'
+import Glasses from './src/components/GlassesPicker'
+import Materials from './src/components/MaterialPicker'
 export default {
   name: 'App',
   data: function() {
     return{
-    model:"model1",
+    model:"N°1 - Moluptatum",
      msg: "",
     }
     },
@@ -28,7 +29,7 @@ export default {
     },
   components: {
       Glasses,
-    //  Materials
+     Materials
     }
 }
 </script>

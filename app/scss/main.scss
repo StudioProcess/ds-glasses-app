@@ -1,43 +1,209 @@
+// ALEKSEI REGULAR WOFF & WOFF2
+@font-face {
+  font-family: "Aleksei";
+  src: url(../src/assets/fonts/Aleksei/Webfonts/Aleksei-Regular.woff);
+  src: url(../src/assets/fonts/Aleksei/Webfonts/Aleksei-Regular.woff) format("embedded-opentype"),
+    url(../src/assets/fonts/Aleksei/Webfonts/Aleksei-Regular.woff2) format("woff2"),
+    url(../src/assets/fonts/Aleksei/Webfonts/Aleksei-Regular.woff) format("woff");
+}
+
+// ROBOTO REGULAR + MEDIUM
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap");
 
 body {
   margin: inherit;
   overflow: hidden;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  ul,
+  li {
+    margin: 0;
+  }
 }
 .main {
   display: flex;
   width: 100%;
 }
+
+.text {
+  &-product-description {
+    font-family: "Aleksei", serif;
+    font-size: 8px;
+    color: #6c6c6c;
+  }
+  &-tab {
+    font-size: 8px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    color: #7d7d7d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  &-medium {
+    font-size: 12px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    color: #000000;
+  }
+}
 #three-model {
-  border: 2px solid red;
   width: 52%;
   height: 100vh;
 }
 
 .content-area {
-  width: 45%;
   background: pink;
-  
+  height: 100vh;
+  display: flex;
 }
 
 .glasses-picker-container {
-  background: yellow;
   width: 26%;
   height: 100vh;
-  background: yellow;
+  background: #fefdfb;
+  position: relative;
 
   .glasses {
-    background: purple;
+    background: #fff;
+    opacity: 0.3;
     width: 100%;
     height: 20%;
     display: block;
     margin-bottom: 4px;
+    transition: all 0.1s ease-in;
+    position: relative;
+    cursor: pointer;
 
+    text-align: center;
+    img {
+      width: 85%;
+      margin-top: 39px;
+    }
+    h4 {
+      font-size: 8px;
+    }
+    span {
+      font-size: 8px;
+    }
+    &:hover {
+      transform: perspective(1000px) translateZ(24px);
+      box-shadow: 7px 9px 40px 0px rgb(0, 0, 0, 0.2);
+      opacity: 1;
+    }
     &.selected {
-      background: red;
+      background: white;
+      opacity: 1;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        background-color: #dddddd;
+        height: 30%;
+        width: 100%;
+        background-image: url(../src/assets/check-icon.svg);
+        background-repeat: no-repeat;
+        background-size: 8px;
+        background-position: center center;
+      }
+    }
+  }
+}
+
+.material-picker-container {
+  width: calc(100% - 4px);
+  background: #ffffff;
+  margin-left: 4px;
+  height: 100vh;
+  .material-picker {
+    display: flex;
+    width: 57.4%;
+    margin-left: 24.4%;
+    .index {
+      line-height: 2.5;
+      margin-left: -18%;
+      margin-right: 15%;
+    }
+
+    .overview {
+      position: relative;
+      display: flex;
+      list-style-type: none;
+      width: 100%;
+      padding-inline-start: 0;
+      li {
+        display: grid;
+        width: 33%;
+        height: 32px;
+        border: 1px solid;
+        text-align: center;
+        align-items: center;
+        cursor: pointer;
+
+        &.active {
+          background: pink;
+        }
+      }
+      .swiper {
+        // opacity: 0;
+        background: #f0f0f0;
+        height: 34px;
+        position: absolute;
+        display: block;
+        width: 100%;
+        // width: fit-content;
+        margin-top: 42px;
+        // display: flex;
+
+        .wood {
+          width: 36px;
+          // border: 1px solid brown;
+        }
+      }
     }
   }
 }
 
 
+.swiper-container {
+  width: 400px;
+  height: 100%;
+  // position: relative;
+}
+.swiper-slide {
+  text-align: center;
+  // min-width: 32px;
+
+  display: block;
+}
+.swiper-button-prev, .swiper-button-next {
+  margin-top: 40px;
+  height: 8px;
+  width: 8px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  &.swiper-button-disabled {
+    opacity: 0;
+  }
+}
+.swiper-button-prev {
+  background-image: url(../src/assets/arrow-left.svg);
+  margin-left: -32px;
+}
+.swiper-button-next {
+  background-image: url(../src/assets/arrow-right.svg);
+  right: -32px;
+  
+}
+
+.bg{
+  background-image: url(../src/assets/materials/wood/ahorn.png);
+  background-position: center center ;
+  background-size: contain;
+  min-width: 34px;
+  height: 100%;
+}
 @import "./variables";
 @import "./buttons";
