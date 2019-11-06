@@ -1,3 +1,5 @@
+$color-emphasize: #ffbb11;
+
 // ALEKSEI REGULAR WOFF & WOFF2
 @font-face {
   font-family: "Aleksei";
@@ -121,6 +123,7 @@ body {
     display: flex;
     width: 57.4%;
     margin-left: 24.4%;
+    margin-top: 50px;
     .index {
       line-height: 2.5;
       margin-left: -18%;
@@ -137,13 +140,13 @@ body {
         display: grid;
         width: 33%;
         height: 32px;
-        border: 1px solid;
+        // border: 1px solid;
         text-align: center;
         align-items: center;
         cursor: pointer;
 
         &.active {
-          background: pink;
+          background: #dddddd;
         }
       }
       .swiper {
@@ -158,7 +161,7 @@ body {
         // display: flex;
 
         .wood {
-          width: 36px;
+          // width: 32.5714px;
           // border: 1px solid brown;
         }
       }
@@ -166,19 +169,26 @@ body {
   }
 }
 
-
 .swiper-container {
   width: 400px;
   height: 100%;
-  // position: relative;
 }
 .swiper-slide {
+  display: inline;
   text-align: center;
-  // min-width: 32px;
+  min-width: 32px;
+  display: inline-table;
 
-  display: block;
+  &:hover {
+    outline: 1px $color-emphasize solid; /* inner stroke */
+    outline-offset: -2px;
+    transform: perspective(2000px) translateZ(24px);
+    box-shadow: 7px 9px 40px 0px rgb(0, 0, 0, 0.2);
+  }
 }
-.swiper-button-prev, .swiper-button-next {
+
+.swiper-button-prev,
+.swiper-button-next {
   margin-top: 40px;
   height: 8px;
   width: 8px;
@@ -195,14 +205,13 @@ body {
 .swiper-button-next {
   background-image: url(../src/assets/arrow-right.svg);
   right: -32px;
-  
 }
 
-.bg{
+.bg {
   background-image: url(../src/assets/materials/wood/ahorn.png);
-  background-position: center center ;
+  background-position: center center;
   background-size: contain;
-  min-width: 34px;
+  // min-width: 34px;
   height: 100%;
 }
 @import "./variables";

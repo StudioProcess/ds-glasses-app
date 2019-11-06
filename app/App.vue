@@ -3,7 +3,14 @@
   <div id="three-model">{{model}}</div>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
-    <Materials></Materials>
+      <div class="material-picker-container">
+
+    <Materials index="1"></Materials>
+    <Materials index="2"></Materials>
+    <Materials index="3"></Materials>
+    <Materials index="4"></Materials>
+    <Materials index="5"></Materials>
+    </div>
   </div>
 
 
