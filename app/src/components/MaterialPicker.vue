@@ -4,18 +4,21 @@
     <ul class="overview">
       <li
         v-on:click="setSliderContent('woods')"
-        v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab']"
+        v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
       >Holz</li>
       <li
         v-on:click="setSliderContent('papers')"
-        v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab']"
+        v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
       >Papier</li>
       <li
         v-on:click="setSliderContent('fabrics')"
-        v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab']"
+        v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
       >Stoff</li>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
-        <strong v-if="activeMaterial !== 'empty'" class="swiper-text-selected text-product-description">{{activeMaterial}}</strong>
+        <strong
+          v-if="activeMaterial !== 'empty'"
+          class="swiper-text-selected text-product-description"
+        >{{activeMaterial}}</strong>
         <div class="swiper-wrapper">
           <span
             v-if="activeElement === 'woods'"
@@ -29,8 +32,8 @@
           <span
             v-if="activeElement === 'fabrics'"
             v-for="fabric in fabrics"
-            class="text-product-description swiper-slide"
             v-on:click="setMaterial(fabric.name)"
+            :class="activeMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }" class="bg"></h3>
             <span class="text-product-description swiper-description">{{fabric.name}}</span>
@@ -38,8 +41,8 @@
           <span
             v-if="activeElement === 'papers'"
             v-for="paper in papers"
-            class="wood text-product-description swiper-slide"
             v-on:click="setMaterial(paper.name)"
+            :class="activeMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }" class="bg"></h3>
             <span class="text-product-description swiper-description">{{paper.name}}</span>

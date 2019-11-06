@@ -43,6 +43,10 @@ body {
     color: #7d7d7d;
     text-transform: uppercase;
     letter-spacing: 1px;
+    &.deactivated {
+      opacity: 0.1;
+      pointer-events: none;
+    }
   }
   &-medium {
     font-size: 12px;
@@ -210,7 +214,7 @@ body {
   .swiper-description {
     visibility: hidden;
   }
-  &:hover {
+  &:not(.swiper-slide-selected):hover {
     outline: 2px $color-emphasize solid; /* inner stroke */
     outline-offset: -2px;
     -webkit-transform: scale(1.2);
@@ -250,5 +254,26 @@ body {
   // min-width: 34px;
   height: 100%;
 }
+
+.payment-section {
+  height: auto;
+  margin-top: 80px;
+  width: 57.4%;
+  margin-left: 24.4%;
+
+  .buy-button {
+    height: 42px;
+    background: black;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 14px #00000063;
+    border-radius: 4px;
+    font-family: "Roboto", sans-serif;
+    letter-spacing: 0.4px;
+    padding: 0 16px;
+    cursor: pointer;
+  }
+}
+
 @import "./variables";
 @import "./buttons";
