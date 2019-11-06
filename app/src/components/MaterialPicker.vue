@@ -15,27 +15,34 @@
         v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab']"
       >Stoff</li>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
+        <strong v-if="activeMaterial !== 'empty'" class="swiper-text-selected text-product-description">{{activeMaterial}}</strong>
         <div class="swiper-wrapper">
           <span
             v-if="activeElement === 'woods'"
             v-for="wood in woods"
-            class="text-product-description swiper-slide"
+            v-on:click="setMaterial(wood.name)"
+            :class="activeMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }" class="bg"></h3>
+            <span class="text-product-description swiper-description">{{wood.name}}</span>
           </span>
           <span
             v-if="activeElement === 'fabrics'"
             v-for="fabric in fabrics"
             class="text-product-description swiper-slide"
+            v-on:click="setMaterial(fabric.name)"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }" class="bg"></h3>
+            <span class="text-product-description swiper-description">{{fabric.name}}</span>
           </span>
           <span
             v-if="activeElement === 'papers'"
             v-for="paper in papers"
             class="wood text-product-description swiper-slide"
+            v-on:click="setMaterial(paper.name)"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }" class="bg"></h3>
+            <span class="text-product-description swiper-description">{{paper.name}}</span>
           </span>
         </div>
       </span>
@@ -46,7 +53,6 @@
 </template>
 
 <script>
-// import Glasses from './components/GlassesPicker'
 import images from "../assets/materials/*/*.png";
 
 export default {
@@ -57,6 +63,7 @@ export default {
     return {
       isSelected: false,
       activeElement: "woods",
+      activeMaterial: "empty",
       mSwiperClass: this.swiperClass,
       images,
       hoveredItem: 0,
@@ -173,13 +180,26 @@ export default {
     }, 300);
   },
   methods: {
+    deactivateSwiper: function() {
+      this.mSwiperClass.allowSlideNext = false;
+      this.mSwiperClass.allowSlidePrev = false;
+      document.getElementsByClassName(
+        "swiper-button-next" + this.index
+      )[0].style.visibility = "hidden";
+      document.getElementsByClassName(
+        "swiper-button-prev" + this.index
+      )[0].style.visibility = "hidden";
+    },
+    setMaterial: function(name) {
+      this.$emit("setMaterial", name);
+      this.activeMaterial = name;
+      this.deactivateSwiper();
+    },
     setSliderContent: function(material) {
       this.activeElement = material;
       setTimeout(() => {
         if (material === "fabrics" || material === "papers") {
-          this.mSwiperClass.allowSlideNext = false;
-          this.mSwiperClass.allowSlidePrev = false;
-          this.mSwiperClass.paginationHide = true;
+          this.deactivateSwiper();
           this.mSwiperClass.slidesPerView = 5;
           document.getElementsByClassName(
             "swiper-button-next"
@@ -192,7 +212,7 @@ export default {
         if (material === "woods") {
           this.mSwiperClass.allowSlideNext = true;
           this.mSwiperClass.allowSlidePrev = true;
-          this.mSwiperClass.paginationHide = false;
+
           document.getElementsByClassName(
             "swiper-button-next" + this.index
           )[0].style.visibility = "visible";

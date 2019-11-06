@@ -1,15 +1,16 @@
 <template>
   <div class="main">
   <div id="three-model">{{model}}</div>
+  <div id="three-model">{{materialOne}}, {{materialTwo}},  {{materialThree}},  {{materialFour}},  {{materialFive}}</div>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
       <div class="material-picker-container">
 
-    <Materials index="1" swiperClass='Swiper1'></Materials>
-    <Materials index="2" swiperClass='Swiper2'></Materials>
-    <Materials index="3" swiperClass='Swiper3'></Materials>
-    <Materials index="4" swiperClass='Swiper4'></Materials>
-    <Materials index="5" swiperClass='Swiper5'></Materials>
+    <Materials index="1" v-on:setMaterial="materialOne = $event" swiperClass='Swiper1'></Materials>
+    <Materials index="2" v-on:setMaterial="materialTwo = $event" swiperClass='Swiper2'></Materials>
+    <Materials index="3" v-on:setMaterial="materialThree = $event" swiperClass='Swiper3'></Materials>
+    <Materials index="4" v-on:setMaterial="materialFour = $event" swiperClass='Swiper4'></Materials>
+    <Materials index="5" v-on:setMaterial="materialFive = $event" swiperClass='Swiper5'></Materials>
     </div>
   </div>
 
@@ -24,6 +25,11 @@ export default {
   data: function() {
     return{
     model:"N°1 - Moluptatum",
+    materialOne: "Ahorn",
+    materialTwo: "Ahorn",
+    materialThree: "Ahorn",
+    materialFour: "Ahorn",
+    materialFive: "Ahorn",
     Swiper1: null,
     Swiper2: null,
     Swiper3: null,
@@ -36,7 +42,7 @@ export default {
    setMessage(msg) {
      console.log("hello?")
      console.log(msg)
-                this.model = msg;
+                // this.model = msg;
             }
     },
   components: {
