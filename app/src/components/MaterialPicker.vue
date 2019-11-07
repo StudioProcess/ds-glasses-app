@@ -23,7 +23,7 @@
           <span
             v-if="activeElement === 'woods'"
             v-for="wood in woods"
-            v-on:click="setMaterial(wood.name)"
+            v-on:click="setMaterial(wood.name, wood.texture)"
             :class="activeMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }" class="bg"></h3>
@@ -32,7 +32,7 @@
           <span
             v-if="activeElement === 'fabrics'"
             v-for="fabric in fabrics"
-            v-on:click="setMaterial(fabric.name)"
+            v-on:click="setMaterial(fabric.name, fabric.texture)"
             :class="activeMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }" class="bg"></h3>
@@ -41,7 +41,7 @@
           <span
             v-if="activeElement === 'papers'"
             v-for="paper in papers"
-            v-on:click="setMaterial(paper.name)"
+            v-on:click="setMaterial(paper.name, paper.texture)"
             :class="activeMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }" class="bg"></h3>
@@ -193,8 +193,9 @@ export default {
         "swiper-button-prev" + this.index
       )[0].style.visibility = "hidden";
     },
-    setMaterial: function(name) {
-      this.$emit("setMaterial", name);
+    setMaterial: function(name, texture) {
+      let array = [name, texture, this.index];
+      this.$emit("setMaterial", array);
       this.activeMaterial = name;
       this.deactivateSwiper();
     },

@@ -1,14 +1,15 @@
 <template>
   <div class="main">
-  <div id="three-model"></div>
+     <!-- <div id="three-model"></div> -->
+  <Threemodel :mat='materialOne' :matTwo='materialTwo'></Threemodel>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
       <div class="material-picker-container">
         <Materials index="1" v-on:setMaterial="materialOne = $event" swiperClass='Swiper1'></Materials>
-        <Materials index="2" v-on:setMaterial="materialTwo = $event" swiperClass='Swiper2'></Materials>
-        <Materials index="3" v-on:setMaterial="materialThree = $event" swiperClass='Swiper3'></Materials>
-        <Materials index="4" v-on:setMaterial="materialFour = $event" swiperClass='Swiper4'></Materials>
-        <Materials index="5" v-on:setMaterial="materialFive = $event" swiperClass='Swiper5'></Materials>
+        <Materials index="2" v-on:setMaterial="materialOne = $event" swiperClass='Swiper2'></Materials>
+        <Materials index="3" v-on:setMaterial="materialOne = $event" swiperClass='Swiper3'></Materials>
+        <Materials index="4" v-on:setMaterial="materialOne = $event" swiperClass='Swiper4'></Materials>
+        <Materials index="5" v-on:setMaterial="materialOne = $event" swiperClass='Swiper5'></Materials>
 
      <div class="payment-section">
         <h2>{{model}}</h2>
@@ -32,6 +33,7 @@
 <script>
 import Glasses from './src/components/GlassesPicker'
 import Materials from './src/components/MaterialPicker'
+import Threemodel from './src/components/Threemodel'
 export default {
   name: 'App',
   data: function() {
@@ -60,7 +62,8 @@ export default {
     },
   components: {
       Glasses,
-     Materials
+     Materials,
+     Threemodel
     }
 }
 </script>
