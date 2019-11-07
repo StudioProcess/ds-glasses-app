@@ -55,13 +55,22 @@ body {
     color: #000000;
   }
 }
-#three-model {
-  width: 52%;
+.three-model-container {
+  position: relative;
   height: 100vh;
+  width: 52%;
+  display: block;
+  #three-model {
+    width: 52%;
+    height: 100vh;
+  }
+  .three-currentmaterial {
+    display: none;
+  }
 }
 
 .content-area {
-  background: pink;
+  background: #fefdfb;
   height: 100vh;
   display: flex;
 }

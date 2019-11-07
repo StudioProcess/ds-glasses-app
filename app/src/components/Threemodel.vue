@@ -1,5 +1,8 @@
 <template>
-  <div ref="three" id="three-model">material:{{mat}}material:{{matTwo}}</div>
+  <div ref="three" class="three-model-container">
+    <div id="three-model"></div>
+    <span class="three-currentmaterial">material:{{mat}}</span>
+  </div>
 </template>
   <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js"></script>
 
@@ -20,16 +23,15 @@ export default {
       scene: null,
       camera: null,
       controls: null,
-      light: new THREE.PointLight(0xffffff, 2.0, 0),
+      pointLight: new THREE.PointLight(0xffffff, 2.9, 160),
+      spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
+      ambientLight: new THREE.AmbientLight(0x404040),
       objtemp: new THREE.Group()
     };
   },
-  mounted() {
-    const container = this.$refs.three;
-    const W = container.clientHeight;
-    const H = container.clientWidth;
 
-    this.setup(W, H); // set up scene
+  mounted() {
+    this.setup(); // set up scene
     this.loop(); // start game loop
   },
   updated() {
@@ -53,19 +55,50 @@ export default {
   },
   methods: {
     lights: function() {
-      this.light.position.set(50, 50, -200);
-      this.scene.add(this.light);
+      this.pointLight.position.set(0, 0, -60);
+      this.scene.add(this.pointLight);
 
       var sphereSize = 20;
-      var pointLightHelper = new THREE.PointLightHelper(this.light, sphereSize, "#ff0000");
-      this.scene.add(pointLightHelper);
+      var pointLightHelper = new THREE.PointLightHelper(
+        this.pointLight,
+        sphereSize,
+        "#ff0000"
+      );
+      // this.scene.add(pointLightHelper);
+
+      this.spotLight.position.set(0, 0, 0);
+      this.spotLight.target = this.objtemp;
+
+      this.spotLight.castShadow = true;
+
+      this.spotLight.shadow.mapSize.width = 1024;
+      this.spotLight.shadow.mapSize.height = 1024;
+
+      this.spotLight.shadow.camera.near = 500;
+      this.spotLight.shadow.camera.far = 4000;
+      this.spotLight.shadow.camera.fov = 30;
+
+      // this.scene.add(this.spotLight);
+
+      var spotLightHelper = new THREE.SpotLightHelper(
+        this.spotLight,
+        "#ff0000"
+      );
+      // this.scene.add(spotLightHelper);
+
+      this.scene.add(this.ambientLight);
     },
-    setup: function(W, H) {
+    setup: function() {
       this.renderer = new THREE.WebGLRenderer({
         antialias: true,
         alpha: true,
         preserveDrawingBuffer: true
       });
+      const container = this.$refs.three;
+
+      const W = container.offsetHeight;
+      const H = container.offsetWidth;
+
       this.renderer.setSize(W, H);
       this.renderer.setPixelRatio(window.devicePixelRatio);
       document
@@ -73,33 +106,48 @@ export default {
         .appendChild(this.renderer.domElement);
 
       this.scene = new THREE.Scene();
-      this.camera = new THREE.PerspectiveCamera(75, W / H, 0.01, 1000); //75
+      this.camera = new THREE.PerspectiveCamera(75, W / H, 10, 1000); //75
       this.scene.fog = new THREE.Fog("#a1a1a1", 0.08, 800);
 
       this.lights();
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-      this.camera.position.z = -200; //2
+      this.controls.minDistance = 50;
+      this.controls.maxDistance = 180;
+      this.camera.position.z = -145;
+      this.camera.position.y = -10;
       this.controls.update();
       let geo = new THREE.BoxGeometry(1, 1, 1);
       let mat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
-        roughness: 0.9,
-        metalness: 0.1,
+        emissive: 0x6b6b6b,
+        roughness: 1,
+        metalness: 1,
+        transparent: false,
         wireframe: false
       });
+      // let mat = new THREE.MeshDepthMaterial({});
+
       let mat2 = mat.clone();
       let mat3 = mat.clone();
       let mat4 = mat.clone();
       let mat5 = mat.clone();
 
-      let glass = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        wireframe: false
+      let glass = new THREE.MeshPhysicalMaterial({
+        color: "#fff",
+        metalness: 0,
+        roughness: 0,
+        alphaTest: 0.5,
+        depthTest: false,
+        transparency: 0.5,
+        transparent: true
       });
-      let metall = new THREE.MeshStandardMaterial({
-        color: 0xfffff,
-        wireframe: false
+      // let glass = new THREE.MeshDepthMaterial({transparent: true, opacity: 0.6});
+      let metall = new THREE.MeshPhongMaterial({
+        shininess: 80,
+        color: 0xe20000,
+        specular: 0xffffff
+        // map: texture
       });
 
       this.scene.add(this.objtemp);
@@ -113,24 +161,25 @@ export default {
               child.material = mat;
             }
           }),
-            (object.rotation.y = 90);
-          object.children[0].material = glass;
-          object.children[1].material = metall;
+            (object.rotation.y += 179);
+          object.position.y += 10;
+          object.children[0].material = metall;
+          object.children[1].material = glass;
           object.children[2].material = mat;
           object.children[3].material = mat2;
           object.children[4].material = mat3;
           object.children[5].material = mat4;
           object.children[6].material = mat5;
 
-          object.children[3].position.z -= 10;
-          object.children[4].position.z -= 20;
-          object.children[5].position.z -= 30;
-          object.children[6].position.z -= 40;
+          object.children[3].position.z -= 5;
+          object.children[4].position.z -= 10;
+          object.children[5].position.z -= 15;
+          object.children[6].position.z -= 20;
 
-          object.children[3].position.y += 10;
-          object.children[4].position.y += 20;
-          object.children[5].position.y += 30;
-          object.children[6].position.y += 40;
+          object.children[3].position.y += 5;
+          object.children[4].position.y += 10;
+          object.children[5].position.y += 15;
+          object.children[6].position.y += 20;
 
           this.objtemp.add(object);
 
