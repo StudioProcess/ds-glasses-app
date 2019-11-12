@@ -1,7 +1,7 @@
 <template>
   <div class="main">
      <!-- <div id="three-model"></div> -->
-  <Threemodel :mat='materialOne' :matTwo='materialTwo'></Threemodel>
+  <Threemodel :mat='materialOne'></Threemodel>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
       <div class="material-picker-container">
@@ -40,7 +40,7 @@ export default {
     return{
     model:"N°1 - Moluptatum",
     price: "525,00€",
-    materialOne: "Ahorn",
+    materialOne: ["Ahorn", 0],
     materialTwo: "Ahorn",
     materialThree: "Ahorn",
     materialFour: "Ahorn",
