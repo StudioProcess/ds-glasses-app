@@ -36,7 +36,7 @@ export default {
       expanded: false,
       zoomed: false,
       currentModelIndex: 0,
-      currentMaterialIndex: 0,
+      currentMaterialName: 0,
       currentModel: model,
       fullscreenToggled: false,
       scene: null,
@@ -107,7 +107,7 @@ export default {
         }
       }, 30);
     }
-    if (this.currentMaterialIndex !== this.mat[1]) {
+    if (this.currentMaterialName !== this.mat[0]) {
       console.log("update material");
       let texture = new THREE.TextureLoader().load(this.mat[0]);
       let roughness_m = new THREE.TextureLoader().load(roughness_map);
@@ -152,7 +152,7 @@ export default {
       );
     }
     this.currentModelIndex = this.setModel[1];
-    this.currentMaterialIndex = this.mat[1];
+    this.currentMaterialName = this.mat[0];
   },
   methods: {
     hoverMaterial: function(name, expand) {

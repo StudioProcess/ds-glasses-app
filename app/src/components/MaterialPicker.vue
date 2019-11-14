@@ -1,30 +1,34 @@
 <template>
-  <div class="material-picker">
+  <div
+    @mouseover="setHovered(index, true)"
+    @mouseleave="setHovered(index, false)"
+    class="material-picker"
+  >
     <span class="index text-medium">{{index}}</span>
     <ul class="overview">
       <li
         v-on:click="setSliderContent('woods')"
-        v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
+        v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Holz</li>
       <li
         v-on:click="setSliderContent('papers')"
-        v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
+        v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Papier</li>
       <li
         v-on:click="setSliderContent('fabrics')"
-        v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab', activeMaterial !== 'empty' && 'deactivated']"
+        v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Stoff</li>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
         <strong
-          v-if="activeMaterial !== 'empty'"
+          v-if="selectedMaterial !== 'empty'"
           class="swiper-text-selected text-product-description"
         >{{activeMaterial}}</strong>
-        <div @mouseover="setHovered(index, true)" @mouseleave="setHovered(index, false)" class="swiper-wrapper">
+        <div class="swiper-wrapper">
           <span
             v-if="activeElement === 'woods'"
             v-for="wood in woods"
             v-on:click="setMaterial(wood.name, wood.texture)"
-            :class="activeMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
+            :class="selectedMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }" class="bg"></h3>
             <span class="text-product-description swiper-description">{{wood.name}}</span>
@@ -33,7 +37,7 @@
             v-if="activeElement === 'fabrics'"
             v-for="fabric in fabrics"
             v-on:click="setMaterial(fabric.name, fabric.texture)"
-            :class="activeMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
+            :class="selectedMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }" class="bg"></h3>
             <span class="text-product-description swiper-description">{{fabric.name}}</span>
@@ -42,7 +46,7 @@
             v-if="activeElement === 'papers'"
             v-for="paper in papers"
             v-on:click="setMaterial(paper.name, paper.texture)"
-            :class="activeMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
+            :class="selectedMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide'"
           >
             <h3 v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }" class="bg"></h3>
             <span class="text-product-description swiper-description">{{paper.name}}</span>
@@ -67,6 +71,7 @@ export default {
       isSelected: false,
       activeElement: "woods",
       activeMaterial: "empty",
+      selectedMaterial: "empty",
       mSwiperClass: this.swiperClass,
       images,
       isHovering: false,
@@ -187,16 +192,27 @@ export default {
     setHovered: function(index, hovered) {
       this.isHovering = hovered;
       this.$emit("setHoveredMaterial", [index, this.isHovering]);
+      console.log(hovered);
+      if (hovered === true) {
+        this.selectedMaterial = "empty";
+        this.deactivateSwiper(true);
+      }
+      if (hovered === false) {
+        if (this.activeMaterial !== "empty") {
+          this.deactivateSwiper();
+        }
+        this.selectedMaterial = this.activeMaterial;
+      }
     },
-    deactivateSwiper: function() {
-      this.mSwiperClass.allowSlideNext = false;
-      this.mSwiperClass.allowSlidePrev = false;
+    deactivateSwiper: function(reactivate) {
+      this.mSwiperClass.allowSlideNext = reactivate ? true : false;
+      this.mSwiperClass.allowSlidePrev = reactivate ? true : false;
       document.getElementsByClassName(
         "swiper-button-next" + this.index
-      )[0].style.visibility = "hidden";
+      )[0].style.visibility = reactivate ? "visible" : "hidden";
       document.getElementsByClassName(
         "swiper-button-prev" + this.index
-      )[0].style.visibility = "hidden";
+      )[0].style.visibility = reactivate ? "visible" : "hidden";
     },
     setMaterial: function(name, texture) {
       let array = [name, texture, this.index];

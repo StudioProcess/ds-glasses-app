@@ -237,9 +237,10 @@ body {
   .material-picker {
     display: flex;
     width: 57.4%;
+    height: 80px;
     margin-left: 24.4%;
     &:not(:first-child) {
-      margin-top: 64px;
+      margin-top: 8px;
     }
     .index {
       line-height: 2.5;
@@ -340,7 +341,8 @@ body {
 
 .swiper-button-prev,
 .swiper-button-next {
-  margin-top: 40px;
+  // margin-top: 40px;
+  margin-top: 18px;
   height: 8px;
   width: 8px;
   background-repeat: no-repeat;
