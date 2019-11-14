@@ -69,7 +69,7 @@ export default {
           this.loadModel(model2);
         } else if (this.setModel[1] === 4) {
           this.loadModel(model4);
-        }else if (this.setModel[1] === 5) {
+        } else if (this.setModel[1] === 5) {
           this.loadModel(model4);
         }
         if (this.objtemp) {
@@ -126,9 +126,6 @@ export default {
         mPointLight.intensity = 3.0;
         mPointLight.decay = 0.0;
         mPointLight.position.z = -20;
-        // this.scene.fog.near = 100;
-        // this.scene.fog.enabled = false;
-        // this.lightReset = true;
       }
       let temp = eval(this.mat[1]) + 1;
       loader.load(
@@ -138,6 +135,9 @@ export default {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
           texture.offset.set(0, 0);
           texture.repeat.set(1, 1);
+          if (this.mat[1] % 2 === 0) {
+            texture.rotation = 1.5;
+          }
           if (this.mat[1] === "1") {
             this.assignMaterial(texture, "Layer_1");
             this.assignMaterial(texture, "Layer_1 Layer_1B");
@@ -404,7 +404,7 @@ export default {
         alphaTest: 0.5,
         depthTest: false,
         transparent: true,
-        transparency: 0.8,
+        transparency: 0.8
       });
       // let glass = new THREE.MeshDepthMaterial({transparent: true, opacity: 0.6});
       let metall = new THREE.MeshPhongMaterial({
