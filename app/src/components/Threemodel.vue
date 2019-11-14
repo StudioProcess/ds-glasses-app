@@ -28,7 +28,7 @@ import roughness_map from "../assets/materials/wood/akazie_map.png";
 export default {
   name: "Threemodel",
   components: {},
-  props: ["mat", "setModel"],
+  props: ["mat", "setModel", "hoveredMaterial"],
 
   data: function() {
     return {
@@ -36,6 +36,7 @@ export default {
       expanded: false,
       zoomed: false,
       currentModelIndex: 0,
+      currentMaterialIndex: 0,
       currentModel: model,
       fullscreenToggled: false,
       scene: null,
@@ -55,7 +56,44 @@ export default {
   },
 
   updated() {
+    if (this.hoveredMaterial[1] === true) {
+      if (this.hoveredMaterial[0] === "1") {
+        this.hoverMaterial("Layer_1", true);
+        this.hoverMaterial("Layer_1 Layer_1B", true);
+      } else if (this.hoveredMaterial[0] === "2") {
+        this.hoverMaterial("Layer_2", true);
+        this.hoverMaterial("Layer_2 Layer_2B", true);
+      } else if (this.hoveredMaterial[0] === "3") {
+        this.hoverMaterial("Layer_3", true);
+        this.hoverMaterial("Layer_3 Layer_3B", true);
+      } else if (this.hoveredMaterial[0] === "4") {
+        this.hoverMaterial("Layer_4", true);
+        this.hoverMaterial("Layer_4 Layer_4B", true);
+      } else if (this.hoveredMaterial[0] === "5") {
+        this.hoverMaterial("Layer_5", true);
+        this.hoverMaterial("Layer_5 Layer_5B", true);
+      }
+    }
+    if (this.hoveredMaterial[1] === false) {
+      if (this.hoveredMaterial[0] === "1") {
+        this.hoverMaterial("Layer_1");
+        this.hoverMaterial("Layer_1 Layer_1B");
+      } else if (this.hoveredMaterial[0] === "2") {
+        this.hoverMaterial("Layer_2");
+        this.hoverMaterial("Layer_2 Layer_2B");
+      } else if (this.hoveredMaterial[0] === "3") {
+        this.hoverMaterial("Layer_3");
+        this.hoverMaterial("Layer_3 Layer_3B");
+      } else if (this.hoveredMaterial[0] === "4") {
+        this.hoverMaterial("Layer_4");
+        this.hoverMaterial("Layer_4 Layer_4B");
+      } else if (this.hoveredMaterial[0] === "5") {
+        this.hoverMaterial("Layer_5");
+        this.hoverMaterial("Layer_5 Layer_5B");
+      }
+    }
     if (this.setModel[1] !== this.currentModelIndex) {
+      console.log("update model");
       setTimeout(() => {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
@@ -69,62 +107,64 @@ export default {
         }
       }, 30);
     }
-    // else {
-    // this.loadModel(model);
-
-    let texture = new THREE.TextureLoader().load(this.mat[0]);
-    let roughness_m = new THREE.TextureLoader().load(roughness_map);
-    var loader = new THREE.TextureLoader();
-    if (this.lightReset === false) {
-      this.pointLight.intensity = 1.0;
-      let mPointLight = new THREE.PointLight(0xffffff, 2.9, 160);
-      mPointLight.copy(this.pointLight);
-      mPointLight.intensity = 3.0;
-      mPointLight.decay = 0.0;
-      mPointLight.position.z = -20;
-      this.scene.add(mPointLight);
-      this.scene.fog.near = 200;
-      this.scene.fog.enabled = false;
-      this.lightReset = true;
-    }
-    let temp = eval(this.mat[1]) + 1;
-    loader.load(
-      this.mat[0],
-
-      function(texture) {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set(0, 0);
-        texture.repeat.set(1, 1);
-        if (this.mat[1] === "1") {
-          this.assignMaterial(texture, "Layer_1");
-          this.assignMaterial(texture, "Layer_1 Layer_1B");
-        } else if (this.mat[1] === "2") {
-          this.assignMaterial(texture, "Layer_2");
-          this.assignMaterial(texture, "Layer_2 Layer_2B");
-        } else if (this.mat[1] === "3") {
-          this.assignMaterial(texture, "Layer_3");
-          this.assignMaterial(texture, "Layer_3 Layer_3B");
-        } else if (this.mat[1] === "4") {
-          this.assignMaterial(texture, "Layer_4");
-          this.assignMaterial(texture, "Layer_4 Layer_4B");
-        } else if (this.mat[1] === "5") {
-          this.assignMaterial(texture, "Layer_5");
-          this.assignMaterial(texture, "Layer_5 Layer_5B");
-        }
-      }.bind(this)
-    );
-    for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
-      if (this.objtemp.children[0].children[i].position.y === 30) {
-        TweenMax.to(this.objtemp.children[0].children[i].position, 1.2, {
-          y: "0",
-          ease: Power2.easeOut
-        });
+    if (this.currentMaterialIndex !== this.mat[1]) {
+      console.log("update material");
+      let texture = new THREE.TextureLoader().load(this.mat[0]);
+      let roughness_m = new THREE.TextureLoader().load(roughness_map);
+      var loader = new THREE.TextureLoader();
+      if (this.lightReset === false) {
+        this.pointLight.intensity = 1.0;
+        let mPointLight = new THREE.PointLight(0xffffff, 2.9, 160);
+        mPointLight.copy(this.pointLight);
+        mPointLight.intensity = 3.0;
+        mPointLight.decay = 0.0;
+        mPointLight.position.z = -20;
+        this.scene.add(mPointLight);
+        this.scene.fog.near = 200;
+        this.scene.fog.enabled = false;
+        this.lightReset = true;
       }
+      let temp = eval(this.mat[1]) + 1;
+      loader.load(
+        this.mat[0],
+
+        function(texture) {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.offset.set(0, 0);
+          texture.repeat.set(1, 1);
+          if (this.mat[1] === "1") {
+            this.assignMaterial(texture, "Layer_1");
+            this.assignMaterial(texture, "Layer_1 Layer_1B");
+          } else if (this.mat[1] === "2") {
+            this.assignMaterial(texture, "Layer_2");
+            this.assignMaterial(texture, "Layer_2 Layer_2B");
+          } else if (this.mat[1] === "3") {
+            this.assignMaterial(texture, "Layer_3");
+            this.assignMaterial(texture, "Layer_3 Layer_3B");
+          } else if (this.mat[1] === "4") {
+            this.assignMaterial(texture, "Layer_4");
+            this.assignMaterial(texture, "Layer_4 Layer_4B");
+          } else if (this.mat[1] === "5") {
+            this.assignMaterial(texture, "Layer_5");
+            this.assignMaterial(texture, "Layer_5 Layer_5B");
+          }
+        }.bind(this)
+      );
     }
-    // }
     this.currentModelIndex = this.setModel[1];
+    this.currentMaterialIndex = this.mat[1];
   },
   methods: {
+    hoverMaterial: function(name, expand) {
+        TweenMax.to(
+          this.objtemp.children[0].getObjectByName(name).position,
+          1.2,
+          {
+            y: expand === true ? 30 : 0,
+            ease: Power2.easeOut
+          }
+        );
+    },
     assignMaterial: function(texture, name) {
       TweenMax.to(
         this.objtemp.children[0].getObjectByName(name).position,

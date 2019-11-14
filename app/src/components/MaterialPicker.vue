@@ -19,7 +19,7 @@
           v-if="activeMaterial !== 'empty'"
           class="swiper-text-selected text-product-description"
         >{{activeMaterial}}</strong>
-        <div class="swiper-wrapper">
+        <div @mouseover="setHovered(index, true)" @mouseleave="setHovered(index, false)" class="swiper-wrapper">
           <span
             v-if="activeElement === 'woods'"
             v-for="wood in woods"
@@ -69,6 +69,7 @@ export default {
       activeMaterial: "empty",
       mSwiperClass: this.swiperClass,
       images,
+      isHovering: false,
       hoveredItem: 0,
       currentIndex: 0,
       fabrics: [
@@ -183,6 +184,10 @@ export default {
     }, 300);
   },
   methods: {
+    setHovered: function(index, hovered) {
+      this.isHovering = hovered;
+      this.$emit("setHoveredMaterial", [index, this.isHovering]);
+    },
     deactivateSwiper: function() {
       this.mSwiperClass.allowSlideNext = false;
       this.mSwiperClass.allowSlidePrev = false;

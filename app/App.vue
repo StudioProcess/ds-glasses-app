@@ -1,18 +1,18 @@
 <template>
   <div class="main">
      <!-- <div id="three-model"></div> -->
-  <Threemodel :setModel='model' :mat='passedMaterial'>{{passedMaterial}}</Threemodel>
+  <Threemodel :hoveredMaterial='hoveredMaterial' :setModel='model' :mat='passedMaterial'>{{passedMaterial}}</Threemodel>
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
       <div class="material-picker-container">
-        <Materials index="1" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper1'></Materials>
-        <Materials index="2" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper2'></Materials>
-        <Materials index="3" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper3'></Materials>
-        <Materials index="4" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper4'></Materials>
-        <Materials index="5" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper5'></Materials>
+        <Materials index="1" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper1'></Materials>
+        <Materials index="2" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper2'></Materials>
+        <Materials index="3" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper3'></Materials>
+        <Materials index="4" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper4'></Materials>
+        <Materials index="5" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper5'></Materials>
 
      <div class="payment-section">
-        <h2>{{model[0]}}</h2>
+        <h2>{{model[0]}}</h2> 
           <div id="">{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
           <h3 class="price">{{price}}*</h3>
 
@@ -46,6 +46,8 @@ export default {
     materialThree: "",
     materialFour: "",
     materialFive: "",
+    hoveredMaterial: [0][false],
+    updateHoverOnce: false,
     Swiper1: null,
     Swiper2: null,
     Swiper3: null,
@@ -55,6 +57,19 @@ export default {
     }
     },
     methods: {
+      setHoveredMaterial(info){
+        if(this.updateHoverOnce === false){
+          this.isHovered = info[1];
+          this.hoveredMaterial = info;
+          
+        }
+        if(info[1] === false){
+          this.hoveredMaterial = info;
+          this.updateHoverOnce = false;
+        }else{
+          this.updateHoverOnce = true;
+        }
+      },
       setMaterialName(material) {
         this.passedMaterial[0] = material[1];
         this.passedMaterial[1] = material[2];
