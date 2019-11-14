@@ -310,6 +310,10 @@ body {
   width: 400px;
   height: 100%;
 }
+
+.swiper-wrapper.selected {
+  overflow: hidden;
+}
 .swiper-slide {
   display: inline;
   text-align: center;
@@ -317,11 +321,21 @@ body {
   display: inline-table;
   position: relative;
   cursor: pointer;
-
+  
   &-selected {
     width: 300% !important;
     position: absolute;
     z-index: 2;
+    // overflow: hidden;
+    &.even {
+      height: 297px;
+
+      h3 {
+        transform: rotate(90deg) translateX(-68.6%) translateY(-149px);
+        width: 100%;
+        transform-origin: left;
+      }
+    }
   }
   .swiper-description {
     visibility: hidden;
@@ -361,11 +375,15 @@ body {
 }
 
 .bg {
-  // background-image: url(../src/assets/materials/wood/ahorn.png);
   background-position: center center;
   background-size: contain;
-  // min-width: 34px;
   height: 100%;
+
+  &.selected {
+    background-repeat: no-repeat;
+    background-size: 54%;
+    background-position: left center;
+  }
 }
 
 .payment-section {

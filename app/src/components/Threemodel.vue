@@ -65,7 +65,11 @@ export default {
           this.loadModel(model);
         } else if (this.setModel[1] === 2) {
           this.loadModel(model2);
+        } else if (this.setModel[1] === 3) {
+          this.loadModel(model2);
         } else if (this.setModel[1] === 4) {
+          this.loadModel(model4);
+        }else if (this.setModel[1] === 5) {
           this.loadModel(model4);
         }
         if (this.objtemp) {
