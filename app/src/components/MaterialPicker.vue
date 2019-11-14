@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import images from "../assets/materials/*/*.png";
+import images from "../assets/materials/*/*.jpg";
 
 export default {
   name: "MaterialPicker",
@@ -79,46 +79,58 @@ export default {
       currentIndex: 0,
       fabrics: [
         {
-          name: "Jeans",
-          texture: images["fabric"]["jeans1"]
+          name: "Stoff Gelb",
+          texture: images["fabric"]["gelberStoff"]
         },
         {
-          name: "Jeans2",
-          texture: images["fabric"]["jeans2"]
+          name: "Stoff gestreift",
+          texture: images["fabric"]["gestreifterStoff"]
         },
         {
-          name: "Jeans3",
-          texture: images["fabric"]["jeans3"]
+          name: "Leinen grob",
+          texture: images["fabric"]["groberLeinen"]
         },
         {
-          name: "Jeans4",
-          texture: images["fabric"]["jeans4"]
+          name: "Stoff grün",
+          texture: images["fabric"]["gruenerStoff02"]
         },
         {
-          name: "Jeans5",
-          texture: images["fabric"]["jeans5"]
+          name: "Jeans blau",
+          texture: images["fabric"]["jeansblau"]
+        },
+        {
+          name: "Jeans hellblau",
+          texture: images["fabric"]["jeanshellblau"]
+        },
+        {
+          name: "Leinen bedruckt",
+          texture: images["fabric"]["leinenbedruckt"]
+        },
+        {
+          name: "Leinen grau",
+          texture: images["fabric"]["leinengrau"]
+        },
+        {
+          name: "Jeans schwarz",
+          texture: images["fabric"]["schwarzeJeans"]
         }
       ],
       papers: [
         {
-          name: "Jeans",
-          texture: images["fabric"]["jeans1"]
+          name: "Buch",
+          texture: images["paper"]["buch"]
         },
         {
-          name: "Jeans2",
-          texture: images["fabric"]["jeans2"]
+          name: "Buch Seite 2",
+          texture: images["paper"]["buch02"]
         },
         {
-          name: "Jeans3",
-          texture: images["fabric"]["jeans3"]
+          name: "Flyer",
+          texture: images["paper"]["flyer"]
         },
         {
-          name: "Jeans4",
-          texture: images["fabric"]["jeans4"]
-        },
-        {
-          name: "Jeans5",
-          texture: images["fabric"]["jeans5"]
+          name: "Flyer 2",
+          texture: images["paper"]["flyer02"]
         }
       ],
       woods: [
@@ -130,10 +142,10 @@ export default {
           name: "Akazie",
           texture: images["wood"]["akazie"]
         },
-        {
-          name: "Birke",
-          texture: images["wood"]["birke"]
-        },
+        // {
+        //   name: "Birke",
+        //   texture: images["wood"]["birke"]
+        // },
         {
           name: "Birne",
           texture: images["wood"]["birne"]
@@ -146,18 +158,18 @@ export default {
           name: "Eiche",
           texture: images["wood"]["eiche"]
         },
-        {
-          name: "Esche",
-          texture: images["wood"]["esche"]
-        },
-        {
-          name: "Kirsche",
-          texture: images["wood"]["kirsche"]
-        },
-        {
-          name: "Lärche",
-          texture: images["wood"]["laerche"]
-        },
+        // {
+        //   name: "Esche",
+        //   texture: images["wood"]["esche"]
+        // },
+        // {
+        //   name: "Kirsche",
+        //   texture: images["wood"]["kirsche"]
+        // },
+        // {
+        //   name: "Lärche",
+        //   texture: images["wood"]["laerche"]
+        // },
         {
           name: "Nuss",
           texture: images["wood"]["nuss"]

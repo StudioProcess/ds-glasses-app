@@ -36,14 +36,16 @@ export default {
       expanded: false,
       zoomed: false,
       currentModelIndex: 0,
-      currentMaterialName: 0,
+      currentMaterialName: "Ahorn",
       currentModel: model,
       fullscreenToggled: false,
+      mHoveredMaterial: [0][false],
       scene: null,
       camera: null,
       controls: null,
       lightReset: false,
-      pointLight: new THREE.PointLight(0xffffff, 2.9, 160),
+      pointLight: new THREE.PointLight(0xffffff, 8.9, 110),
+      pointLightSpot: new THREE.PointLight(0xffffff, 8.9, 110),
       spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
       ambientLight: new THREE.AmbientLight(0xfdefe5, 1.0), //fdefe5
       objtemp: new THREE.Group()
@@ -56,42 +58,6 @@ export default {
   },
 
   updated() {
-    if (this.hoveredMaterial[1] === true) {
-      if (this.hoveredMaterial[0] === "1") {
-        this.hoverMaterial("Layer_1", true);
-        this.hoverMaterial("Layer_1 Layer_1B", true);
-      } else if (this.hoveredMaterial[0] === "2") {
-        this.hoverMaterial("Layer_2", true);
-        this.hoverMaterial("Layer_2 Layer_2B", true);
-      } else if (this.hoveredMaterial[0] === "3") {
-        this.hoverMaterial("Layer_3", true);
-        this.hoverMaterial("Layer_3 Layer_3B", true);
-      } else if (this.hoveredMaterial[0] === "4") {
-        this.hoverMaterial("Layer_4", true);
-        this.hoverMaterial("Layer_4 Layer_4B", true);
-      } else if (this.hoveredMaterial[0] === "5") {
-        this.hoverMaterial("Layer_5", true);
-        this.hoverMaterial("Layer_5 Layer_5B", true);
-      }
-    }
-    if (this.hoveredMaterial[1] === false) {
-      if (this.hoveredMaterial[0] === "1") {
-        this.hoverMaterial("Layer_1");
-        this.hoverMaterial("Layer_1 Layer_1B");
-      } else if (this.hoveredMaterial[0] === "2") {
-        this.hoverMaterial("Layer_2");
-        this.hoverMaterial("Layer_2 Layer_2B");
-      } else if (this.hoveredMaterial[0] === "3") {
-        this.hoverMaterial("Layer_3");
-        this.hoverMaterial("Layer_3 Layer_3B");
-      } else if (this.hoveredMaterial[0] === "4") {
-        this.hoverMaterial("Layer_4");
-        this.hoverMaterial("Layer_4 Layer_4B");
-      } else if (this.hoveredMaterial[0] === "5") {
-        this.hoverMaterial("Layer_5");
-        this.hoverMaterial("Layer_5 Layer_5B");
-      }
-    }
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
       setTimeout(() => {
@@ -106,6 +72,45 @@ export default {
           this.objtemp.remove(this.objtemp.children[0]);
         }
       }, 30);
+    } else {
+      if (this.hoveredMaterial[1] === true) {
+        console.log("hovered material true");
+        if (this.hoveredMaterial[0] === "1") {
+          this.hoverMaterial("Layer_1", true);
+          this.hoverMaterial("Layer_1 Layer_1B", true);
+        } else if (this.hoveredMaterial[0] === "2") {
+          this.hoverMaterial("Layer_2", true);
+          this.hoverMaterial("Layer_2 Layer_2B", true);
+        } else if (this.hoveredMaterial[0] === "3") {
+          this.hoverMaterial("Layer_3", true);
+          this.hoverMaterial("Layer_3 Layer_3B", true);
+        } else if (this.hoveredMaterial[0] === "4") {
+          this.hoverMaterial("Layer_4", true);
+          this.hoverMaterial("Layer_4 Layer_4B", true);
+        } else if (this.hoveredMaterial[0] === "5") {
+          this.hoverMaterial("Layer_5", true);
+          this.hoverMaterial("Layer_5 Layer_5B", true);
+        }
+      }
+      if (this.hoveredMaterial[1] === false) {
+        console.log("hovered material false");
+        if (this.hoveredMaterial[0] === "1") {
+          this.hoverMaterial("Layer_1");
+          this.hoverMaterial("Layer_1 Layer_1B");
+        } else if (this.hoveredMaterial[0] === "2") {
+          this.hoverMaterial("Layer_2");
+          this.hoverMaterial("Layer_2 Layer_2B");
+        } else if (this.hoveredMaterial[0] === "3") {
+          this.hoverMaterial("Layer_3");
+          this.hoverMaterial("Layer_3 Layer_3B");
+        } else if (this.hoveredMaterial[0] === "4") {
+          this.hoverMaterial("Layer_4");
+          this.hoverMaterial("Layer_4 Layer_4B");
+        } else if (this.hoveredMaterial[0] === "5") {
+          this.hoverMaterial("Layer_5");
+          this.hoverMaterial("Layer_5 Layer_5B");
+        }
+      }
     }
     if (this.currentMaterialName !== this.mat[0]) {
       console.log("update material");
@@ -113,16 +118,13 @@ export default {
       let roughness_m = new THREE.TextureLoader().load(roughness_map);
       var loader = new THREE.TextureLoader();
       if (this.lightReset === false) {
-        this.pointLight.intensity = 1.0;
-        let mPointLight = new THREE.PointLight(0xffffff, 2.9, 160);
-        mPointLight.copy(this.pointLight);
+        let mPointLight = new THREE.DirectionalLight(0xffffff, 2.9, 160);
         mPointLight.intensity = 3.0;
         mPointLight.decay = 0.0;
         mPointLight.position.z = -20;
-        this.scene.add(mPointLight);
-        this.scene.fog.near = 200;
-        this.scene.fog.enabled = false;
-        this.lightReset = true;
+        // this.scene.fog.near = 100;
+        // this.scene.fog.enabled = false;
+        // this.lightReset = true;
       }
       let temp = eval(this.mat[1]) + 1;
       loader.load(
@@ -156,14 +158,14 @@ export default {
   },
   methods: {
     hoverMaterial: function(name, expand) {
-        TweenMax.to(
-          this.objtemp.children[0].getObjectByName(name).position,
-          1.2,
-          {
-            y: expand === true ? 30 : 0,
-            ease: Power2.easeOut
-          }
-        );
+      TweenMax.to(
+        this.objtemp.children[0].getObjectByName(name).position,
+        1.2,
+        {
+          y: expand === true ? 30 : 0,
+          ease: Power2.easeOut
+        }
+      );
     },
     assignMaterial: function(texture, name) {
       TweenMax.to(
@@ -176,13 +178,18 @@ export default {
       );
       this.objtemp.children[0].getObjectByName(name).material.map = texture;
       this.objtemp.children[0].getObjectByName(name).metalness = 0.0;
+
       this.objtemp.children[0].getObjectByName(name).roughness = 1.0;
       this.objtemp.children[0].getObjectByName(name).color = 0xffffff;
       this.objtemp.children[0].getObjectByName(name).material.emissive = 0x000;
       // this.objtemp.children[0].children[temp].material.roughnessMap = texture;
+      this.objtemp.children[0].getObjectByName(name).fog = false;
       this.objtemp.children[0].getObjectByName(
         name
       ).material.needsUpdate = true;
+      console.log("setLayers");
+      console.log(this.objtemp);
+      this.objtemp.children[0].getObjectByName(name).layers.set(1);
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -259,15 +266,41 @@ export default {
       }
     },
     lights: function() {
-      this.pointLight.position.set(0, 0, -60);
+      this.pointLight.position.set(0, 20, -50);
       this.scene.add(this.pointLight);
 
+      let pointLightCopy = new THREE.PointLight(0xffffff, 1.0);
+      pointLightCopy.copy(this.pointLight);
+      pointLightCopy.intensity = 1.9;
+      this.scene.add(pointLightCopy);
+
       var sphereSize = 20;
+      this.pointLightSpot.position.set(0, -10, 130);
+      this.scene.add(this.pointLightSpot);
+
+      let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      directionalLight.position.set(30, -10, -20);
+      this.scene.add(directionalLight);
+      var helper = new THREE.DirectionalLightHelper(
+        directionalLight,
+        5,
+        "#00ff00"
+      );
+      this.scene.add(helper);
+
       var pointLightHelper = new THREE.PointLightHelper(
-        this.pointLight,
+        this.pointLightSpot,
         sphereSize,
         "#ff0000"
       );
+
+      this.scene.add(pointLightHelper);
+      // this.objtemp.children[0][0].layers.set(1);
+      pointLightCopy.layers.set(0);
+      this.pointLight.layers.set(1);
+      this.pointLightSpot.layers.set(1);
+      directionalLight.layers.set(2);
+      // this.pointLightSpot.layers.set(1);
 
       this.spotLight.position.set(0, 0, 0);
       this.spotLight.target = this.objtemp;
@@ -308,8 +341,7 @@ export default {
 
       this.scene = new THREE.Scene();
       this.camera = new THREE.PerspectiveCamera(75, W / H, 10, 1000); //75
-      this.scene.fog = new THREE.Fog("#faf6f4", 0.08, 400);
-
+      this.scene.fog = new THREE.Fog("#faf6f4", 100, 400);
       this.lights();
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -345,11 +377,15 @@ export default {
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
-        emissive: 0x6b6b6b,
+        emissive: 0xded7d2, //6b6b6b
         roughness: 1,
         metalness: 1,
-        transparent: false,
-        wireframe: false
+        transparent: true,
+        opacity: 1.0,
+        wireframe: false,
+        // roughnessMap: new THREE.TextureLoader().load(this.mat[0]),
+
+        fog: true
       });
       let matStart = mat.clone();
       let mat2 = mat.clone();
@@ -358,13 +394,13 @@ export default {
       let mat5 = mat.clone();
 
       let glass = new THREE.MeshPhysicalMaterial({
-        color: "#fff",
-        metalness: 0,
-        roughness: 0,
+        color: "#D2DDDE",
+        metalness: 0.0,
+        roughness: 0.0,
         alphaTest: 0.5,
         depthTest: false,
-        transparency: 0.5,
-        transparent: true
+        transparent: true,
+        transparency: 0.8,
       });
       // let glass = new THREE.MeshDepthMaterial({transparent: true, opacity: 0.6});
       let metall = new THREE.MeshPhongMaterial({
@@ -381,6 +417,7 @@ export default {
           object.traverse(function(child) {
             if (child instanceof THREE.Mesh) {
               child.material = matStart;
+              child.layers.set(0);
             }
           }),
             (object.rotation.y += 179);
@@ -410,6 +447,11 @@ export default {
           object.getObjectByName("Layer_4 Layer_4B").position.z -= 40;
           object.getObjectByName("Layer_5 Layer_5B").position.z -= 50;
 
+          object.getObjectByName("Glas").position.z -= 10;
+          object.getObjectByName("Scharnier").position.z -= 10;
+
+          object.getObjectByName("Glas").layers.set(2);
+
           this.objtemp.add(object);
         }.bind(this),
 
@@ -417,8 +459,19 @@ export default {
       );
     },
     loop: function() {
-      this.controls.update();
       requestAnimationFrame(this.loop);
+      this.controls.update();
+
+      this.renderer.autoClear = true;
+      this.camera.layers.set(0);
+      this.renderer.render(this.scene, this.camera);
+
+      this.renderer.autoClear = false;
+      this.camera.layers.set(1);
+      this.renderer.render(this.scene, this.camera);
+
+      this.renderer.autoClear = false;
+      this.camera.layers.set(2);
       this.renderer.render(this.scene, this.camera);
     }
   }
