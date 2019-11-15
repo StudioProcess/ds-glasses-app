@@ -277,8 +277,6 @@ export default {
       this.objtemp.children[0].getObjectByName(
         name
       ).material.needsUpdate = true;
-      console.log(normal_map);
-      console.log(this.objtemp.children[0].getObjectByName(name).material);
       this.objtemp.children[0].getObjectByName(name).layers.set(1);
     },
     fullscreen: function() {
@@ -316,93 +314,78 @@ export default {
         this.controls.enabled = true;
       }
     },
-    staggerTo: function(elements, duration, vars, stagger) {
-      var tweens = [],
-        l = elements.length,
-        i;
-      for (i = 0; i < l; i++) {
-        let name = this.objtemp.children[0].children[i].name;
-        if (
-          name !== "Glas" &&
-          name !== "Scharnier" &&
-          name !== "Layer_1 Layer_1B" &&
-          name !== "Layer_2 Layer_2B" &&
-          name !== "Layer_3 Layer_3B" &&
-          name !== "Layer_4 Layer_4B" &&
-          name !== "Layer_5 Layer_5B"
-        ) {
-          tweens.push(
-            TweenLite.to(elements[i].position, 0.2, vars).delay(i * stagger)
-          );
-        }
-      }
-      return tweens;
-    },
     expand: function() {
       this.expanded = !this.expanded;
-      var l = this.objtemp.children[0].children.length,
-        stagger = 2,
-        i;
-      console.log("?");
-      this.staggerTo(this.objtemp.children[0].children, 1.0, { z: 0 }, 2);
+      var tl = new TimelineMax({ paused: false });
+      var tlTwo = new TimelineMax({ paused: false });
 
-      //  for (let j = 0; j < l; j++) {
-      //   let name = this.objtemp.children[0].children[j].name;
-      //   if (name !== "Glas" && name !== "Scharnier" && name !== "Layer_1 Layer_1B" && name !== "Layer_2 Layer_2B" && name !== "Layer_3 Layer_3B" && name !== "Layer_4 Layer_4B" && name !== "Layer_5 Layer_5B") {
-      //     TweenMax.to(this.objtemp.children[0].children[j].position, 0.9, {
-      //       z: (i%2 === 0) ? (20*i) : (20*i*-1),// * (stagger * i)
-      //       // ease: Quad.easeOut,
-      //       delay: Math.abs(Math.floor(l / 2) + j) * 0.25
-      //     });
-      //   }
-      // }
-
-      //   for (i = 2; i > 0; i--) {
-      //     let name = this.objtemp.children[0].children[i].name;
-      //     console.log(this.objtemp.children[0].children[i] + " " +i)
-      //     if (name !== "Glas" && name !== "Scharnier" && name !== "Layer_1 Layer_1B" && name !== "Layer_2 Layer_2B" && name !== "Layer_3 Layer_3B" && name !== "Layer_4 Layer_4B" && name !== "Layer_5 Layer_5B") {
-      //       TweenMax.to(this.objtemp.children[0].children[i].position, 0.9, {
-      //         z: this.expanded && (20*i*-1),// * (stagger * i)
-      //         // ease: Quad.easeOut,
-      //         delay: Math.abs(Math.floor(l / 2) - i) * 0.25
-      //       });
-      //     }
-      //   }
-      //  for (let j = 3; j < l; j++) {
-      //     let name = this.objtemp.children[0].children[j].name;
-      //     if (name !== "Glas" && name !== "Scharnier" && name !== "Layer_1 Layer_1B" && name !== "Layer_2 Layer_2B" && name !== "Layer_3 Layer_3B" && name !== "Layer_4 Layer_4B" && name !== "Layer_5 Layer_5B") {
-      //       TweenMax.to(this.objtemp.children[0].children[j].position, 0.9, {
-      //         z: this.expanded && (20*i),// * (stagger * i)
-      //         // ease: Quad.easeOut,
-      //         delay: Math.abs(Math.floor(l / 2) + j) * 0.25
-      //       });
-      //     }
-      //   }
-
-      // var boxes = document.querySelectorAll(".box"); this.objtemp
-      // let tl = new TimelineMax({ });
-      // console.log(this.objtemp.children[0].children.position)
-      // tl.staggerTo(this.objtemp.children[0].children, 0.5, {
-      //   y: -100,
-      //   repeat: 1,
-      //   yoyo: true,
-      //   cycle: {
-      //     delay: function(i) {
-      //       return Math.abs(Math.floor(boxes.length / 2) - i) * 0.25;
-      //     }
-      //   }
-      // },0);
-
-      // else {
-      //     TweenMax.to(this.objtemp.children[0].children[i].position, 1, {
-      //       y: 0,
-      //       z: -80 * stagger,
-      //       ease: Quad.easeOut,
-      //       delay: stagger * (i / 2)
-      //     });
-      //     TweenMax.to(this.objtemp.children[0].position, 1, { z: -40 });
-      //   }
-      // }
+      let child = this.objtemp.children[0].children.map(o => {
+        let positions = [];
+        if (
+          o.name !== "Glas" &&
+          o.name !== "Scharnier" &&
+          o.name !== "Layer_1 Layer_1B" &&
+          o.name !== "Layer_2 Layer_2B" &&
+          o.name !== "Layer_3 Layer_3B" &&
+          o.name !== "Layer_4 Layer_4B" &&
+          o.name !== "Layer_5 Layer_5B"
+        ) {
+          positions = o.position;
+        }
+        return positions;
+      });
+      let extras = this.objtemp.children[0].children.map(o => {
+        let positions = [];
+        if (
+          o.name !== "Layer_1" &&
+          o.name !== "Layer_2" &&
+          o.name !== "Layer_3" &&
+          o.name !== "Layer_4" &&
+          o.name !== "Layer_5" &&
+          o.name !== "Layer_1 Layer_1B" &&
+          o.name !== "Layer_2 Layer_2B" &&
+          o.name !== "Layer_3 Layer_3B" &&
+          o.name !== "Layer_4 Layer_4B" &&
+          o.name !== "Layer_5 Layer_5B"
+        ) {
+          positions = o.position;
+        }
+        return positions;
+      });
+      tl.staggerTo(
+        child,
+        0.5,
+        {
+          cycle: {
+            z: this.expanded
+              ? [0, 0]
+              : function(i) {
+                  return -6 * i;
+                },
+            delay: function(i) {
+              return Math.abs(Math.floor(5 / 2) - i) * 0.25;
+            }
+          }
+        },
+        0
+      );
+      tlTwo.staggerTo(
+        extras,
+        0.3,
+        {
+          cycle: {
+            z: this.expanded
+              ? [0, 0]
+              : function(i) {
+                  return -6 * i;
+                },
+            delay: function(i) {
+              return 0;
+            }
+          }
+        },
+        0
+      );
     },
 
     lights: function() {
@@ -504,7 +487,6 @@ export default {
       this.camera.position.z = -145;
       this.camera.position.y = -10;
       this.controls.update();
-      // let geo = new THREE.BoxGeometry(1, 1, 1);
 
       let planeGeo = new THREE.PlaneGeometry(1000, 1000, 30, 30);
       let depthmat = new THREE.MeshStandardMaterial({
@@ -521,14 +503,16 @@ export default {
 
       bgPlane.position.set(0, -100, 0);
       bgPlane.rotation.x += 80;
-      // let mat = new THREE.MeshDepthMaterial({});
 
       this.scene.add(this.objtemp);
       this.loadModel(this.currentModel);
+      setTimeout(() => {
+        this.expanded = !this.expanded;
+      this.expand();  
+      }, 100);
+      
     },
     loadModel: function(model) {
-      // let roughness_m = new THREE.TextureLoader().load(roughness_map);
-      // let normal_m = new THREE.TextureLoader().load(normal_map);
       let mat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
         emissive: 0xded7d2, //6b6b6b
@@ -537,7 +521,6 @@ export default {
         transparent: true,
         opacity: 1.0,
         wireframe: false,
-        // roughnessMap: new THREE.TextureLoader().load(roughness_map),
         normalMap: new THREE.TextureLoader().load(normal_map),
 
         fog: true
@@ -590,17 +573,17 @@ export default {
           object.getObjectByName("Layer_5").material = mat5;
           object.getObjectByName("Layer_5 Layer_5B").material = mat5;
 
-          object.getObjectByName("Layer_1").position.z -= 10;
-          object.getObjectByName("Layer_2").position.z -= 20;
-          object.getObjectByName("Layer_3").position.z -= 30;
-          object.getObjectByName("Layer_4").position.z -= 40;
-          object.getObjectByName("Layer_5").position.z -= 50;
+          // object.getObjectByName("Layer_1").position.z -= 10;
+          // object.getObjectByName("Layer_2").position.z -= 20;
+          // object.getObjectByName("Layer_3").position.z -= 30;
+          // object.getObjectByName("Layer_4").position.z -= 40;
+          // object.getObjectByName("Layer_5").position.z -= 50;
 
-          object.getObjectByName("Layer_1 Layer_1B").position.z -= 10;
-          object.getObjectByName("Layer_2 Layer_2B").position.z -= 20;
-          object.getObjectByName("Layer_3 Layer_3B").position.z -= 30;
-          object.getObjectByName("Layer_4 Layer_4B").position.z -= 40;
-          object.getObjectByName("Layer_5 Layer_5B").position.z -= 50;
+          // object.getObjectByName("Layer_1 Layer_1B").position.z -= 10;
+          // object.getObjectByName("Layer_2 Layer_2B").position.z -= 20;
+          // object.getObjectByName("Layer_3 Layer_3B").position.z -= 30;
+          // object.getObjectByName("Layer_4 Layer_4B").position.z -= 40;
+          // object.getObjectByName("Layer_5 Layer_5B").position.z -= 50;
 
           object.getObjectByName("Glas").position.z -= 10;
           object.getObjectByName("Scharnier").position.z -= 10;
