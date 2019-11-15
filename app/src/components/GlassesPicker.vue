@@ -2,20 +2,21 @@
   <div class="glasses-picker-container">
     <div
       class="glasses"
-      v-for="(todo, index) in todos"
-      v-on:click="clickedGlasses(index, todo.name, todo.model)"
+      v-for="(glassesModel, index) in glasses"
+      v-on:click="clickedGlasses(index, glassesModel.name, glassesModel.model)"
       @mouseover="hoveringGlasses(index)"
       v-bind:class="{selected: (isSelected && currentIndex === index || !isSelected && index === 0 )}"
     >
-      <img :src="getUrl(todo.url)" :alt="todo.name" />
-      <h4 class="text-product-description">{{ todo.name }}</h4>
-      <span class="text-product-description">{{ todo.price }}</span>
+      <img :src="glassesModel.url" :alt="glassesModel.name" />
+      <h4 class="text-product-description">{{ glassesModel.name }}</h4>
+      <span class="text-product-description">{{ glassesModel.price }}</span>
     </div>
   </div>
 </template>
 
 <script>
-// import Glasses from './components/GlassesPicker'
+
+import images from "../assets/glasses/*.png";
 export default {
   name: "GlassesPicker",
   components: {},
@@ -25,33 +26,33 @@ export default {
       isSelected: false,
       hoveredItem: 0,
       currentIndex: 0,
-      todos: [
+      glasses: [
         {
-          url: "../assets/glasses-dummy.png",
+          url: images["glasses01"],
           name: "N°1 - Moluptatum",
           price: "525€",
           model: 1,
         },
         {
-          url: "../assets/glasses-dummy.png",
+          url: images["glasses02"],
           name: "N°2 - Moluptatum",
           price: "525€",
           model: 2,
         },
         {
-          url: "../assets/glasses-dummy.png",
+          url: images["glasses03"],
           name: "N°3 - Moluptatum",
           price: "525€",
           model: 3,
         },
         {
-          url: "../assets/glasses-dummy.png",
+          url: images["glasses04"],
           name: "N°4 - Moluptatum",
           price: "525€",
           model: 4,
         },
         {
-          url: "../assets/glasses-dummy.png",
+          url: images["glasses02"],
           name: "N°5 - Moluptatum",
           price: "525€",
           model: 5,
@@ -65,13 +66,7 @@ export default {
       this.currentIndex = index;
       this.$emit("sendMessage", [name, model]);
     },
-    hoveringGlasses: function(index) {},
-    getUrl: function(url) {
-
-      let temp = "../assets/" + url.toString();
-      console.log(url);
-      return require("../assets/glasses-dummy.png");
-    }
+    hoveringGlasses: function(index) {}
   }
 };
 </script>
