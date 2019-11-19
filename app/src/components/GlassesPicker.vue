@@ -53,9 +53,21 @@ export default {
         },
         {
           url: images["glasses02"],
-          name: "N°5 - Moluptatum",
+          name: "N°1 - Schlüsselloch",
           price: "525€",
           model: 5,
+        },
+        {
+          url: images["glasses02"],
+          name: "N°2 - Schlüsselloch",
+          price: "525€",
+          model: 6,
+        },
+        {
+          url: images["glasses02"],
+          name: "N°3 - Schlüsselloch",
+          price: "525€",
+          model: 7,
         }
       ]
     };

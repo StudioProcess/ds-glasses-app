@@ -10,12 +10,14 @@ $color-emphasize: #ffbb11;
 }
 
 // ROBOTO REGULAR + MEDIUM
-@import url("https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap");
 
 body {
   margin: inherit;
   // overflow: hidden;
-
+  opacity: 0;
+animation: 2s cubic-bezier(0.075, 0.82, 0.165, 1) loadingAnim forwards;
+animation-delay: 2s;
   h1,
   h2,
   h3,
@@ -25,6 +27,10 @@ body {
     margin: 0;
   }
 }
+@keyframes loadingAnim {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 .main {
   display: flex;
   width: 100%;
@@ -33,15 +39,14 @@ body {
 .text {
   &-product-description {
     font-family: "Aleksei", serif;
-    font-size: 8px;
+    font-size: 10px;
     color: #6c6c6c;
   }
   &-tab {
-    font-size: 8px;
+    font-size: 10px;
     font-family: "Roboto", sans-serif;
-    font-weight: 400;
-    color: #7d7d7d;
-    text-transform: uppercase;
+    font-weight: 300;
+    color: #000000;
     letter-spacing: 1px;
     &.deactivated {
       opacity: 0.1;
@@ -177,14 +182,16 @@ body {
   height: 100vh;
   background: #fefdfb;
   position: relative;
-
+  background: #efebe8;
   .glasses {
     background: #fff;
     opacity: 0.3;
     width: 100%;
     height: 20%;
+    height: 13.2%;
     display: block;
     margin-bottom: 4px;
+    height: 13.8%;
     transition: all 0.1s ease-in;
     position: relative;
     cursor: pointer;
@@ -192,13 +199,16 @@ body {
     text-align: center;
     img {
       width: 100%;
-      margin-top: -10px;
+      margin-top: -13%;
+      width: 64%;
     }
     h4 {
-      font-size: 8px;
+      font-size: 12px;
+      margin-top: -17px;
     }
     span {
-      font-size: 8px;
+      font-weight: 800;
+      font-size: 14px;
     }
     &:hover {
       transform: perspective(1000px) translateZ(24px);
@@ -210,6 +220,7 @@ body {
       background: white;
       opacity: 1;
       box-shadow: -4px 2px 6px #00000012;
+      overflow: hidden;
       z-index: 12;
       &::before {
         content: "";
@@ -218,10 +229,18 @@ body {
         background-color: $color-emphasize;
         height: 10%;
         width: 100%;
+        height: 24px;
+        width: 24px;
+        border-radius: 9999px;
         background-image: url(../src/assets/check-icon.svg);
         background-repeat: no-repeat;
         background-size: 8px;
         background-position: center center;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        margin-top: 4px;
+
       }
     }
   }
@@ -230,10 +249,28 @@ body {
 .material-picker-container {
   width: calc(100% - 4px);
   background: #ffffff;
-  // margin-left: 4px;
   height: 100vh;
   box-shadow: 22px -26px 24px #000;
   z-index: 10;
+  padding-top: 32px;
+
+  .random {
+    font-family: "Roboto", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-left: 17%;
+    &::before {
+      content: "";
+      position: absolute;
+      height: 12px;
+      width: 12px;
+      background-image: url("../src/assets/random.svg");
+      margin-left: -19px;
+      margin-top: 3px;
+      background-repeat: no-repeat;
+    }
+  }
   .material-picker {
     display: flex;
     width: 57.4%;
@@ -257,23 +294,25 @@ body {
       li {
         display: grid;
         width: 33%;
-        height: 32px;
         text-align: center;
         align-items: center;
         cursor: pointer;
-
+        height: 20px;
+        border-top: 1px solid #ddd;
         &.active {
-          // background: #dddddd;
+          background-color: #dbdbdb29;
           border: 1px solid #ddd;
+          border-bottom: inherit;
         }
       }
       .swiper {
         height: 34px;
+        height: 30px;
         padding: 4px 4px 20px;
         position: absolute;
         display: block;
         width: 100%;
-        margin-top: 42px;
+        margin-top: 22px;
 
         &-text-selected {
           position: absolute;
@@ -321,7 +360,7 @@ body {
   display: inline-table;
   position: relative;
   cursor: pointer;
-  
+
   &-selected {
     width: 300% !important;
     position: absolute;
@@ -331,9 +370,9 @@ body {
       height: 297px;
 
       h3 {
-        transform: rotate(90deg) translateX(-68.6%) translateY(-149px);
-        width: 100%;
-        transform-origin: left;
+        // transform: rotate(90deg) translateX(-68.6%) translateY(-149px);
+        // width: 100%;
+        // transform-origin: left;
       }
     }
   }
@@ -388,10 +427,31 @@ body {
 
 .payment-section {
   height: auto;
-  margin-top: 80px;
+  margin-top: 27px;
   width: 57.4%;
   margin-left: 24.4%;
-
+  .material-display {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color: #5b5b5b;
+    font-size: 12px;
+  }
+  .price {
+    font-family: "Roboto", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  h2 {
+    font-family: "Aleksei", serif;
+    font-size: 24px;
+  }
+  .info {
+    font-size: 10px;
+    font-family: 'Roboto', sans-serif;
+  }
+  .code {
+    max-width: 124px;
+  }
   .buy-button {
     height: 42px;
     background: black;
@@ -402,6 +462,9 @@ body {
     font-family: "Roboto", sans-serif;
     letter-spacing: 0.4px;
     padding: 0 16px;
+
+    right: 6%;
+    position: absolute;
     cursor: pointer;
   }
 }

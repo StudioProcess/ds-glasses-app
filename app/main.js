@@ -5,7 +5,7 @@ import * as util from './util.js';
 import Vue from '../node_modules/vue/dist/vue.esm.browser.js';
 import VueRouter from 'vue-router'
 import App from './App.vue'
-import model from "./src/assets/models/model3.obj";
+// import model from "./src/assets/models/model3.obj";
 
 
 new Vue({ render: createElement => createElement(App) }).$mount('#app');

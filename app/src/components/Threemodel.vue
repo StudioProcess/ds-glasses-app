@@ -9,7 +9,10 @@
         v-on:click="zoom()"
         v-bind:class="[zoomed ? 'active navigation-element plus': 'navigation-element plus']"
       ></li>
-      <li v-on:click="expand()" class="navigation-element expanded"></li>
+      <li
+        v-on:click="expand()"
+        :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
+      ></li>
     </ul>
     <div id="three-model"></div>
     <span class="three-currentmaterial">material:{{mat}} model: {{setModel}}</span>
@@ -19,9 +22,13 @@
 
 <script>
 // import * as THREE from '../../../node_modules/three/build/three.module.js';
-import model from "../assets/models/model2.obj";
-import model2 from "../assets/models/model2.obj";
-import model4 from "../assets/models/model4.obj";
+import model from "../assets/models/new_models/model1.obj";
+import model2 from "../assets/models/new_models/model2.obj";
+import model3 from "../assets/models/new_models/model3.obj";
+import model4 from "../assets/models/new_models/model4.obj";
+import model5 from "../assets/models/new_models/model2sl.obj";
+import model6 from "../assets/models/new_models/model3sl.obj";
+import model7 from "../assets/models/new_models/model4sl.obj";
 import { OrbitControls } from "../../../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLoader.js";
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
@@ -69,13 +76,20 @@ export default {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
         } else if (this.setModel[1] === 2) {
+          console.log("2");
           this.loadModel(model2);
         } else if (this.setModel[1] === 3) {
-          this.loadModel(model2);
+          console.log("3");
+          this.loadModel(model3);
         } else if (this.setModel[1] === 4) {
+          console.log("4");
           this.loadModel(model4);
         } else if (this.setModel[1] === 5) {
-          this.loadModel(model4);
+          this.loadModel(model5);
+        } else if (this.setModel[1] === 6) {
+          this.loadModel(model6);
+        } else if (this.setModel[1] === 7) {
+          this.loadModel(model7);
         }
         if (this.objtemp) {
           this.objtemp.remove(this.objtemp.children[0]);
@@ -399,7 +413,7 @@ export default {
       this.scene.add(pointLightBg);
       pointLightBg.layers.set(4); //backgroundLayer
 
-      let pointLightStart = new THREE.PointLight(0xffffff, 3.0, 220);
+      let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
       pointLightStart.position.z = -160;
       this.scene.add(pointLightStart);
       pointLightStart.layers.set(0); //backgroundLayer
@@ -507,14 +521,13 @@ export default {
       this.scene.add(this.objtemp);
       this.loadModel(this.currentModel);
       setTimeout(() => {
-        this.expanded = !this.expanded;
-      this.expand();  
+        //   this.expanded = !this.expanded;
+        // this.expand();
       }, 100);
-      
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
+        color: 0x777777,
         emissive: 0xded7d2, //6b6b6b
         roughness: 1,
         metalness: 1,
@@ -548,7 +561,7 @@ export default {
       });
 
       const loader = new THREE.OBJLoader();
-
+      console.log(model);
       loader.load(
         model,
         function(object) {
@@ -560,19 +573,25 @@ export default {
           }),
             (object.rotation.y += 179);
           object.position.y += 10;
+
           object.getObjectByName("Glas").material = glass;
           object.getObjectByName("Scharnier").material = metall;
           object.getObjectByName("Layer_1").material = mat;
           object.getObjectByName("Layer_1 Layer_1B").material = mat;
+          object.getObjectByName("Layer_1 Layer_1N").material = mat;
           object.getObjectByName("Layer_2").material = mat2;
           object.getObjectByName("Layer_2 Layer_2B").material = mat2;
+          object.getObjectByName("Layer_2 Layer_2N").material = mat2;
           object.getObjectByName("Layer_3").material = mat3;
           object.getObjectByName("Layer_3 Layer_3B").material = mat3;
+          object.getObjectByName("Layer_3 Layer_3N").material = mat3;
           object.getObjectByName("Layer_4").material = mat4;
           object.getObjectByName("Layer_4 Layer_4B").material = mat4;
+          object.getObjectByName("Layer_4 Layer_4N").material = mat4;
           object.getObjectByName("Layer_5").material = mat5;
           object.getObjectByName("Layer_5 Layer_5B").material = mat5;
-
+          object.getObjectByName("Layer_5 Layer_5N").material = mat5;
+          //"Layer_5 Layer_5N"
           // object.getObjectByName("Layer_1").position.z -= 10;
           // object.getObjectByName("Layer_2").position.z -= 20;
           // object.getObjectByName("Layer_3").position.z -= 30;
@@ -585,11 +604,11 @@ export default {
           // object.getObjectByName("Layer_4 Layer_4B").position.z -= 40;
           // object.getObjectByName("Layer_5 Layer_5B").position.z -= 50;
 
-          object.getObjectByName("Glas").position.z -= 10;
-          object.getObjectByName("Scharnier").position.z -= 10;
+          // object.getObjectByName("Glas").position.z -= 10;
+          // object.getObjectByName("Scharnier").position.z -= 10;
 
           object.getObjectByName("Glas").layers.set(2);
-
+          console.log(object);
           this.objtemp.add(object);
         }.bind(this),
 

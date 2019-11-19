@@ -5,6 +5,7 @@
   <div class="content-area">
     <Glasses v-on:sendMessage="model = $event"></Glasses>
       <div class="material-picker-container">
+        <span class="random">Zufällig</span>
         <Materials index="1" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper1'></Materials>
         <Materials index="2" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper2'></Materials>
         <Materials index="3" v-on:setHoveredMaterial="setHoveredMaterial($event)" v-on:setMaterial="setMaterialName($event)" swiperClass='Swiper3'></Materials>
@@ -13,13 +14,13 @@
 
      <div class="payment-section">
         <h2>{{model[0]}}</h2> 
-          <div id="">{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
+          <div class="material-display">{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
           <h3 class="price">{{price}}*</h3>
 
-          <p>
+          <p class="info">
             * Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ei.
           </p>
-          <span><strong>Dein Bestellcode:</strong>uxi-lkn-md-ad</span>
+          <span class="code"><strong>Dein Bestellcode:</strong><span>uxi-lkn-md-ad</span></span>
 
           <button class="buy-button">{{price}} jetzt kaufen</button>
     </div> 
