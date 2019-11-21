@@ -67,6 +67,7 @@ animation-delay: 2s;
   width: 52vw;
   display: flex;
   background: #faf6f4;
+  background: #afa296;
 
   .three-navigation {
     position: absolute;
@@ -462,10 +463,16 @@ animation-delay: 2s;
     font-family: "Roboto", sans-serif;
     letter-spacing: 0.4px;
     padding: 0 16px;
-
+    opacity: 0.3;
     right: 6%;
     position: absolute;
     cursor: pointer;
+    pointer-events: none;
+    &.active {
+      pointer-events: all;
+      cursor: pointer;
+      opacity: 1;
+    }
   }
 }
 

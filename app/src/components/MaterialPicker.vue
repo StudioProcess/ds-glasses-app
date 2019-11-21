@@ -9,7 +9,7 @@
       <li
         v-on:click="setSliderContent('woods')"
         v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-      >Holz</li>
+      >Holz{{hashMaterial[0]}}</li>
       <li
         v-on:click="setSliderContent('papers')"
         v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
@@ -23,32 +23,43 @@
           v-if="selectedMaterial !== 'empty'"
           class="swiper-text-selected text-product-description"
         >{{activeMaterial}}</strong>
-        <div :class="selectedMaterial !== 'empty' && index %2 === 0 ? 'swiper-wrapper selected' : 'swiper-wrapper'">
+        <div
+          :class="selectedMaterial !== 'empty' && index %2 === 0 ? 'swiper-wrapper selected' : 'swiper-wrapper'"
+        >
           <span
             v-if="activeElement === 'woods'"
             v-for="wood in woods"
-            v-on:click="setMaterial(wood.name, wood.texture)"
+            v-on:click="setMaterial(wood.name, wood.texture, wood.index)"
             :class="[selectedMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
-            <h3 v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }" :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"></h3>
+            <h3
+              v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }"
+              :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
+            ></h3>
             <span class="text-product-description swiper-description">{{wood.name}}</span>
           </span>
           <span
             v-if="activeElement === 'fabrics'"
             v-for="fabric in fabrics"
-            v-on:click="setMaterial(fabric.name, fabric.texture)"
+            v-on:click="setMaterial(fabric.name, fabric.texture, fabric.index)"
             :class="[selectedMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
-            <h3 v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }" :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"></h3>
+            <h3
+              v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }"
+              :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
+            ></h3>
             <span class="text-product-description swiper-description">{{fabric.name}}</span>
           </span>
           <span
             v-if="activeElement === 'papers'"
             v-for="paper in papers"
-            v-on:click="setMaterial(paper.name, paper.texture)"
+            v-on:click="setMaterial(paper.name, paper.texture, paper.index)"
             :class="[selectedMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
-            <h3 v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }" :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"></h3>
+            <h3
+              v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }"
+              :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
+            ></h3>
             <span class="text-product-description swiper-description">{{paper.name}}</span>
           </span>
         </div>
@@ -60,12 +71,13 @@
 </template>
 
 <script>
+// import {encode, decode} from "../../index.js"
 import images from "../assets/materials/*/*.jpg";
 
 export default {
   name: "MaterialPicker",
   components: {},
-  props: ["selectedModel", "index", "swiperClass"],
+  props: ["selectedModel", "index", "swiperClass", "hashMaterial"],
   data: function() {
     return {
       isSelected: false,
@@ -77,109 +89,135 @@ export default {
       isHovering: false,
       hoveredItem: 0,
       currentIndex: 0,
-      fabrics: [
+      woods: [
         {
-          name: "Stoff Gelb",
-          texture: images["fabric"]["gelberStoff"]
+          name: "Ahorn",
+          texture: images["wood"]["ahorn"],
+          index: 1
         },
         {
-          name: "Stoff gestreift",
-          texture: images["fabric"]["gestreifterStoff"]
+          name: "Akazie",
+          texture: images["wood"]["akazie"],
+          index: 2
         },
         {
-          name: "Leinen grob",
-          texture: images["fabric"]["groberLeinen"]
+          name: "Birne",
+          texture: images["wood"]["birne"],
+          index: 3
         },
         {
-          name: "Stoff grün",
-          texture: images["fabric"]["gruenerStoff02"]
+          name: "Buche",
+          texture: images["wood"]["buche"],
+          index: 4
         },
         {
-          name: "Jeans blau",
-          texture: images["fabric"]["jeansblau"]
+          name: "Eiche",
+          texture: images["wood"]["eiche"],
+          index: 5
         },
         {
-          name: "Jeans hellblau",
-          texture: images["fabric"]["jeanshellblau"]
+          name: "Nuss",
+          texture: images["wood"]["nuss"],
+          index: 6
         },
         {
-          name: "Leinen bedruckt",
-          texture: images["fabric"]["leinenbedruckt"]
-        },
-        {
-          name: "Leinen grau",
-          texture: images["fabric"]["leinengrau"]
-        },
-        {
-          name: "Jeans schwarz",
-          texture: images["fabric"]["schwarzeJeans"]
+          name: "Ulme",
+          texture: images["wood"]["ulme"],
+          index: 7
         }
       ],
       papers: [
         {
           name: "Buch",
-          texture: images["paper"]["buch"]
+          texture: images["paper"]["buch"],
+          index: 8
         },
         {
           name: "Buch Seite 2",
-          texture: images["paper"]["buch02"]
+          texture: images["paper"]["buch02"],
+          index: 9
         },
         {
           name: "Flyer",
-          texture: images["paper"]["flyer"]
+          texture: images["paper"]["flyer"],
+          index: 10
         },
         {
           name: "Flyer 2",
-          texture: images["paper"]["flyer02"]
+          texture: images["paper"]["flyer02"],
+          index: 11
         }
       ],
-      woods: [
+      fabrics: [
         {
-          name: "Ahorn",
-          texture: images["wood"]["ahorn"]
+          name: "Stoff Gelb",
+          texture: images["fabric"]["gelberStoff"],
+          index: 12
         },
         {
-          name: "Akazie",
-          texture: images["wood"]["akazie"]
-        },
-        // {
-        //   name: "Birke",
-        //   texture: images["wood"]["birke"]
-        // },
-        {
-          name: "Birne",
-          texture: images["wood"]["birne"]
+          name: "Stoff gestreift",
+          texture: images["fabric"]["gestreifterStoff"],
+          index: 13
         },
         {
-          name: "Buche",
-          texture: images["wood"]["buche"]
+          name: "Leinen grob",
+          texture: images["fabric"]["groberLeinen"],
+          index: 14
         },
         {
-          name: "Eiche",
-          texture: images["wood"]["eiche"]
-        },
-        // {
-        //   name: "Esche",
-        //   texture: images["wood"]["esche"]
-        // },
-        // {
-        //   name: "Kirsche",
-        //   texture: images["wood"]["kirsche"]
-        // },
-        // {
-        //   name: "Lärche",
-        //   texture: images["wood"]["laerche"]
-        // },
-        {
-          name: "Nuss",
-          texture: images["wood"]["nuss"]
+          name: "Stoff grün",
+          texture: images["fabric"]["gruenerStoff02"],
+          index: 15
         },
         {
-          name: "Ulme",
-          texture: images["wood"]["ulme"]
+          name: "Jeans blau",
+          texture: images["fabric"]["jeansblau"],
+          index: 16
+        },
+        {
+          name: "Jeans hellblau",
+          texture: images["fabric"]["jeanshellblau"],
+          index: 17
+        },
+        {
+          name: "Leinen bedruckt",
+          texture: images["fabric"]["leinenbedruckt"],
+          index: 18
+        },
+        {
+          name: "Leinen grau",
+          texture: images["fabric"]["leinengrau"],
+          index: 19
+        },
+        {
+          name: "Jeans schwarz",
+          texture: images["fabric"]["schwarzeJeans"],
+          index: 20
         }
       ]
     };
+  },
+  watch: {
+    hashMaterial: function() {
+      for (let i = 1; i < this.hashMaterial[0].length+1; i++) {
+        if (Number(this.index) === i) {
+          if (this.hashMaterial[0][i-1] <= this.woods.length) {//is wood
+            this.selectedMaterial = this.woods[this.hashMaterial[0][i-1]-1].name;
+            this.activeMaterial = this.woods[this.hashMaterial[0][i-1]-1].name;
+            let tempArray = [this.woods[this.hashMaterial[0][i-1]-1].name, this.woods[this.hashMaterial[0][i-1]-1].texture, this.index, this.woods[this.hashMaterial[0][i-1]-1].index];
+           this.$emit("setAllHashMaterials", tempArray);  
+           
+
+          } else if (//is paper
+            this.hashMaterial[0][i-1] <=
+            this.woods.length + this.papers.length
+          ) {
+
+          } else {//is fabric
+          }
+        }
+      }
+    }
   },
   mounted: function() {
     setTimeout(() => {
@@ -204,7 +242,6 @@ export default {
     setHovered: function(index, hovered) {
       this.isHovering = hovered;
       this.$emit("setHoveredMaterial", [index, this.isHovering]);
-      console.log(hovered);
       if (hovered === true) {
         this.selectedMaterial = "empty";
         this.deactivateSwiper(true);
@@ -226,8 +263,8 @@ export default {
         "swiper-button-prev" + this.index
       )[0].style.visibility = reactivate ? "visible" : "hidden";
     },
-    setMaterial: function(name, texture) {
-      let array = [name, texture, this.index];
+    setMaterial: function(name, texture, index) {
+      let array = [name, texture, this.index, index];
       this.$emit("setMaterial", array);
       this.activeMaterial = name;
       this.deactivateSwiper();

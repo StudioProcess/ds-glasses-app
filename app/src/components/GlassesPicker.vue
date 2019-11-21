@@ -10,6 +10,7 @@
       <img :src="glassesModel.url" :alt="glassesModel.name" />
       <h4 class="text-product-description">{{ glassesModel.name }}</h4>
       <span class="text-product-description">{{ glassesModel.price }}</span>
+      {{hashModelNumber}}
     </div>
   </div>
 </template>
@@ -20,7 +21,7 @@ import images from "../assets/glasses/*.png";
 export default {
   name: "GlassesPicker",
   components: {},
-  props: ["selectedModel"],
+  props: ["selectedModel", "hashModelNumber"],
   data: function() {
     return {
       isSelected: false,
@@ -71,6 +72,14 @@ export default {
         }
       ]
     };
+  },
+  watch: {
+    hashModelNumber: function(){
+    if(this.hashModelNumber !== 0){
+      this.isSelected = true;
+      this.currentIndex = this.hashModelNumber;
+      this.$emit("sendMessage", [this.glasses[this.hashModelNumber].name, this.glasses[this.hashModelNumber].model]);
+    }},
   },
   methods: {
     clickedGlasses: function(index, name, model) {

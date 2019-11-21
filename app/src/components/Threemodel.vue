@@ -15,7 +15,9 @@
       ></li>
     </ul>
     <div id="three-model"></div>
-    <span class="three-currentmaterial">material:{{mat}} model: {{setModel}}</span>
+    <span
+      class="three-currentmaterial"
+    >material:{{mat}} model: {{setModel}}{{allHashMaterialsModel}}</span>
   </div>
 </template>
   <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js"></script>
@@ -34,17 +36,19 @@ import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLo
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
+import { encode, decode } from "../../index.js";
+
 export default {
   name: "Threemodel",
   components: {},
-  props: ["mat", "setModel", "hoveredMaterial"],
+  props: ["mat", "setModel", "hoveredMaterial", "allHashMaterialsModel"],
 
   data: function() {
     return {
       renderer: null,
       expanded: false,
       zoomed: false,
-      currentModelIndex: 0,
+      currentModelIndex: null,
       currentMaterialName: "Ahorn",
       currentMaterialIndex: 0,
       currentModel: model,
@@ -68,10 +72,41 @@ export default {
     this.setup(); // set up scene
     this.loop(); // start game loop
   },
-
+  watch: {
+    allHashMaterialsModel: function() {
+      for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
+        var loader = new THREE.TextureLoader();
+        loader.load(
+          this.allHashMaterialsModel[0][i][0],
+          function(texture) {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.set(0, 0);
+            texture.repeat.set(1, 1);
+            if (this.allHashMaterialsModel[0][i][1] === "1") {
+              this.assignMaterial(texture, "Layer_1");
+              this.assignMaterial(texture, "Layer_1 Layer_1B");
+            } else if (this.allHashMaterialsModel[0][i][1] === "2") {
+              this.assignMaterial(texture, "Layer_2");
+              this.assignMaterial(texture, "Layer_2 Layer_2B");
+            } else if (this.allHashMaterialsModel[0][i][1] === "3") {
+              this.assignMaterial(texture, "Layer_3");
+              this.assignMaterial(texture, "Layer_3 Layer_3B");
+            } else if (this.allHashMaterialsModel[0][i][1] === "4") {
+              this.assignMaterial(texture, "Layer_4");
+              this.assignMaterial(texture, "Layer_4 Layer_4B");
+            } else if (this.allHashMaterialsModel[0][i][1] === "5") {
+              this.assignMaterial(texture, "Layer_5");
+              this.assignMaterial(texture, "Layer_5 Layer_5B");
+            }
+          }.bind(this)
+        );
+      }
+    }
+  },
   updated() {
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
+      this.$emit("modelLoaded", false);
       setTimeout(() => {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
@@ -91,13 +126,10 @@ export default {
         } else if (this.setModel[1] === 7) {
           this.loadModel(model7);
         }
-        if (this.objtemp) {
-          this.objtemp.remove(this.objtemp.children[0]);
-        }
+        this.objtemp.remove(this.objtemp.children[0]);
       }, 30);
-    } else {
+    } else if (this.hoveredMaterial) {
       if (this.hoveredMaterial[1] === true) {
-        console.log("hovered material true");
         if (this.hoveredMaterial[0] === "1") {
           this.hoverMaterial("Layer_1", true);
           this.hoverMaterial("Layer_1 Layer_1B", true);
@@ -116,7 +148,6 @@ export default {
         }
       }
       if (this.hoveredMaterial[1] === false) {
-        console.log("hovered material false");
         if (this.hoveredMaterial[0] === "1") {
           this.hoverMaterial("Layer_1");
           this.hoverMaterial("Layer_1 Layer_1B");
@@ -136,10 +167,12 @@ export default {
       }
     }
     if (
-      this.currentMaterialName !== this.mat[0] ||
+      (this.currentMaterialName !== this.mat[0] && this.objtemp.children[0]) ||
       (this.currentMaterialName === this.mat[0] &&
-        this.mat[1] !== this.currentMaterialIndex)
+        this.mat[1] !== this.currentMaterialIndex &&
+        this.objtemp.children[0])
     ) {
+      console.log("update materials");
       let texture = new THREE.TextureLoader().load(this.mat[0]);
       let roughness_m = new THREE.TextureLoader().load(roughness_map);
       let normal_m = new THREE.TextureLoader().load(normal_map);
@@ -261,31 +294,34 @@ export default {
     },
     assignMaterial: function(
       texture,
-      name,
-      roughness_map,
-      normal_map,
-      displacement_map
+      name
+      // roughness_map,
+      // normal_map,
+      // displacement_map
     ) {
-      TweenMax.to(
-        this.objtemp.children[0].getObjectByName(name).position,
-        1.2,
-        {
-          y: "30",
-          ease: Power2.easeOut
-        }
-      );
+      // TweenMax.to(
+
+      //   this.objtemp.children[0].getObjectByName(name).position,
+      //   1.2,
+      //   {
+      //     y: "30",
+      //     ease: Power2.easeOut
+      //   }
+      // );
+      console.log(this.objtemp.children[0]);
+      console.log("ASSIGN MATERIAL !!! ");
       this.objtemp.children[0].getObjectByName(name).material.map = texture;
       this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
       this.objtemp.children[0].getObjectByName(name).material.roughness = 3.0;
       this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
       this.objtemp.children[0].getObjectByName(name).material.emissive = false;
-      this.objtemp.children[0].getObjectByName(
-        name
-      ).material.roughnessMap = roughness_map;
-      this.objtemp.children[0].getObjectByName(
-        name
-      ).material.normalMap = normal_map;
+      // this.objtemp.children[0].getObjectByName(
+      //   name
+      // ).material.roughnessMap = roughness_map;
+      // this.objtemp.children[0].getObjectByName(
+      //   name
+      // ).material.normalMap = normal_map;
       // this.objtemp.children[0].getObjectByName(name).material.displacementMap = displacement_map;
       this.objtemp.children[0].getObjectByName(name).fog = false;
       this.objtemp.children[0].getObjectByName(
@@ -519,7 +555,7 @@ export default {
       bgPlane.rotation.x += 80;
 
       this.scene.add(this.objtemp);
-      this.loadModel(this.currentModel);
+      // this.loadModel(this.currentModel);
       setTimeout(() => {
         //   this.expanded = !this.expanded;
         // this.expand();
@@ -527,7 +563,7 @@ export default {
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
-        color: 0x777777,
+        color: 0x473d34,
         emissive: 0xded7d2, //6b6b6b
         roughness: 1,
         metalness: 1,
@@ -561,7 +597,7 @@ export default {
       });
 
       const loader = new THREE.OBJLoader();
-      console.log(model);
+
       loader.load(
         model,
         function(object) {
@@ -591,28 +627,16 @@ export default {
           object.getObjectByName("Layer_5").material = mat5;
           object.getObjectByName("Layer_5 Layer_5B").material = mat5;
           object.getObjectByName("Layer_5 Layer_5N").material = mat5;
-          //"Layer_5 Layer_5N"
-          // object.getObjectByName("Layer_1").position.z -= 10;
-          // object.getObjectByName("Layer_2").position.z -= 20;
-          // object.getObjectByName("Layer_3").position.z -= 30;
-          // object.getObjectByName("Layer_4").position.z -= 40;
-          // object.getObjectByName("Layer_5").position.z -= 50;
-
-          // object.getObjectByName("Layer_1 Layer_1B").position.z -= 10;
-          // object.getObjectByName("Layer_2 Layer_2B").position.z -= 20;
-          // object.getObjectByName("Layer_3 Layer_3B").position.z -= 30;
-          // object.getObjectByName("Layer_4 Layer_4B").position.z -= 40;
-          // object.getObjectByName("Layer_5 Layer_5B").position.z -= 50;
-
-          // object.getObjectByName("Glas").position.z -= 10;
-          // object.getObjectByName("Scharnier").position.z -= 10;
-
           object.getObjectByName("Glas").layers.set(2);
-          console.log(object);
           this.objtemp.add(object);
+           console.log("loaded ... ?")
+          this.$emit("modelLoaded", true);
+
+
         }.bind(this),
 
-        function(xhr) {}
+        function(xhr) {
+        }
       );
     },
     loop: function() {
