@@ -41,7 +41,13 @@ import { encode, decode } from "../../index.js";
 export default {
   name: "Threemodel",
   components: {},
-  props: ["mat", "setModel", "hoveredMaterial", "allHashMaterialsModel"],
+  props: [
+    "mat",
+    "setModel",
+    "hoveredMaterial",
+    "allHashMaterialsModel",
+    "useAsSunglasses"
+  ],
 
   data: function() {
     return {
@@ -58,7 +64,8 @@ export default {
       camera: null,
       controls: null,
       lightReset: false,
-      pointLight: new THREE.PointLight(0xffffff, 4.9, 360), //4.9 360
+      modelHasLoaded: false,
+      pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
       spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
       pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
@@ -73,6 +80,31 @@ export default {
     this.loop(); // start game loop
   },
   watch: {
+    useAsSunglasses: function() {
+      let glass = new THREE.MeshPhysicalMaterial({
+        color: "#D2DDDE",
+        metalness: 0.0,
+        roughness: 0.0,
+        alphaTest: 0.5,
+        depthTest: false,
+        transparent: true,
+        transparency: 0.8
+      });
+      let sunglassesGlass = new THREE.MeshPhysicalMaterial({
+        color: "#000000",
+        metalness: 1.0,
+        roughness: 0.0,
+        alphaTest: 0.1,
+        depthTest: false,
+        transparent: true,
+        transparency: 0.2
+      });
+      if (this.useAsSunglasses) {
+        this.objtemp.children[0].getObjectByName("Glas").material = sunglassesGlass;
+      } else {
+        this.objtemp.children[0].getObjectByName("Glas").material = glass;
+      }
+    },
     allHashMaterialsModel: function() {
       for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
         var loader = new THREE.TextureLoader();
@@ -107,6 +139,7 @@ export default {
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
       this.$emit("modelLoaded", false);
+      this.modelHasLoaded = false;
       setTimeout(() => {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
@@ -167,10 +200,13 @@ export default {
       }
     }
     if (
-      (this.currentMaterialName !== this.mat[0] && this.objtemp.children[0]) ||
+      (this.currentMaterialName !== this.mat[0] &&
+        this.objtemp.children[0] &&
+        this.modelHasLoaded) ||
       (this.currentMaterialName === this.mat[0] &&
         this.mat[1] !== this.currentMaterialIndex &&
-        this.objtemp.children[0])
+        this.objtemp.children[0] &&
+        this.modelHasLoaded)
     ) {
       console.log("update materials");
       let texture = new THREE.TextureLoader().load(this.mat[0]);
@@ -629,14 +665,12 @@ export default {
           object.getObjectByName("Layer_5 Layer_5N").material = mat5;
           object.getObjectByName("Glas").layers.set(2);
           this.objtemp.add(object);
-           console.log("loaded ... ?")
+          console.log("loaded ... ?");
+          this.modelHasLoaded = true;
           this.$emit("modelLoaded", true);
-
-
         }.bind(this),
 
-        function(xhr) {
-        }
+        function(xhr) {}
       );
     },
     loop: function() {

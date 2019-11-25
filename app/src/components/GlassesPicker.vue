@@ -7,15 +7,17 @@
       @mouseover="hoveringGlasses(index)"
       v-bind:class="{selected: (isSelected && currentIndex === index || !isSelected && index === 0 )}"
     >
-      <img :src="glassesModel.url" :alt="glassesModel.name" />
+      <img :src="[glassesModel.url]" :alt="glassesModel.name" />
+
       <h4 class="text-product-description">{{ glassesModel.name }}</h4>
       <span class="text-product-description">{{ glassesModel.price }}</span>
-      {{hashModelNumber}}
+      
     </div>
   </div>
 </template>
 
 <script>
+//       //      <span class="glassesImage" :style="{backgroundImage: 'url('+glassesModel.url+')'}" :alt="glassesModel.name" />
 
 import images from "../assets/glasses/*.png";
 export default {
@@ -30,12 +32,14 @@ export default {
       glasses: [
         {
           url: images["glasses01"],
+          urlHover: images["glassesSteg"],
           name: "N°1 - Moluptatum",
           price: "525€",
           model: 1,
         },
         {
           url: images["glasses02"],
+          urlHover: images["glassesSteg"],
           name: "N°2 - Moluptatum",
           price: "525€",
           model: 2,
@@ -48,24 +52,28 @@ export default {
         },
         {
           url: images["glasses04"],
+          urlHover: images["glassesSteg"],
           name: "N°4 - Moluptatum",
           price: "525€",
           model: 4,
         },
         {
           url: images["glasses02"],
+          urlHover: images["glassesSteg"],
           name: "N°1 - Schlüsselloch",
           price: "525€",
           model: 5,
         },
         {
           url: images["glasses02"],
+          urlHover: images["glassesSteg"],
           name: "N°2 - Schlüsselloch",
           price: "525€",
           model: 6,
         },
         {
           url: images["glasses02"],
+          urlHover: images["glassesSteg"],
           name: "N°3 - Schlüsselloch",
           price: "525€",
           model: 7,

@@ -8,15 +8,15 @@
     <ul class="overview">
       <li
         v-on:click="setSliderContent('woods')"
-        v-bind:class="[activeElement === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-      >Holz{{hashMaterial[0]}}</li>
+        v-bind:class="[activeTab === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+      >Holz</li>
       <li
         v-on:click="setSliderContent('papers')"
-        v-bind:class="[activeElement === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+        v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Papier</li>
       <li
         v-on:click="setSliderContent('fabrics')"
-        v-bind:class="[activeElement === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+        v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Stoff</li>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
         <strong
@@ -27,37 +27,37 @@
           :class="selectedMaterial !== 'empty' && index %2 === 0 ? 'swiper-wrapper selected' : 'swiper-wrapper'"
         >
           <span
-            v-if="activeElement === 'woods'"
+            v-if="activeTab === 'woods'"
             v-for="wood in woods"
             v-on:click="setMaterial(wood.name, wood.texture, wood.index)"
             :class="[selectedMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
             <h3
-              v-bind:style="{ backgroundImage: 'url(' + wood.texture + ')' }"
+              v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.texture : wood.thumb)  + ')' }"
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
             <span class="text-product-description swiper-description">{{wood.name}}</span>
           </span>
           <span
-            v-if="activeElement === 'fabrics'"
+            v-if="activeTab === 'fabrics'"
             v-for="fabric in fabrics"
             v-on:click="setMaterial(fabric.name, fabric.texture, fabric.index)"
             :class="[selectedMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
             <h3
-              v-bind:style="{ backgroundImage: 'url(' + fabric.texture + ')' }"
+              v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
             <span class="text-product-description swiper-description">{{fabric.name}}</span>
           </span>
           <span
-            v-if="activeElement === 'papers'"
+            v-if="activeTab === 'papers'"
             v-for="paper in papers"
             v-on:click="setMaterial(paper.name, paper.texture, paper.index)"
             :class="[selectedMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
           >
             <h3
-              v-bind:style="{ backgroundImage: 'url(' + paper.texture + ')' }"
+              v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
             <span class="text-product-description swiper-description">{{paper.name}}</span>
@@ -73,6 +73,7 @@
 <script>
 // import {encode, decode} from "../../index.js"
 import images from "../assets/materials/*/*.jpg";
+import thumbs from "../assets/materials/*/*/*.jpg";
 
 export default {
   name: "MaterialPicker",
@@ -81,7 +82,7 @@ export default {
   data: function() {
     return {
       isSelected: false,
-      activeElement: "woods",
+      activeTab: "woods",
       activeMaterial: "empty",
       selectedMaterial: "empty",
       mSwiperClass: this.swiperClass,
@@ -93,127 +94,283 @@ export default {
         {
           name: "Ahorn",
           texture: images["wood"]["ahorn"],
+          thumb: thumbs["wood"]["thumbnails"]["ahorn"],
           index: 1
         },
         {
           name: "Akazie",
           texture: images["wood"]["akazie"],
+          thumb: thumbs["wood"]["thumbnails"]["akazie"],
           index: 2
+        },
+        {
+          name: "Apfel",
+          texture: images["wood"]["apfel"],
+          thumb: thumbs["wood"]["thumbnails"]["apfel"],
+          index: 3
+        },
+        {
+          name: "Birke",
+          texture: images["wood"]["birke"],
+          thumb: thumbs["wood"]["thumbnails"]["birke"],
+          index: 4
         },
         {
           name: "Birne",
           texture: images["wood"]["birne"],
-          index: 3
+          thumb: thumbs["wood"]["thumbnails"]["birne"],
+          index: 5
+        },
+        {
+          name: "Birne Wurzelholz",
+          texture: images["wood"]["birneWurzelholz"],
+          thumb: thumbs["wood"]["thumbnails"]["birneWurzelholz"],
+          index: 6
         },
         {
           name: "Buche",
           texture: images["wood"]["buche"],
-          index: 4
+          thumb: thumbs["wood"]["thumbnails"]["buche"],
+          index: 7
         },
         {
           name: "Eiche",
           texture: images["wood"]["eiche"],
-          index: 5
+          thumb: thumbs["wood"]["thumbnails"]["eiche"],
+          index: 8
+        },
+        {
+          name: "Esche",
+          texture: images["wood"]["esche"],
+          thumb: thumbs["wood"]["thumbnails"]["esche"],
+          index: 9
+        },
+        {
+          name: "Kirsche",
+          texture: images["wood"]["kirsche"],
+          thumb: thumbs["wood"]["thumbnails"]["kirsche"],
+          index: 10
+        },
+        {
+          name: "Kirsche mit Verlauf",
+          texture: images["wood"]["kirscheMitVerlauf"],
+          thumb: thumbs["wood"]["thumbnails"]["kirscheMitVerlauf"],
+          index: 11
+        },
+        {
+          name: "Lärche",
+          texture: images["wood"]["laerche"],
+          thumb: thumbs["wood"]["thumbnails"]["laerche"],
+          index: 12
+        },
+        {
+          name: "Mooreiche",
+          texture: images["wood"]["mooreiche"],
+          thumb: thumbs["wood"]["thumbnails"]["mooreiche"],
+          index: 13
         },
         {
           name: "Nuss",
           texture: images["wood"]["nuss"],
-          index: 6
+          thumb: thumbs["wood"]["thumbnails"]["nuss"],
+          index: 14
+        },
+        {
+          name: "Nuss mit Verlauf",
+          texture: images["wood"]["nussMitVerlauf"],
+          thumb: thumbs["wood"]["thumbnails"]["nussMitVerlauf"],
+          index: 15
+        },
+        {
+          name: "Nuss Wirzelholz",
+          texture: images["wood"]["nussWurzelholz"],
+          thumb: thumbs["wood"]["thumbnails"]["nussWurzelholz"],
+          index: 16
         },
         {
           name: "Ulme",
-          texture: images["wood"]["ulme"],
-          index: 7
+          texture: images["wood"]["ruesterUlme"],
+          thumb: thumbs["wood"]["thumbnails"]["ruesterUlme"],
+          index: 17
         }
       ],
       papers: [
         {
-          name: "Buch",
-          texture: images["paper"]["buch"],
-          index: 8
+          name: "Falter Zeitung",
+          texture: images["paper"]["auszugFalter"],
+          thumb: thumbs["paper"]["thumbnails"]["auszugFalter"],
+          index: 18
         },
         {
-          name: "Buch Seite 2",
-          texture: images["paper"]["buch02"],
-          index: 9
+          name: "Standard Zeitung",
+          texture: images["paper"]["auszugStandard"],
+          thumb: thumbs["paper"]["thumbnails"]["auszugStandard"],
+          index: 19
+        },
+        {
+          name: "Buch",
+          texture: images["paper"]["buch"],
+          thumb: thumbs["paper"]["thumbnails"]["buch"],
+          index: 20
         },
         {
           name: "Flyer",
           texture: images["paper"]["flyer"],
-          index: 10
+          thumb: thumbs["paper"]["thumbnails"]["flyer"],
+          index: 21
         },
-        {
-          name: "Flyer 2",
-          texture: images["paper"]["flyer02"],
-          index: 11
+         {
+          name: "Kariertes Papier",
+          texture: images["paper"]["kariertesBlatt"],
+          thumb: thumbs["paper"]["thumbnails"]["kariertesBlatt"],
+          index: 22
+        },
+         {
+          name: "Kopie/Print - Bild",
+          texture: images["paper"]["kopie"],
+          thumb: thumbs["paper"]["thumbnails"]["kopie"],
+          index: 23
+        },
+         {
+          name: "Kopie/Print - Text",
+          texture: images["paper"]["kopierpapierProbedruck"],
+          thumb: thumbs["paper"]["thumbnails"]["kopierpapierProbedruck"],
+          index: 24
+        },
+         {
+          name: "Verpackungsmaterial/Packpapier",
+          texture: images["paper"]["verpackungsMaterial"],
+          thumb: thumbs["paper"]["thumbnails"]["verpackungsMaterial"],
+          index: 25
         }
       ],
       fabrics: [
         {
-          name: "Stoff Gelb",
-          texture: images["fabric"]["gelberStoff"],
-          index: 12
-        },
-        {
-          name: "Stoff gestreift",
-          texture: images["fabric"]["gestreifterStoff"],
-          index: 13
-        },
-        {
-          name: "Leinen grob",
-          texture: images["fabric"]["groberLeinen"],
-          index: 14
-        },
-        {
-          name: "Stoff grün",
-          texture: images["fabric"]["gruenerStoff02"],
-          index: 15
-        },
-        {
-          name: "Jeans blau",
+          name: "Jeans Blau",
           texture: images["fabric"]["jeansblau"],
-          index: 16
+          thumb: thumbs["fabric"]["thumbnails"]["jeansblau"],
+          index: 26
         },
         {
-          name: "Jeans hellblau",
+          name: "Jeans Hellblau",
           texture: images["fabric"]["jeanshellblau"],
-          index: 17
+          thumb: thumbs["fabric"]["thumbnails"]["jeanshellblau"],
+          index: 27
+        },
+          {
+          name: "Jeans Schwarz",
+          texture: images["fabric"]["jeansSchwarz"],
+          thumb: thumbs["fabric"]["thumbnails"]["jeansSchwarz"],
+          index: 28
         },
         {
-          name: "Leinen bedruckt",
-          texture: images["fabric"]["leinenbedruckt"],
-          index: 18
+          name: "Leinen",
+          texture: images["fabric"]["leinen"],
+          thumb: thumbs["fabric"]["thumbnails"]["leinen"],
+          index: 29
         },
         {
-          name: "Leinen grau",
-          texture: images["fabric"]["leinengrau"],
-          index: 19
+          name: "T-Shirt Blau",
+          texture: images["fabric"]["tshirtBlau"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtBlau"],
+          index: 30
         },
         {
-          name: "Jeans schwarz",
-          texture: images["fabric"]["schwarzeJeans"],
-          index: 20
+          name: "T-Shirt Gelb",
+          texture: images["fabric"]["tshirtGelb"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtGelb"],
+          index: 31
+        },
+        {
+          name: "T-Shirt Grau",
+          texture: images["fabric"]["tshirtGrau"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtGrau"],
+          index: 32
+        },
+        {
+          name: "T-Shirt Grün",
+          texture: images["fabric"]["tshirtGruen"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtGruen"],
+          index: 33
+        },
+        {
+          name: "T-Shirt Weiß",
+          texture: images["fabric"]["tshirtOffWhite"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtOffWhite"],
+          index: 34
+        },
+        {
+          name: "T-Shirt Orange",
+          texture: images["fabric"]["tshirtOrange"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtOrange"],
+          index: 35
+        },
+        {
+          name: "T-Shirt Rosa",
+          texture: images["fabric"]["tshirtRosa"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtRosa"],
+          index: 36
+        },
+        {
+          name: "T-Shirt Rot",
+          texture: images["fabric"]["tshirtRot"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtRot"],
+          index: 37
+        },
+        {
+          name: "T-Shirt Schwarz",
+          texture: images["fabric"]["tshirtSchwarz"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtSchwarz"],
+          index: 38
+        },
+        {
+          name: "T-Shirt Türkis",
+          texture: images["fabric"]["tshirtTuerkis"],
+          thumb: thumbs["fabric"]["thumbnails"]["tshirtTuerkis"],
+          index: 39
+        },
+        {
+          name: "Weißer Stoff Leintuch",
+          texture: images["fabric"]["weisserStoffLeintuch"],
+          thumb: thumbs["fabric"]["thumbnails"]["weisserStoffLeintuch"],
+          index: 40
         }
       ]
     };
   },
   watch: {
     hashMaterial: function() {
-      for (let i = 1; i < this.hashMaterial[0].length+1; i++) {
+      for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
         if (Number(this.index) === i) {
-          if (this.hashMaterial[0][i-1] <= this.woods.length) {//is wood
-            this.selectedMaterial = this.woods[this.hashMaterial[0][i-1]-1].name;
-            this.activeMaterial = this.woods[this.hashMaterial[0][i-1]-1].name;
-            let tempArray = [this.woods[this.hashMaterial[0][i-1]-1].name, this.woods[this.hashMaterial[0][i-1]-1].texture, this.index, this.woods[this.hashMaterial[0][i-1]-1].index];
-           this.$emit("setAllHashMaterials", tempArray);  
-           
-
-          } else if (//is paper
-            this.hashMaterial[0][i-1] <=
+          if (this.hashMaterial[0][i - 1] <= this.woods.length) {
+            //is wood
+            // console.log( this.hashMaterial[0][i-1])
+            this.setHashMaterial(
+              this.woods,
+              i,
+              this.hashMaterial[0][i - 1],
+              "woods"
+            );
+            console.log("HASH MATERIAL");
+          } else if (
+            //is paper
+            this.hashMaterial[0][i - 1] <=
             this.woods.length + this.papers.length
           ) {
-
-          } else {//is fabric
+            this.setHashMaterial(
+              this.papers,
+              i,
+              this.hashMaterial[0][i - 1],
+              "papers"
+            );
+          } else {
+            //is fabric
+            this.setHashMaterial(
+              this.fabrics,
+              i,
+              this.hashMaterial[0][i - 1],
+              "fabrics"
+            );
           }
         }
       }
@@ -223,7 +380,7 @@ export default {
     setTimeout(() => {
       this.mSwiperClass = new Swiper(".swiper-container" + this.index, {
         slidesPerView: 7,
-        spaceBetween: 6,
+        spaceBetween: 4,
         slidesPerGroup: 7,
         loop: false,
         loopFillGroupWithBlank: false,
@@ -239,6 +396,23 @@ export default {
     }, 300);
   },
   methods: {
+    setHashMaterial: function(materialArr, i, hashIndex, arrayName) {
+      let tempArray = [];
+      for (let j = 0; j < materialArr.length; j++) {
+        if (materialArr[j].index === hashIndex) {
+          this.selectedMaterial = materialArr[j].name;
+          tempArray = [
+            materialArr[j].name,
+            materialArr[j].texture,
+            this.index,
+            materialArr[j].index
+          ];
+          this.activeMaterial = materialArr[j].name;
+        }
+      }
+      this.activeTab = arrayName;
+      this.$emit("setAllHashMaterials", tempArray);
+    },
     setHovered: function(index, hovered) {
       this.isHovering = hovered;
       this.$emit("setHoveredMaterial", [index, this.isHovering]);
@@ -270,7 +444,7 @@ export default {
       this.deactivateSwiper();
     },
     setSliderContent: function(material) {
-      this.activeElement = material;
+      this.activeTab = material;
       setTimeout(() => {
         if (material === "fabrics" || material === "papers") {
           this.deactivateSwiper();

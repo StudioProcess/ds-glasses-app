@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-  <Threemodel v-on:modelLoaded="modelHasLoaded = $event" :allHashMaterialsModel='allHashMaterialsModel' :hoveredMaterial='hoveredMaterial' :setModel='model' :mat='passedMaterial'>{{passedMaterial}}</Threemodel>
+  <Threemodel :useAsSunglasses='useAsSunglasses' v-on:modelLoaded="modelHasLoaded = $event" :allHashMaterialsModel='allHashMaterialsModel' :hoveredMaterial='hoveredMaterial' :setModel='model' :mat='passedMaterial'>{{passedMaterial}}</Threemodel>
   <div class="content-area">
     <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
@@ -15,10 +15,14 @@
         <h2>{{model[0]}}</h2> 
           <div class="material-display">{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
           <h3 class="price">{{price}}*</h3>
+          <span class="sunglasses">Sonnenbrille:   <input v-model="useAsSunglasses" type="checkbox"> 
+          <span class="info">UV400 / schwarz</span>
+          </span>
 
-          <p class="info">
-            * Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ei.
+          <p class="info infoGlass">
+           Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!
           </p>
+
           <span class="code"><strong>Dein Bestellcode:</strong><span>{{hashCode}}</span></span>
 
           <button :class="[fullCode ? 'buy-button active' : 'buy-button']">{{price}} jetzt kaufen</button>
@@ -65,11 +69,15 @@ export default {
     Swiper4: null,
     Swiper5: null,
     msg: "",
+    useAsSunglasses: false,
     }
     },
     watch: {
       modelHasLoaded: function(){
-          this.allHashMaterialsModel.push(this.allHashMaterials)    
+        if(this.modelHasLoaded){
+          this.allHashMaterialsModel.push(this.allHashMaterials);
+        }
+
       }
     },
     methods: {
@@ -163,6 +171,7 @@ export default {
           tempArray[i-1] = layers[i];
           console.log(this.setMaterialFromUrl)
         }
+        this.fullCode = true;
         this.setMaterialFromUrl.push(tempArray);
         this.hashModelChange = true;
         console.log('Decode (from URL) OK');
