@@ -66,6 +66,7 @@ export default {
       controls: null,
       lightReset: false,
       modelHasLoaded: false,
+      currentMaterials: [],
       pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
       spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
@@ -216,13 +217,9 @@ export default {
       console.log("update materials");
       let texture = new THREE.TextureLoader().load(this.mat[0]);
       var loader = new THREE.TextureLoader();
-      if (this.lightReset === false) {
-        let mPointLight = new THREE.DirectionalLight(0xffffff, 2.9, 160);
-        mPointLight.intensity = 3.0;
-        mPointLight.decay = 0.0;
-        mPointLight.position.z = -20;
-      }
+
       let temp = eval(this.mat[1]) + 1;
+      let tempTexture;
       loader.load(
         this.mat[0],
 
@@ -230,6 +227,7 @@ export default {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
           texture.offset.set(0, 0);
           texture.repeat.set(1, 1);
+          tempTexture = texture;
           if (this.mat[1] % 2 === 0) {
             // texture.rotation = 1.5;
             // roughness_m.rotation = 1.5;
@@ -237,81 +235,23 @@ export default {
             // displacement_m.rotation = 1.5;
           }
           if (this.mat[1] === "1") {
-            this.assignMaterial(
-              texture,
-              "Layer_1"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
-            this.assignMaterial(
-              texture,
-              "Layer_1 Layer_1B"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
+            this.assignMaterial(texture, "Layer_1");
+            this.assignMaterial(texture, "Layer_1 Layer_1B");
           } else if (this.mat[1] === "2") {
-            this.assignMaterial(
-              texture,
-              "Layer_2"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
-            this.assignMaterial(
-              texture,
-              "Layer_2 Layer_2B"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
+            this.assignMaterial(texture, "Layer_2");
+            this.assignMaterial(texture, "Layer_2 Layer_2B");
           } else if (this.mat[1] === "3") {
-            this.assignMaterial(
-              texture,
-              "Layer_3"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
-            this.assignMaterial(
-              texture,
-              "Layer_3 Layer_3B"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
+            this.assignMaterial(texture, "Layer_3");
+            this.assignMaterial(texture, "Layer_3 Layer_3B");
           } else if (this.mat[1] === "4") {
-            this.assignMaterial(
-              texture,
-              "Layer_4"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
-            this.assignMaterial(
-              texture,
-              "Layer_4 Layer_4B"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
+            this.assignMaterial(texture, "Layer_4");
+            this.assignMaterial(texture, "Layer_4 Layer_4B");
           } else if (this.mat[1] === "5") {
-            this.assignMaterial(
-              texture,
-              "Layer_5"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
-            this.assignMaterial(
-              texture,
-              "Layer_5 Layer_5B"
-              // roughness_m,
-              // normal_m,
-              // displacement_m
-            );
+            this.assignMaterial(texture, "Layer_5");
+            this.assignMaterial(texture, "Layer_5 Layer_5B");
           }
+
+          this.$set(this.currentMaterials, Number(this.mat[1]), tempTexture);
         }.bind(this)
       );
     }
@@ -337,30 +277,13 @@ export default {
       // this.normal_map,
       // displacement_map
     ) {
-      // TweenMax.to(
-
-      //   this.objtemp.children[0].getObjectByName(name).position,
-      //   1.2,
-      //   {
-      //     y: "30",
-      //     ease: Power2.easeOut
-      //   }
-      // );
-      console.log(this.objtemp.children[0]);
-      console.log("ASSIGN MATERIAL !!! ");
       this.objtemp.children[0].getObjectByName(name).material.map = texture;
       this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
       this.objtemp.children[0].getObjectByName(name).material.roughness = 3.0;
       this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
       this.objtemp.children[0].getObjectByName(name).material.emissive = false;
-      // this.objtemp.children[0].getObjectByName(
-      //   name
-      // ).material.roughnessMap = roughness_map;
-      // this.objtemp.children[0].getObjectByName(
-      //   name
-      // ).material.normalMap = normal_map;
-      console.log(this.roughness_m);
+
       this.objtemp.children[0].getObjectByName(
         name
       ).material.roughnessMap = this.roughness_m;
@@ -590,17 +513,14 @@ export default {
       planeTexLoader.load(
         shadow,
         function(texture) {
-          texture.rotation
+          texture.rotation;
           let depthmat = new THREE.MeshStandardMaterial({
             color: 0xfff,
             emissive: 0xbfbab8,
-            // roughness: 1,
-            // metalness: 1,
             transparent: true,
             wireframe: false,
             opacity: 0.2,
-            map: texture,
-            // alphaMap: texture
+            map: texture
           });
           console.log(texture);
           let bgPlane = new THREE.Mesh(planeGeo, depthmat);
@@ -664,6 +584,7 @@ export default {
 
           object.getObjectByName("Glas").material = glass;
           object.getObjectByName("Scharnier").material = metall;
+          object.getObjectByName("Glas").layers.set(2);
           object.getObjectByName("Layer_1").material = mat;
           object.getObjectByName("Layer_1 Layer_1B").material = mat;
           object.getObjectByName("Layer_1 Layer_1N").material = mat;
@@ -679,11 +600,32 @@ export default {
           object.getObjectByName("Layer_5").material = mat5;
           object.getObjectByName("Layer_5 Layer_5B").material = mat5;
           object.getObjectByName("Layer_5 Layer_5N").material = mat5;
-          object.getObjectByName("Glas").layers.set(2);
           this.objtemp.add(object);
-          console.log("loaded ... ?");
           this.modelHasLoaded = true;
           this.$emit("modelLoaded", true);
+
+          if (this.currentMaterials.length > 0) {
+            if (this.currentMaterials[1] !== undefined) {
+              this.assignMaterial(this.currentMaterials[1], "Layer_1");
+              this.assignMaterial(this.currentMaterials[1], "Layer_1 Layer_1B");
+            }
+            if (this.currentMaterials[2] !== undefined) {
+              this.assignMaterial(this.currentMaterials[2], "Layer_2");
+              this.assignMaterial(this.currentMaterials[2], "Layer_2 Layer_2B");
+            }
+            if (this.currentMaterials[3] !== undefined) {
+              this.assignMaterial(this.currentMaterials[3], "Layer_3");
+              this.assignMaterial(this.currentMaterials[3], "Layer_3 Layer_3B");
+            }
+            if (this.currentMaterials[4] !== undefined) {
+              this.assignMaterial(this.currentMaterials[4], "Layer_4");
+              this.assignMaterial(this.currentMaterials[4], "Layer_4 Layer_4B");
+            }
+            if (this.currentMaterials[5] !== undefined) {
+              this.assignMaterial(this.currentMaterials[5], "Layer_5");
+              this.assignMaterial(this.currentMaterials[5], "Layer_5 Layer_5B");
+            }
+          }
         }.bind(this),
 
         function(xhr) {}

@@ -132,6 +132,7 @@ export default {
       setModelFromUrl: 0,
       setMaterialFromUrl: [],
       allHashMaterials: [{}, {}, {}, {}, {}, {}],
+      getDataFromUrl: false,
       allHashMaterialsModel: [],
       modelHasLoaded: false,
       fullCode: false,
@@ -149,6 +150,9 @@ export default {
   watch: {
     modelHasLoaded: function() {
       if (this.modelHasLoaded) {
+        if (this.encodedArray[0] === undefined) {
+          this.setCurrentModel(this.model);
+        }
         this.allHashMaterialsModel.push(this.allHashMaterials);
       }
     }
@@ -191,6 +195,8 @@ export default {
       this.encodedArray[0] = Number(model[1]);
       this.sentToEncode();
       this.currentUrl = window.location.href;
+    
+      
     },
     setMaterialName(material) {
       this.passedMaterial[0] = material[1];
@@ -264,6 +270,7 @@ export default {
           this.setMaterialFromUrl.push(tempArray);
           this.hashModelChange = true;
           this.validHash = true;
+          this.getDataFromUrl = true;
           console.log("Decode (from URL) OK");
         }
       } else {
