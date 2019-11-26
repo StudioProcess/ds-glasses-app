@@ -1,6 +1,8 @@
 <template>
   <div class="main">
-    <header><img :src="[logo]"></header>
+    <header>
+      <img :src="[logo]" />
+    </header>
     <Threemodel
       :useAsSunglasses="useAsSunglasses"
       v-on:modelLoaded="modelHasLoaded = $event"
@@ -69,16 +71,33 @@
           <p
             class="info infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
-
-          <button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button>
-          <span class="code">
-            <a class="text-small">Kopiere deinen Bestellcode</a>
-            <span>{{hashCode}}</span>
+          <span class="copy-buy">
+            <button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button>
+            <span class="code">
+              <span
+                :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
+              >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
+              <a v-on:click="copyUrl()" class="text-small">Teile deine Schwarz Brille</a>
+              <!-- <span>{{hashCode}}</span> -->
+            </span>
           </span>
         </div>
       </div>
     </div>
-    <footer><button class="home"></button><p class="text text-medium">Brillenbastler von <a href="https://schwarztest.azurewebsites.net/"><strong>Schwarz-Brillen</strong></a></p><a class="copyright-remark text-medium" href="https://process.studio">A tool by Process Studio</a></footer>
+    <footer>
+      <button class="home"></button>
+      <p class="text text-medium">
+        Brillenbastler von
+        <a href="https://schwarztest.azurewebsites.net/">
+          <strong>Schwarz-Brillen</strong>
+        </a>
+      </p>
+      <a
+        class="copyright-remark text-medium"
+        target="_blanc"
+        href="https://process.studio"
+      >A tool by Process Studio</a>
+    </footer>
   </div>
 </template>
 
@@ -103,10 +122,13 @@ export default {
       materialThree: "",
       materialFour: "",
       materialFive: "",
+      copiedUrl: false,
+      currentUrl: window.location.href,
       hoveredMaterial: [0][false],
       updateHoverOnce: false,
       encodedArray: [],
       ignoreHashChange: false,
+      validHash: false,
       setModelFromUrl: 0,
       setMaterialFromUrl: [],
       allHashMaterials: [{}, {}, {}, {}, {}, {}],
@@ -132,10 +154,25 @@ export default {
     }
   },
   methods: {
+    copyUrl() {
+      let dummy = document.createElement("input");
+      this.currentUrl = window.location.href;
+
+      document.body.appendChild(dummy);
+      dummy.value = this.currentUrl;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      this.copiedUrl = true;
+      setTimeout(() => {
+        this.copiedUrl = false;
+      }, 2000);
+      console.log("hashUpdate" + this.ignoreHashChange);
+    },
     collectHashMaterials(material) {
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
-      this.setMaterialName(material)
+      this.setMaterialName(material);
     },
     setHoveredMaterial(info) {
       if (this.updateHoverOnce === false) {
@@ -153,12 +190,13 @@ export default {
       this.model = model;
       this.encodedArray[0] = Number(model[1]);
       this.sentToEncode();
+      this.currentUrl = window.location.href;
     },
     setMaterialName(material) {
       this.passedMaterial[0] = material[1];
       this.passedMaterial[1] = material[2]; // chosen layer
-      console.log(this.passedMaterial);
       this.encodedArray[material[2]] = Number(material[3]);
+
       setTimeout(() => {
         this.sentToEncode();
       }, 100);
@@ -187,6 +225,7 @@ export default {
         let id = encode(arr);
         if (id === false) {
           console.log("Encode Error");
+          this.validHash = false;
         } else {
           console.log(id);
           this.hashCode = id;
@@ -194,6 +233,8 @@ export default {
           this.fullCode = true;
           this.ignoreHashChange = true;
           console.log("Encode OK");
+          this.validHash = true;
+          this.currentUrl = window.location.href;
         }
       }, 200);
     },
@@ -222,6 +263,7 @@ export default {
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
           this.hashModelChange = true;
+          this.validHash = true;
           console.log("Decode (from URL) OK");
         }
       } else {

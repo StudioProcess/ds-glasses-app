@@ -36,6 +36,7 @@ import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLo
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
+import shadow from "../assets/shadow.png";
 import { encode, decode } from "../../index.js";
 
 export default {
@@ -73,7 +74,7 @@ export default {
       ambientLight: new THREE.AmbientLight(0xfdefe5, 1.0), //fdefe5
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
-      normal_m: new THREE.TextureLoader().load(normal_map),
+      normal_m: new THREE.TextureLoader().load(normal_map)
     };
   },
 
@@ -102,7 +103,9 @@ export default {
         transparency: 0.2
       });
       if (this.useAsSunglasses) {
-        this.objtemp.children[0].getObjectByName("Glas").material = sunglassesGlass;
+        this.objtemp.children[0].getObjectByName(
+          "Glas"
+        ).material = sunglassesGlass;
       } else {
         this.objtemp.children[0].getObjectByName("Glas").material = glass;
       }
@@ -236,14 +239,14 @@ export default {
           if (this.mat[1] === "1") {
             this.assignMaterial(
               texture,
-              "Layer_1",
+              "Layer_1"
               // roughness_m,
               // normal_m,
               // displacement_m
             );
             this.assignMaterial(
               texture,
-              "Layer_1 Layer_1B",
+              "Layer_1 Layer_1B"
               // roughness_m,
               // normal_m,
               // displacement_m
@@ -251,14 +254,14 @@ export default {
           } else if (this.mat[1] === "2") {
             this.assignMaterial(
               texture,
-              "Layer_2",
+              "Layer_2"
               // roughness_m,
               // normal_m,
               // displacement_m
             );
             this.assignMaterial(
               texture,
-              "Layer_2 Layer_2B",
+              "Layer_2 Layer_2B"
               // roughness_m,
               // normal_m,
               // displacement_m
@@ -266,14 +269,14 @@ export default {
           } else if (this.mat[1] === "3") {
             this.assignMaterial(
               texture,
-              "Layer_3",
+              "Layer_3"
               // roughness_m,
               // normal_m,
               // displacement_m
             );
             this.assignMaterial(
               texture,
-              "Layer_3 Layer_3B",
+              "Layer_3 Layer_3B"
               // roughness_m,
               // normal_m,
               // displacement_m
@@ -281,14 +284,14 @@ export default {
           } else if (this.mat[1] === "4") {
             this.assignMaterial(
               texture,
-              "Layer_4",
+              "Layer_4"
               // roughness_m,
               // normal_m,
               // displacement_m
             );
             this.assignMaterial(
               texture,
-              "Layer_4 Layer_4B",
+              "Layer_4 Layer_4B"
               // roughness_m,
               // normal_m,
               // displacement_m
@@ -296,14 +299,14 @@ export default {
           } else if (this.mat[1] === "5") {
             this.assignMaterial(
               texture,
-              "Layer_5",
+              "Layer_5"
               // roughness_m,
               // normal_m,
               // displacement_m
             );
             this.assignMaterial(
               texture,
-              "Layer_5 Layer_5B",
+              "Layer_5 Layer_5B"
               // roughness_m,
               // normal_m,
               // displacement_m
@@ -329,7 +332,7 @@ export default {
     },
     assignMaterial: function(
       texture,
-      name,
+      name
       // this.roughness_map,
       // this.normal_map,
       // displacement_map
@@ -357,15 +360,21 @@ export default {
       // this.objtemp.children[0].getObjectByName(
       //   name
       // ).material.normalMap = normal_map;
-      console.log(this.roughness_m)
-      this.objtemp.children[0].getObjectByName(name).material.roughnessMap = this.roughness_m;
-      this.objtemp.children[0].getObjectByName(name).material.normalMap = this.normal_m;
+      console.log(this.roughness_m);
+      this.objtemp.children[0].getObjectByName(
+        name
+      ).material.roughnessMap = this.roughness_m;
+      this.objtemp.children[0].getObjectByName(
+        name
+      ).material.normalMap = this.normal_m;
       this.objtemp.children[0].getObjectByName(name).fog = false;
       this.objtemp.children[0].getObjectByName(
         name
       ).material.needsUpdate = true;
       this.objtemp.children[0].getObjectByName(name).layers.set(1);
-      console.log( this.objtemp.children[0].getObjectByName(name).material.roughnessMap);
+      console.log(
+        this.objtemp.children[0].getObjectByName(name).material.roughnessMap
+      );
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -575,25 +584,34 @@ export default {
       this.camera.position.z = -145;
       this.camera.position.y = -10;
       this.controls.update();
+      let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
 
-      let planeGeo = new THREE.PlaneGeometry(1000, 1000, 30, 30);
-      let depthmat = new THREE.MeshStandardMaterial({
-        color: 0xbdaea8,
-        emissive: 0xbfbab8,
-        roughness: 1,
-        metalness: 1,
-        transparent: false,
-        wireframe: false
-      });
-      let bgPlane = new THREE.Mesh(planeGeo, depthmat);
-      this.scene.add(bgPlane);
-      bgPlane.layers.set(4);
-
-      bgPlane.position.set(0, -100, 0);
-      bgPlane.rotation.x += 80;
+      let planeTexLoader = new THREE.TextureLoader();
+      planeTexLoader.load(
+        shadow,
+        function(texture) {
+          texture.rotation
+          let depthmat = new THREE.MeshStandardMaterial({
+            color: 0xfff,
+            emissive: 0xbfbab8,
+            // roughness: 1,
+            // metalness: 1,
+            transparent: true,
+            wireframe: false,
+            opacity: 0.2,
+            map: texture,
+            // alphaMap: texture
+          });
+          console.log(texture);
+          let bgPlane = new THREE.Mesh(planeGeo, depthmat);
+          this.scene.add(bgPlane);
+          bgPlane.layers.set(4);
+          bgPlane.position.set(0, -80, 50);
+          bgPlane.rotation.x += 80;
+        }.bind(this)
+      );
 
       this.scene.add(this.objtemp);
-     
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
