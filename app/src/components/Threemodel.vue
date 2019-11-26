@@ -71,7 +71,9 @@ export default {
       pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
       pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
       ambientLight: new THREE.AmbientLight(0xfdefe5, 1.0), //fdefe5
-      objtemp: new THREE.Group()
+      objtemp: new THREE.Group(),
+      roughness_m: new THREE.TextureLoader().load(roughness_map),
+      normal_m: new THREE.TextureLoader().load(normal_map),
     };
   },
 
@@ -210,9 +212,6 @@ export default {
     ) {
       console.log("update materials");
       let texture = new THREE.TextureLoader().load(this.mat[0]);
-      let roughness_m = new THREE.TextureLoader().load(roughness_map);
-      let normal_m = new THREE.TextureLoader().load(normal_map);
-      let displacement_m = new THREE.TextureLoader().load(displacement_map);
       var loader = new THREE.TextureLoader();
       if (this.lightReset === false) {
         let mPointLight = new THREE.DirectionalLight(0xffffff, 2.9, 160);
@@ -238,76 +237,76 @@ export default {
             this.assignMaterial(
               texture,
               "Layer_1",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
             this.assignMaterial(
               texture,
               "Layer_1 Layer_1B",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
           } else if (this.mat[1] === "2") {
             this.assignMaterial(
               texture,
               "Layer_2",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
             this.assignMaterial(
               texture,
               "Layer_2 Layer_2B",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
           } else if (this.mat[1] === "3") {
             this.assignMaterial(
               texture,
               "Layer_3",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
             this.assignMaterial(
               texture,
               "Layer_3 Layer_3B",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
           } else if (this.mat[1] === "4") {
             this.assignMaterial(
               texture,
               "Layer_4",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
             this.assignMaterial(
               texture,
               "Layer_4 Layer_4B",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
           } else if (this.mat[1] === "5") {
             this.assignMaterial(
               texture,
               "Layer_5",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
             this.assignMaterial(
               texture,
               "Layer_5 Layer_5B",
-              roughness_m,
-              normal_m,
-              displacement_m
+              // roughness_m,
+              // normal_m,
+              // displacement_m
             );
           }
         }.bind(this)
@@ -330,9 +329,9 @@ export default {
     },
     assignMaterial: function(
       texture,
-      name
-      // roughness_map,
-      // normal_map,
+      name,
+      // this.roughness_map,
+      // this.normal_map,
       // displacement_map
     ) {
       // TweenMax.to(
@@ -358,12 +357,15 @@ export default {
       // this.objtemp.children[0].getObjectByName(
       //   name
       // ).material.normalMap = normal_map;
-      // this.objtemp.children[0].getObjectByName(name).material.displacementMap = displacement_map;
+      console.log(this.roughness_m)
+      this.objtemp.children[0].getObjectByName(name).material.roughnessMap = this.roughness_m;
+      this.objtemp.children[0].getObjectByName(name).material.normalMap = this.normal_m;
       this.objtemp.children[0].getObjectByName(name).fog = false;
       this.objtemp.children[0].getObjectByName(
         name
       ).material.needsUpdate = true;
       this.objtemp.children[0].getObjectByName(name).layers.set(1);
+      console.log( this.objtemp.children[0].getObjectByName(name).material.roughnessMap);
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -591,11 +593,7 @@ export default {
       bgPlane.rotation.x += 80;
 
       this.scene.add(this.objtemp);
-      // this.loadModel(this.currentModel);
-      setTimeout(() => {
-        //   this.expanded = !this.expanded;
-        // this.expand();
-      }, 100);
+     
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
