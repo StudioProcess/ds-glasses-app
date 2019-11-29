@@ -13,6 +13,7 @@
         v-on:click="expand()"
         :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
       ></li>
+      <li v-on:click="nightmode()" class="nightmode">Nightmode</li>
     </ul>
     <div id="three-model"></div>
     <span
@@ -38,6 +39,14 @@ import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
 import shadow from "../assets/shadow.png";
 import { encode, decode } from "../../index.js";
+
+import {
+  GodRaysShader,
+  GodRaysEffect,
+  RenderPass,
+  EffectPass,
+  EffectComposer
+} from "postprocessing";
 
 export default {
   name: "Threemodel",
@@ -67,6 +76,7 @@ export default {
       lightReset: false,
       modelHasLoaded: false,
       currentMaterials: [],
+      nightMode: false,
       pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
       spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
@@ -75,7 +85,11 @@ export default {
       ambientLight: new THREE.AmbientLight(0xfdefe5, 1.0), //fdefe5
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
-      normal_m: new THREE.TextureLoader().load(normal_map)
+      normal_m: new THREE.TextureLoader().load(normal_map),
+
+      occlusionRenderTarget: null,
+      occlusionComposer: null,
+      composer: null
     };
   },
 
@@ -85,31 +99,7 @@ export default {
   },
   watch: {
     useAsSunglasses: function() {
-      let glass = new THREE.MeshPhysicalMaterial({
-        color: "#D2DDDE",
-        metalness: 0.0,
-        roughness: 0.0,
-        alphaTest: 0.5,
-        depthTest: false,
-        transparent: true,
-        transparency: 0.8
-      });
-      let sunglassesGlass = new THREE.MeshPhysicalMaterial({
-        color: "#000000",
-        metalness: 1.0,
-        roughness: 0.0,
-        alphaTest: 0.1,
-        depthTest: false,
-        transparent: true,
-        transparency: 0.2
-      });
-      if (this.useAsSunglasses) {
-        this.objtemp.children[0].getObjectByName(
-          "Glas"
-        ).material = sunglassesGlass;
-      } else {
-        this.objtemp.children[0].getObjectByName("Glas").material = glass;
-      }
+      this.updateSunglasses();
     },
     allHashMaterialsModel: function() {
       for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
@@ -123,18 +113,23 @@ export default {
             if (this.allHashMaterialsModel[0][i][1] === "1") {
               this.assignMaterial(texture, "Layer_1");
               this.assignMaterial(texture, "Layer_1 Layer_1B");
+              this.assignMaterial(texture, "Layer_1 Layer_1N");
             } else if (this.allHashMaterialsModel[0][i][1] === "2") {
               this.assignMaterial(texture, "Layer_2");
               this.assignMaterial(texture, "Layer_2 Layer_2B");
+              this.assignMaterial(texture, "Layer_2 Layer_2N");
             } else if (this.allHashMaterialsModel[0][i][1] === "3") {
               this.assignMaterial(texture, "Layer_3");
               this.assignMaterial(texture, "Layer_3 Layer_3B");
+              this.assignMaterial(texture, "Layer_3 Layer_3N");
             } else if (this.allHashMaterialsModel[0][i][1] === "4") {
               this.assignMaterial(texture, "Layer_4");
               this.assignMaterial(texture, "Layer_4 Layer_4B");
+              this.assignMaterial(texture, "Layer_4 Layer_4N");
             } else if (this.allHashMaterialsModel[0][i][1] === "5") {
               this.assignMaterial(texture, "Layer_5");
               this.assignMaterial(texture, "Layer_5 Layer_5B");
+              this.assignMaterial(texture, "Layer_5 Layer_5N");
             }
           }.bind(this)
         );
@@ -260,6 +255,37 @@ export default {
     this.currentMaterialIndex = this.mat[1];
   },
   methods: {
+    setupPostprocessing: function() {
+      let geometry = new THREE.SphereBufferGeometry(2, 16, 16);
+      let material = new THREE.MeshBasicMaterial({ color: 0xeeffff });
+      let lightSphere = new THREE.Mesh(geometry, material);
+      lightSphere.position.z = 70;
+      lightSphere.layers.set(1);
+      this.scene.add(lightSphere);
+      let godraysEffect = new GodRaysEffect(this.camera, lightSphere, {
+        resolutionScale: 1,
+        density: 0.8,
+        decay: 0.95,
+        weight: 0.9,
+        samples: 100,
+        resolution: 240
+      });
+      let renderPass = new RenderPass(this.scene, this.camera);
+      let effectPass = new EffectPass(this.camera, godraysEffect);
+      effectPass.renderToScreen = true;
+
+      this.composer = new EffectComposer(this.renderer);
+      this.composer.addPass(renderPass);
+      this.composer.addPass(effectPass);
+    },
+    nightmode: function() {
+      this.nightMode = !this.nightMode;
+      if (this.nightMode) {
+        this.lights(true);
+      } else {
+        this.lights();
+      }
+    },
     hoverMaterial: function(name, expand) {
       TweenMax.to(
         this.objtemp.children[0].getObjectByName(name).position,
@@ -335,7 +361,6 @@ export default {
       }
     },
     expand: function() {
-      this.expanded = !this.expanded;
       var tl = new TimelineMax({ paused: false });
       var tlTwo = new TimelineMax({ paused: false });
 
@@ -348,7 +373,12 @@ export default {
           o.name !== "Layer_2 Layer_2B" &&
           o.name !== "Layer_3 Layer_3B" &&
           o.name !== "Layer_4 Layer_4B" &&
-          o.name !== "Layer_5 Layer_5B"
+          o.name !== "Layer_5 Layer_5B" &&
+          o.name !== "Layer_1 Layer_1N" &&
+          o.name !== "Layer_2 Layer_2N" &&
+          o.name !== "Layer_3 Layer_3N" &&
+          o.name !== "Layer_4 Layer_4N" &&
+          o.name !== "Layer_5 Layer_5N"
         ) {
           positions = o.position;
         }
@@ -366,7 +396,12 @@ export default {
           o.name !== "Layer_2 Layer_2B" &&
           o.name !== "Layer_3 Layer_3B" &&
           o.name !== "Layer_4 Layer_4B" &&
-          o.name !== "Layer_5 Layer_5B"
+          o.name !== "Layer_5 Layer_5B" &&
+          o.name !== "Layer_1 Layer_1N" &&
+          o.name !== "Layer_2 Layer_2N" &&
+          o.name !== "Layer_3 Layer_3N" &&
+          o.name !== "Layer_4 Layer_4N" &&
+          o.name !== "Layer_5 Layer_5N"
         ) {
           positions = o.position;
         }
@@ -379,38 +414,57 @@ export default {
           cycle: {
             z: this.expanded
               ? [0, 0]
-              : function(i) {
-                  return -6 * i;
+              : function(j) {
+                  return 6 * j;
                 },
-            delay: function(i) {
-              return Math.abs(Math.floor(5 / 2) - i) * 0.25;
+            delay: function(j) {
+              return Math.abs(Math.floor(5 / 2) - j) * 0.25;
             }
           }
         },
         0
       );
-      tlTwo.staggerTo(
-        extras,
-        0.3,
-        {
-          cycle: {
-            z: this.expanded
-              ? [0, 0]
-              : function(i) {
-                  return -6 * i;
-                },
-            delay: function(i) {
-              return 0;
-            }
-          }
-        },
-        0
-      );
+      // tlTwo.staggerTo(
+      //   //GLAS AND SCHARNIER
+      //   extras,
+      //   0.3,
+      //   {
+      //     cycle: {
+      //       z: this.expanded
+      //         ? [0, 0]
+      //         : function(j) {
+      //             return 6 * j + 0.3;
+      //           },
+      //       delay: function(j) {
+      //         return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+      //       }
+      //     }
+      //   },
+      //   0
+      // );
+
+      // tlTwo.staggerTo(
+      //   extras,
+      //   0.3,
+      //   {
+      //     cycle: {
+      //       z: this.expanded
+      //         ? [0, 0]
+      //         : function(j) {
+      //             return (6 * j)+0.3;
+      //           },
+      //       delay: function(j) {
+      //        return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+      //       }
+      //     }
+      //   },
+      //   0
+      // );
+      this.expanded = !this.expanded;
     },
 
-    lights: function() {
+    lights: function(deactivate) {
       this.pointLight.position.set(0, 20, -300);
-      this.scene.add(this.pointLight);
 
       let pointLightBg = new THREE.PointLight(0xffffff, 1.0);
       pointLightBg.copy(this.pointLight);
@@ -421,60 +475,47 @@ export default {
 
       let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
       pointLightStart.position.z = -160;
-      this.scene.add(pointLightStart);
       pointLightStart.layers.set(0); //backgroundLayer
 
       this.pointLightBack.position.set(0, -10, 90);
-      this.scene.add(this.pointLightBack);
 
       this.pointLightLeft.position.set(160, 20, 30);
-      this.scene.add(this.pointLightLeft);
       this.pointLightLeft.layers.set(1);
 
       this.pointLightRight.position.set(-220, 20, 30);
-      this.scene.add(this.pointLightRight);
       this.pointLightRight.layers.set(1);
 
       let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
       directionalLight.position.set(30, -10, -20);
-      this.scene.add(directionalLight);
       var helper = new THREE.DirectionalLightHelper(
         directionalLight,
         5,
         "#00ff00"
       );
-      // this.scene.add(helper);
-
       var pointLightHelper = new THREE.PointLightHelper(
         this.pointLight,
         20,
         "#ff0000"
       );
-
-      // this.scene.add(pointLightHelper);
       this.pointLight.layers.set(1);
       this.pointLightBack.layers.set(1);
       directionalLight.layers.set(2);
 
-      this.spotLight.position.set(0, 0, 0);
-      this.spotLight.target = this.objtemp;
-
-      this.spotLight.castShadow = true;
-
-      this.spotLight.shadow.mapSize.width = 1024;
-      this.spotLight.shadow.mapSize.height = 1024;
-
-      this.spotLight.shadow.camera.near = 500;
-      this.spotLight.shadow.camera.far = 4000;
-      this.spotLight.shadow.camera.fov = 30;
-
-      // this.scene.add(this.spotLight);
-
-      var spotLightHelper = new THREE.SpotLightHelper(
-        this.spotLight,
-        "#ff0000"
-      );
-      // this.scene.add(spotLightHelper);
+      if (deactivate) {
+        this.scene.remove(directionalLight);
+        this.scene.remove(this.pointLightLeft);
+        this.scene.remove(this.pointLight);
+        this.scene.remove(pointLightBg);
+        this.scene.remove(pointLightStart);
+        this.scene.remove(this.pointLightBack);
+      } else {
+        this.scene.add(directionalLight);
+        this.scene.add(this.pointLightLeft);
+        this.scene.add(this.pointLight);
+        this.scene.add(pointLightBg);
+        this.scene.add(pointLightStart);
+        this.scene.add(this.pointLightBack);
+      }
     },
     setup: function() {
       this.renderer = new THREE.WebGLRenderer({
@@ -496,6 +537,7 @@ export default {
       this.scene = new THREE.Scene();
       this.camera = new THREE.PerspectiveCamera(75, W / H, 10, 1000); //75
       this.scene.fog = new THREE.Fog("#faf6f4", 100, 400);
+
       this.lights();
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -507,8 +549,10 @@ export default {
       this.camera.position.z = -145;
       this.camera.position.y = -10;
       this.controls.update();
-      let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
 
+      this.setupPostprocessing();
+
+      let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
       let planeTexLoader = new THREE.TextureLoader();
       planeTexLoader.load(
         shadow,
@@ -602,28 +646,37 @@ export default {
           object.getObjectByName("Layer_5 Layer_5N").material = mat5;
           this.objtemp.add(object);
           this.modelHasLoaded = true;
+          this.expanded = false;
           this.$emit("modelLoaded", true);
 
           if (this.currentMaterials.length > 0) {
             if (this.currentMaterials[1] !== undefined) {
               this.assignMaterial(this.currentMaterials[1], "Layer_1");
               this.assignMaterial(this.currentMaterials[1], "Layer_1 Layer_1B");
+              this.assignMaterial(this.currentMaterials[1], "Layer_1 Layer_1N");
             }
             if (this.currentMaterials[2] !== undefined) {
               this.assignMaterial(this.currentMaterials[2], "Layer_2");
               this.assignMaterial(this.currentMaterials[2], "Layer_2 Layer_2B");
+              this.assignMaterial(this.currentMaterials[1], "Layer_2 Layer_2N");
             }
             if (this.currentMaterials[3] !== undefined) {
               this.assignMaterial(this.currentMaterials[3], "Layer_3");
               this.assignMaterial(this.currentMaterials[3], "Layer_3 Layer_3B");
+              this.assignMaterial(this.currentMaterials[1], "Layer_3 Layer_3N");
             }
             if (this.currentMaterials[4] !== undefined) {
               this.assignMaterial(this.currentMaterials[4], "Layer_4");
               this.assignMaterial(this.currentMaterials[4], "Layer_4 Layer_4B");
+              this.assignMaterial(this.currentMaterials[1], "Layer_4 Layer_4N");
             }
             if (this.currentMaterials[5] !== undefined) {
               this.assignMaterial(this.currentMaterials[5], "Layer_5");
               this.assignMaterial(this.currentMaterials[5], "Layer_5 Layer_5B");
+              this.assignMaterial(this.currentMaterials[1], "Layer_5 Layer_5N");
+            }
+            if (this.useAsSunglasses) {
+              this.updateSunglasses();
             }
           }
         }.bind(this),
@@ -631,18 +684,46 @@ export default {
         function(xhr) {}
       );
     },
+    updateSunglasses: function() {
+      let glass = new THREE.MeshPhysicalMaterial({
+        color: "#D2DDDE",
+        metalness: 0.0,
+        roughness: 0.0,
+        alphaTest: 0.5,
+        depthTest: false,
+        transparent: true,
+        transparency: 0.8
+      });
+      let sunglassesGlass = new THREE.MeshPhysicalMaterial({
+        color: "#000000",
+        metalness: 1.0,
+        roughness: 0.0,
+        alphaTest: 0.1,
+        depthTest: false,
+        transparent: true,
+        transparency: 0.2
+      });
+      if (this.useAsSunglasses) {
+        this.objtemp.children[0].getObjectByName(
+          "Glas"
+        ).material = sunglassesGlass;
+      } else {
+        this.objtemp.children[0].getObjectByName("Glas").material = glass;
+      }
+    },
     loop: function() {
       requestAnimationFrame(this.loop);
       this.controls.update();
+      // this.renderer.setClearColor( 0xa1a1a1 );
 
       this.renderer.autoClear = true;
       this.camera.layers.set(0);
       this.renderer.render(this.scene, this.camera);
-
-      this.renderer.autoClear = false;
-      this.camera.layers.set(1);
-      this.renderer.render(this.scene, this.camera);
-
+      if (!this.nightMode) {
+        this.renderer.autoClear = false;
+        this.camera.layers.set(1);
+        this.renderer.render(this.scene, this.camera);
+      }
       this.renderer.autoClear = false;
       this.camera.layers.set(2);
       this.renderer.render(this.scene, this.camera);
@@ -650,6 +731,11 @@ export default {
       this.renderer.autoClear = false;
       this.camera.layers.set(4);
       this.renderer.render(this.scene, this.camera);
+
+      if (this.nightMode) {
+        this.camera.layers.set(1);
+        this.composer.render(this.scene, this.camera);
+      }
     }
   }
 };

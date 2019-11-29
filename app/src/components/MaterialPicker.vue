@@ -343,15 +343,12 @@ export default {
       for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
         if (Number(this.index) === i) {
           if (this.hashMaterial[0][i - 1] <= this.woods.length) {
-            //is wood
-            // console.log( this.hashMaterial[0][i-1])
             this.setHashMaterial(
               this.woods,
               i,
               this.hashMaterial[0][i - 1],
               "woods"
             );
-            console.log("HASH MATERIAL");
           } else if (
             //is paper
             this.hashMaterial[0][i - 1] <=

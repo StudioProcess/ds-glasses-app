@@ -170,6 +170,10 @@ body {
           margin-top: 20px;
           background-image: url(../src/assets/minus.svg);
         }
+        &.expanded::after {
+          // margin-top: 20px;
+          background-image: url(../src/assets/shrink.svg);
+        }
         &.fullscreen::after {
           margin-top: 12px;
           background-image: url(../src/assets/contract.svg);
@@ -455,7 +459,7 @@ body {
 }
 .swiper-button-prev {
   background-image: url(../src/assets/arrow-left.svg);
-  margin-left: -32px;
+  margin-left: -43px;
 }
 .swiper-button-next {
   background-image: url(../src/assets/arrow-right.svg);
@@ -487,6 +491,8 @@ body {
   margin-left: 24.4%;
   .infoGlass {
     text-decoration: underline;
+    font-weight: 400;
+    margin-top: 8px;
   }
   .material-display {
     font-family: "Roboto", sans-serif;
@@ -503,9 +509,8 @@ body {
     font-family: "Aleksei", serif;
     font-size: 24px;
   }
-  .info {
-    font-size: 12px;
-    font-family: "Roboto", sans-serif;
+  .sunglasses-info {
+    float: right;
   }
   .copy-buy {
     align-items: center;

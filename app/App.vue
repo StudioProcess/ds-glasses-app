@@ -62,17 +62,17 @@
             class="material-display"
           >{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
           <h3 class="price">{{price}}*</h3>
-          <span class="sunglasses">
+          <span class="sunglasses text-medium">
             Sonnenbrille:
             <input v-model="useAsSunglasses" type="checkbox" />
-            <span class="info">UV400 / schwarz</span>
+            <span class="sunglasses-info text-small">UV400 / schwarz</span>
           </span>
 
           <p
-            class="info infoGlass"
+            class="text-medium infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
           <span class="copy-buy">
-            <button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button>
+            <a :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille') + '%0D%0A%0D%0ABestellcode: ' + hashCode]"><button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button></a>
             <span class="code">
               <span
                 :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"

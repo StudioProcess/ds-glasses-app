@@ -20,6 +20,7 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "ds-glasses-code": "github:StudioProcess/ds-glasses-code",
+    "postprocessing": "^6.8.9",
     "seedrandom": "^3.0.5",
     "three": "^0.110.0",
     "vue": "^2.6.10",
