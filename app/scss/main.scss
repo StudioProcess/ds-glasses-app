@@ -72,6 +72,7 @@ body {
     font-weight: 300;
     color: #000000;
     letter-spacing: 1px;
+    z-index: 999;
     &.deactivated {
       opacity: 0.1;
       pointer-events: none;
@@ -296,17 +297,22 @@ body {
 .material-picker-container {
   width: calc(100% - 4px);
   background: #ffffff;
-  // height: 100vh;
   box-shadow: 22px -26px 24px #000;
   z-index: 10;
-  padding-top: 32px;
+  padding-top: 20px;
 
   .random {
-    font-family: "Roboto", sans-serif;
-    font-size: 12px;
-    font-weight: 400;
     text-transform: uppercase;
-    margin-left: 17%;
+    text-decoration: underline;
+    opacity: 0.4;
+    font-weight: 400;
+    &:not(.reset) {
+      margin-left: 28.0%;
+    }
+    &.reset {
+      margin-left: 4%;
+    }
+    
     &::before {
       content: "";
       position: absolute;
@@ -355,12 +361,12 @@ body {
       .swiper {
         height: 34px;
         height: 30px;
-        padding: 4px 4px 20px;
+
         position: absolute;
         display: block;
         width: 100%;
-        margin-top: 22px;
-
+        // margin-top: 22px;
+        padding: 30px 4px 20px;
         &-text-selected {
           position: absolute;
           z-index: 4;
@@ -371,9 +377,11 @@ body {
           background: #0000008c;
           height: calc(100% - 24px);
           line-height: 3.5;
-          width: 80px;
+          width: 109px;
           padding-left: 12px;
-
+// FOR SCROLLBAR
+          height: calc(100% - 50px);
+          top: 30px;
           &::after {
             content: "";
             position: absolute;
@@ -395,9 +403,19 @@ body {
   width: 400px;
   height: 100%;
 }
+.swiper-container-horizontal >
+.swiper-scrollbar {
+  bottom: 8px;
+  height: 4px;
+}
+.swiper-wrapper, .swiper-container {
+  // overflow: visible !important;
+  // overflow-x: hidden !important;
+  // overflow-y: auto !important;
+}
 
 .swiper-wrapper.selected {
-  overflow: hidden;
+  // overflow: hidden;
 }
 .swiper-slide {
   display: inline;
@@ -407,12 +425,12 @@ body {
   cursor: pointer;
   width: 32px;
   &-selected {
-    width: 300% !important;
+    width: 350% !important;
     position: absolute;
     z-index: 2;
     // overflow: hidden;
     &.even {
-      height: 297px;
+      // height: 297px;
 
       h3 {
         // transform: rotate(90deg) translateX(-68.6%) translateY(-149px);
@@ -422,19 +440,18 @@ body {
     }
   }
   .swiper-description {
-    visibility: hidden;
+    // visibility: hidden;
+    position:  absolute;
+    display: none;
   }
   &:not(.swiper-slide-selected):hover {
-    outline: 2px $color-emphasize solid; /* inner stroke */
-    outline-offset: -2px;
-    // -webkit-transform: scale(1.2);
-    // transform: scale(1.2);
+    outline: 1px black solid; /* inner stroke */
+    outline-offset: -1px;
     box-shadow: 7px 9px 40px 0px rgb(0, 0, 0, 0.2);
-    height: 36px;
-    width: 36px;
+    transform: scale(1.3);
     .swiper-description {
       line-height: 2;
-      visibility: visible;
+      display: block;
     }
   }
 }
@@ -446,6 +463,7 @@ body {
   width: 8px;
   background-repeat: no-repeat;
   background-size: contain;
+  display: none;
 
   height: 32px;
   width: 21px;
@@ -465,7 +483,6 @@ body {
   background-image: url(../src/assets/arrow-right.svg);
   right: -32px;
   right: -40px;
-  /* background-color: red; */
 }
 
 .bg {
@@ -473,12 +490,12 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   height: 100%;
-  // width: 32px;
+  width: 32px;
   transform-origin: center;
 
   &.selected {
     background-repeat: no-repeat;
-    background-size: 54%;
+    // background-size: 54%;
     background-position: left center;
     width: 100%;
   }
@@ -663,5 +680,47 @@ footer {
   }
 }
 
+.tooltip {
+  &-box {
+    position: absolute;
+    top: 0;
+    height: 20px;
+    width: 100%;
+    left: 0;
+    z-index: 99999;
+  }
+  white-space: nowrap;
+  line-height: 1.2;
+  position: absolute;
+  width: 120px;
+  background-color: #000000;
+  box-shadow: 2px 2px 14px #00000063;
+  color: #fff;
+  text-align: center;
+  padding: 0px 6px;
+  border-radius: 6px;
+  bottom: 100%;
+  text-align: left;
+  z-index: 999;
+
+  top: -19.6px;
+
+  display: block;
+  transform: translateX(-50%) translateY(3px);
+  position: relative;
+  width: max-content;
+  text-align: center;
+  margin-left: 16px;
+  &::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
+}
 @import "./variables";
 @import "./buttons";

@@ -4,7 +4,7 @@
     @mouseleave="setHovered(index, false)"
     class="material-picker"
   >
-    <span class="index text-medium">{{index}}</span>
+    <!-- <span class="index text-medium">{{index}}</span> -->
     <ul class="overview">
       <li
         v-on:click="setSliderContent('woods')"
@@ -36,7 +36,9 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.texture : wood.thumb)  + ')' }"
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
-            <span class="text-product-description swiper-description">{{wood.name}}</span>
+            <span class="tooltip-box">
+            <span class="text-product-description swiper-description tooltip">{{wood.name}}</span>
+            </span>
           </span>
           <span
             v-if="activeTab === 'fabrics'"
@@ -48,7 +50,7 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description">{{fabric.name}}</span>
+            <span class="text-product-description swiper-description tooltip">{{fabric.name}}</span>
           </span>
           <span
             v-if="activeTab === 'papers'"
@@ -60,9 +62,11 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description">{{paper.name}}</span>
+            <span class="text-product-description swiper-description tooltip">{{paper.name}}</span>
           </span>
         </div>
+        <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
+
       </span>
       <span :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
       <span :class="'swiper-button-next swiper-button-next'+(index) "></span>
@@ -196,13 +200,13 @@ export default {
       ],
       papers: [
         {
-          name: "Falter Zeitung",
+          name: "Zeitung weiß",
           texture: images["paper"]["auszugFalter"],
           thumb: thumbs["paper"]["thumbnails"]["auszugFalter"],
           index: 18
         },
         {
-          name: "Standard Zeitung",
+          name: "Zeitung vergilbt",
           texture: images["paper"]["auszugStandard"],
           thumb: thumbs["paper"]["thumbnails"]["auszugStandard"],
           index: 19
@@ -330,7 +334,7 @@ export default {
           index: 39
         },
         {
-          name: "Weißer Stoff Leintuch",
+          name: "Leintuch Weiß",
           texture: images["fabric"]["weisserStoffLeintuch"],
           thumb: thumbs["fabric"]["thumbnails"]["weisserStoffLeintuch"],
           index: 40
@@ -376,16 +380,22 @@ export default {
   mounted: function() {
     setTimeout(() => {
       this.mSwiperClass = new Swiper(".swiper-container" + this.index, {
-        slidesPerView: 7,
+        // slidesPerView: 7,
         spaceBetween: 4,
         slidesPerGroup: 7,
         loop: false,
         loopFillGroupWithBlank: false,
         watchOverflow: true,
-        navigation: {
-          nextEl: ".swiper-button-next" + this.index,
-          prevEl: ".swiper-button-prev" + this.index
-        }
+        slidesPerView: 'auto',
+        // navigation: {
+        //   nextEl: ".swiper-button-next" + this.index,
+        //   prevEl: ".swiper-button-prev" + this.index,
+
+        // },
+         scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
       });
     }, 100);
     setTimeout(() => {
@@ -443,7 +453,7 @@ export default {
     setSliderContent: function(material) {
       this.activeTab = material;
       setTimeout(() => {
-        if (material === "fabrics" || material === "papers") {
+        if (material === "papers") {
           this.deactivateSwiper();
           this.mSwiperClass.slidesPerView = 5;
           document.getElementsByClassName(
@@ -453,8 +463,12 @@ export default {
             "swiper-button-prev"
           )[0].style.visibility = "hidden";
           this.mSwiperClass.update();
+           document.getElementsByClassName(
+            "swiper-scrollbar"
+          )[0].style.visibility = "hidden";
+          this.mSwiperClass.update();
         }
-        if (material === "woods") {
+        if (material === "woods" || material === "fabrics") {
           this.mSwiperClass.allowSlideNext = true;
           this.mSwiperClass.allowSlidePrev = true;
 
@@ -463,6 +477,10 @@ export default {
           )[0].style.visibility = "visible";
           document.getElementsByClassName(
             "swiper-button-prev" + this.index
+          )[0].style.visibility = "visible";
+          this.mSwiperClass.update();
+           document.getElementsByClassName(
+            "swiper-scrollbar" + this.index
           )[0].style.visibility = "visible";
           this.mSwiperClass.update();
         }

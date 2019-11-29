@@ -14,7 +14,6 @@
     <div class="content-area">
       <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
-        <span class="random">Zufällig</span>
         <Materials
           index="1"
           v-on:setAllHashMaterials="collectHashMaterials($event)"
@@ -55,12 +54,17 @@
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper5"
         ></Materials>
-
+         <span class="random text-small">Zufällig</span>
+         <span class="random reset text-small">Zurücksetzen</span>
         <div class="payment-section">
           <h2>{{model[0]}}</h2>
           <div
             class="material-display"
-          >{{materialOne}}{{materialTwo}}{{materialThree}}{{materialFour}}{{materialFive}}</div>
+          >{{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
+          {{materialTwo}}{{(materialTwo && ( materialThree || materialFour || materialFive) && ', ')}}
+          {{materialThree}}{{(materialThree && ( materialFour || materialFive) && ', ')}}
+          {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
+          {{materialFive}}</div>
           <h3 class="price">{{price}}*</h3>
           <span class="sunglasses text-medium">
             Sonnenbrille:
@@ -78,7 +82,6 @@
                 :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
               >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
               <a v-on:click="copyUrl()" class="text-small">Teile deine Schwarz Brille</a>
-              <!-- <span>{{hashCode}}</span> -->
             </span>
           </span>
         </div>
@@ -210,13 +213,13 @@ export default {
       if (material[2] === "1") {
         this.materialOne = material[0];
       } else if (material[2] === "2") {
-        this.materialTwo = ", " + material[0];
+        this.materialTwo = material[0];
       } else if (material[2] === "3") {
-        this.materialThree = ", " + material[0];
+        this.materialThree = material[0];
       } else if (material[2] === "4") {
-        this.materialFour = ", " + material[0];
+        this.materialFour = material[0];
       } else if (material[2] === "5") {
-        this.materialFive = ", " + material[0];
+        this.materialFive = material[0];
       }
     },
     sentToEncode: function() {
