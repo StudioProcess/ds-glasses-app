@@ -6,6 +6,8 @@
   >
     <!-- <span class="index text-medium">{{index}}</span> -->
     <ul class="overview">
+      <ul class="tab-overview">
+      <li class="text-description">Schicht {{index}}:</li>
       <li
         v-on:click="setSliderContent('woods')"
         v-bind:class="[activeTab === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
@@ -18,6 +20,7 @@
         v-on:click="setSliderContent('fabrics')"
         v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
       >Stoff</li>
+      </ul>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
         <strong
           v-if="selectedMaterial !== 'empty'"
@@ -394,7 +397,7 @@ export default {
         // },
          scrollbar: {
         el: '.swiper-scrollbar',
-        hide: true,
+        hide: false,
       },
       });
     }, 100);

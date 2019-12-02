@@ -10,7 +10,7 @@
       <img :src="[glassesModel.url]" :alt="glassesModel.name" />
 
       <h4 class="text-product-description">{{ glassesModel.name }}</h4>
-      <span class="text-product-description">{{ glassesModel.price }}</span>
+      <!-- <span class="text-product-description">{{ glassesModel.price }}</span> -->
       
     </div>
   </div>

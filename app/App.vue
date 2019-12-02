@@ -1,7 +1,18 @@
 <template>
   <div class="main">
     <header>
-      <img :src="[logo]" />
+      <a href="https://schwarztest.azurewebsites.net/">
+        <img :src="[logo]" />
+      </a>
+      <p class="text text-description">Brillenbastler</p>
+      <a
+        class="copyright-remark text-medium"
+        target="_blanc"
+        href="https://process.studio"
+      >A tool by Process Studio</a>
+      <p class="text text-description">Modelle</p>
+      <p class="text text-description">Materialien</p>
+
     </header>
     <Threemodel
       :useAsSunglasses="useAsSunglasses"
@@ -54,17 +65,17 @@
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper5"
         ></Materials>
-         <span class="random text-small">Zufällig</span>
-         <span class="random reset text-small">Zurücksetzen</span>
+        <span class="random text-small">Zufällig</span>
+        <span class="random reset text-small">Zurücksetzen</span>
         <div class="payment-section">
           <h2>{{model[0]}}</h2>
-          <div
-            class="material-display"
-          >{{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
-          {{materialTwo}}{{(materialTwo && ( materialThree || materialFour || materialFive) && ', ')}}
-          {{materialThree}}{{(materialThree && ( materialFour || materialFive) && ', ')}}
-          {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
-          {{materialFive}}</div>
+          <div class="material-display">
+            {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
+            {{materialTwo}}{{(materialTwo && ( materialThree || materialFour || materialFive) && ', ')}}
+            {{materialThree}}{{(materialThree && ( materialFour || materialFive) && ', ')}}
+            {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
+            {{materialFive}}
+          </div>
           <h3 class="price">{{price}}*</h3>
           <span class="sunglasses text-medium">
             Sonnenbrille:
@@ -76,7 +87,11 @@
             class="text-medium infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
           <span class="copy-buy">
-            <a :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille') + '%0D%0A%0D%0ABestellcode: ' + hashCode]"><button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button></a>
+            <a
+              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille') + '%0D%0A%0D%0ABestellcode: ' + hashCode]"
+            >
+              <button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button>
+            </a>
             <span class="code">
               <span
                 :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
@@ -87,20 +102,7 @@
         </div>
       </div>
     </div>
-    <footer>
-      <button class="home"></button>
-      <p class="text text-medium">
-        Brillenbastler von
-        <a href="https://schwarztest.azurewebsites.net/">
-          <strong>Schwarz-Brillen</strong>
-        </a>
-      </p>
-      <a
-        class="copyright-remark text-medium"
-        target="_blanc"
-        href="https://process.studio"
-      >A tool by Process Studio</a>
-    </footer>
+    <footer></footer>
   </div>
 </template>
 
@@ -198,8 +200,6 @@ export default {
       this.encodedArray[0] = Number(model[1]);
       this.sentToEncode();
       this.currentUrl = window.location.href;
-    
-      
     },
     setMaterialName(material) {
       this.passedMaterial[0] = material[1];

@@ -1,5 +1,8 @@
 <template>
-  <div ref="three" :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']">
+  <div
+    ref="three"
+    :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']"
+  >
     <ul class="three-navigation">
       <li
         v-on:click="fullscreen()"
@@ -97,6 +100,11 @@ export default {
   mounted() {
     this.setup(); // set up scene
     this.loop(); // start game loop
+
+    window.addEventListener('resize', this.onWindowResize)
+  },
+  beforeDestroy: function() {
+    window.removeEventListener("resize", this.onWindowResize, false);
   },
   watch: {
     useAsSunglasses: function() {
@@ -137,6 +145,7 @@ export default {
       }
     }
   },
+
   updated() {
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
@@ -262,32 +271,31 @@ export default {
       let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
       let lightSphere = new THREE.Mesh(geometry, material);
       let rotationSphere = new THREE.Mesh(rotationSphereGeo, material);
-      
+
       rotationSphere.layers.set(1);
       lightSphere.position.z = 70;
       rotationSphere.position.z = 70;
       lightSphere.layers.set(1);
 
-
       this.nightModeLightsGroup.add(lightSphere);
-      this.scene.add(this.nightModeLightsGroup);
+      // this.scene.add(this.nightModeLightsGroup);
 
       let pointLightStart = new THREE.PointLight(0xffffff, 13.0, 220);
       pointLightStart.position.z = 70;
-      pointLightStart.layers.set(1); 
+      pointLightStart.layers.set(1);
       this.nightModeLightsGroup.add(pointLightStart);
       // if(this.nightMode){
-      TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
-          y: 360,
-          z: 180,
-          repeat: -1,
-        });
-        
-        // }else{
+      // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
+      //     y: 360,
+      //     z: 180,
+      //     repeat: -1,
+      //   });
 
-        // }
+      // }else{
 
-this.nightModeLightsGroup.layers.set(1);
+      // }
+
+      this.nightModeLightsGroup.layers.set(1);
       let godraysEffect = new GodRaysEffect(this.camera, lightSphere, {
         resolutionScale: 1,
         density: 0.8,
@@ -390,26 +398,29 @@ this.nightModeLightsGroup.layers.set(1);
       var tl = new TimelineMax({ paused: false });
       var tlTwo = new TimelineMax({ paused: false });
 
-      let child = this.objtemp.children[0].children.slice(0).reverse().map(o => {
-        let positions = [];
-        if (
-          o.name !== "Glas" &&
-          o.name !== "Scharnier" &&
-          o.name !== "Layer_1 Layer_1B" &&
-          o.name !== "Layer_2 Layer_2B" &&
-          o.name !== "Layer_3 Layer_3B" &&
-          o.name !== "Layer_4 Layer_4B" &&
-          o.name !== "Layer_5 Layer_5B" &&
-          o.name !== "Layer_1 Layer_1N" &&
-          o.name !== "Layer_2 Layer_2N" &&
-          o.name !== "Layer_3 Layer_3N" &&
-          o.name !== "Layer_4 Layer_4N" &&
-          o.name !== "Layer_5 Layer_5N"
-        ) {
-          positions = o.position;
-        }
-        return positions;
-      });
+      let child = this.objtemp.children[0].children
+        .slice(0)
+        .reverse()
+        .map(o => {
+          let positions = [];
+          if (
+            o.name !== "Glas" &&
+            o.name !== "Scharnier" &&
+            o.name !== "Layer_1 Layer_1B" &&
+            o.name !== "Layer_2 Layer_2B" &&
+            o.name !== "Layer_3 Layer_3B" &&
+            o.name !== "Layer_4 Layer_4B" &&
+            o.name !== "Layer_5 Layer_5B" &&
+            o.name !== "Layer_1 Layer_1N" &&
+            o.name !== "Layer_2 Layer_2N" &&
+            o.name !== "Layer_3 Layer_3N" &&
+            o.name !== "Layer_4 Layer_4N" &&
+            o.name !== "Layer_5 Layer_5N"
+          ) {
+            positions = o.position;
+          }
+          return positions;
+        });
       let extras = this.objtemp.children[0].children.map(o => {
         let positions = [];
         if (
@@ -763,6 +774,14 @@ this.nightModeLightsGroup.layers.set(1);
         this.camera.layers.set(1);
         this.composer.render(this.scene, this.camera);
       }
+    },
+    onWindowResize: function() {
+      const container = this.$refs.three;
+      const W = container.clientWidth;
+      const H = container.clientHeight;
+      this.camera.aspect = container.offsetWidth / container.offsetHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(container.offsetWidth, container.offsetHeight);
     }
   }
 };
