@@ -1,5 +1,5 @@
 <template>
-  <div ref="three" class="three-model-container">
+  <div ref="three" :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']">
     <ul class="three-navigation">
       <li
         v-on:click="fullscreen()"
@@ -87,6 +87,7 @@ export default {
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
 
+      nightModeLightsGroup: new THREE.Group(),
       occlusionRenderTarget: null,
       occlusionComposer: null,
       composer: null
@@ -256,12 +257,37 @@ export default {
   },
   methods: {
     setupPostprocessing: function() {
-      let geometry = new THREE.SphereBufferGeometry(2, 16, 16);
+      let geometry = new THREE.SphereBufferGeometry(1.9, 16, 16);
       let material = new THREE.MeshBasicMaterial({ color: 0xeeffff });
+      let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
       let lightSphere = new THREE.Mesh(geometry, material);
+      let rotationSphere = new THREE.Mesh(rotationSphereGeo, material);
+      
+      rotationSphere.layers.set(1);
       lightSphere.position.z = 70;
+      rotationSphere.position.z = 70;
       lightSphere.layers.set(1);
-      this.scene.add(lightSphere);
+
+
+      this.nightModeLightsGroup.add(lightSphere);
+      this.scene.add(this.nightModeLightsGroup);
+
+      let pointLightStart = new THREE.PointLight(0xffffff, 13.0, 220);
+      pointLightStart.position.z = 70;
+      pointLightStart.layers.set(1); 
+      this.nightModeLightsGroup.add(pointLightStart);
+      // if(this.nightMode){
+      TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
+          y: 360,
+          z: 180,
+          repeat: -1,
+        });
+        
+        // }else{
+
+        // }
+
+this.nightModeLightsGroup.layers.set(1);
       let godraysEffect = new GodRaysEffect(this.camera, lightSphere, {
         resolutionScale: 1,
         density: 0.8,
@@ -364,7 +390,7 @@ export default {
       var tl = new TimelineMax({ paused: false });
       var tlTwo = new TimelineMax({ paused: false });
 
-      let child = this.objtemp.children[0].children.map(o => {
+      let child = this.objtemp.children[0].children.slice(0).reverse().map(o => {
         let positions = [];
         if (
           o.name !== "Glas" &&
@@ -407,6 +433,7 @@ export default {
         }
         return positions;
       });
+
       tl.staggerTo(
         child,
         0.5,
@@ -415,7 +442,7 @@ export default {
             z: this.expanded
               ? [0, 0]
               : function(j) {
-                  return 6 * j;
+                  return 3 * j;
                 },
             delay: function(j) {
               return Math.abs(Math.floor(5 / 2) - j) * 0.25;

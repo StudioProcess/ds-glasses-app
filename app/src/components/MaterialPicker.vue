@@ -37,7 +37,7 @@
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
             <span class="tooltip-box">
-            <span class="text-product-description swiper-description tooltip">{{wood.name}}</span>
+            <span class="text-product-description swiper-description tooltip-material">{{wood.name}}</span>
             </span>
           </span>
           <span
@@ -50,7 +50,7 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description tooltip">{{fabric.name}}</span>
+            <span class="text-product-description swiper-description tooltip-material">{{fabric.name}}</span>
           </span>
           <span
             v-if="activeTab === 'papers'"
@@ -62,7 +62,7 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description tooltip">{{paper.name}}</span>
+            <span class="text-product-description swiper-description tooltip-material">{{paper.name}}</span>
           </span>
         </div>
         <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>

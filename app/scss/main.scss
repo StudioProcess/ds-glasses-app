@@ -98,7 +98,9 @@ body {
   // overflow-y: hidden;
   background: #faf6f4;
   background: #f8f5f3;
-
+  &.nightmode {
+    background: #0f0f0f;
+  }
   .three-navigation {
     position: absolute;
     width: 14%;
@@ -217,7 +219,7 @@ body {
   width: 26%;
   height: 92vh;
   position: relative;
-  background: linear-gradient(#f5f0ed, #ffffff);
+  // background: linear-gradient(#f5f0ed, #ffffff);
   .glasses {
     // background: #fff;
     opacity: 0.3;
@@ -680,7 +682,7 @@ footer {
   }
 }
 
-.tooltip {
+.tooltip-material {
   &-box {
     position: absolute;
     top: 0;
