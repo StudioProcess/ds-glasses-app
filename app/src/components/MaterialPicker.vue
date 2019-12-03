@@ -6,20 +6,21 @@
   >
     <!-- <span class="index text-medium">{{index}}</span> -->
     <ul class="overview">
+      <span class="text-description material-index">{{index}}</span>
+
       <ul class="tab-overview">
-      <li class="text-description">Schicht {{index}}:</li>
-      <li
-        v-on:click="setSliderContent('woods')"
-        v-bind:class="[activeTab === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-      >Holz</li>
-      <li
-        v-on:click="setSliderContent('papers')"
-        v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-      >Papier</li>
-      <li
-        v-on:click="setSliderContent('fabrics')"
-        v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-      >Stoff</li>
+        <li
+          v-on:click="setSliderContent('woods')"
+          v-bind:class="[activeTab === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+        >Holz</li>
+        <li
+          v-on:click="setSliderContent('papers')"
+          v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+        >Papier</li>
+        <li
+          v-on:click="setSliderContent('fabrics')"
+          v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+        >Stoff</li>
       </ul>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
         <strong
@@ -40,7 +41,9 @@
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
             <span class="tooltip-box">
-            <span class="text-product-description swiper-description tooltip-material">{{wood.name}}</span>
+              <span
+                class="text-product-description swiper-description tooltip-material"
+              >{{wood.name}}</span>
             </span>
           </span>
           <span
@@ -53,7 +56,9 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description tooltip-material">{{fabric.name}}</span>
+            <span
+              class="text-product-description swiper-description tooltip-material"
+            >{{fabric.name}}</span>
           </span>
           <span
             v-if="activeTab === 'papers'"
@@ -65,11 +70,12 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span class="text-product-description swiper-description tooltip-material">{{paper.name}}</span>
+            <span
+              class="text-product-description swiper-description tooltip-material"
+            >{{paper.name}}</span>
           </span>
         </div>
         <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
-
       </span>
       <span :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
       <span :class="'swiper-button-next swiper-button-next'+(index) "></span>
@@ -189,7 +195,7 @@ export default {
           index: 15
         },
         {
-          name: "Nuss Wirzelholz",
+          name: "Nuss Wurzelholz",
           texture: images["wood"]["nussWurzelholz"],
           thumb: thumbs["wood"]["thumbnails"]["nussWurzelholz"],
           index: 16
@@ -226,25 +232,25 @@ export default {
           thumb: thumbs["paper"]["thumbnails"]["flyer"],
           index: 21
         },
-         {
+        {
           name: "Kariertes Papier",
           texture: images["paper"]["kariertesBlatt"],
           thumb: thumbs["paper"]["thumbnails"]["kariertesBlatt"],
           index: 22
         },
-         {
+        {
           name: "Kopie/Print - Bild",
           texture: images["paper"]["kopie"],
           thumb: thumbs["paper"]["thumbnails"]["kopie"],
           index: 23
         },
-         {
+        {
           name: "Kopie/Print - Text",
           texture: images["paper"]["kopierpapierProbedruck"],
           thumb: thumbs["paper"]["thumbnails"]["kopierpapierProbedruck"],
           index: 24
         },
-         {
+        {
           name: "Verpackungsmaterial/Packpapier",
           texture: images["paper"]["verpackungsMaterial"],
           thumb: thumbs["paper"]["thumbnails"]["verpackungsMaterial"],
@@ -264,7 +270,7 @@ export default {
           thumb: thumbs["fabric"]["thumbnails"]["jeanshellblau"],
           index: 27
         },
-          {
+        {
           name: "Jeans Schwarz",
           texture: images["fabric"]["jeansSchwarz"],
           thumb: thumbs["fabric"]["thumbnails"]["jeansSchwarz"],
@@ -389,16 +395,15 @@ export default {
         loop: false,
         loopFillGroupWithBlank: false,
         watchOverflow: true,
-        slidesPerView: 'auto',
-        // navigation: {
-        //   nextEl: ".swiper-button-next" + this.index,
-        //   prevEl: ".swiper-button-prev" + this.index,
-
-        // },
-         scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: false,
-      },
+        slidesPerView: "auto",
+        navigation: {
+          nextEl: ".swiper-button-next" + this.index,
+          prevEl: ".swiper-button-prev" + this.index
+        },
+        scrollbar: {
+          el: ".swiper-scrollbar",
+          hide: false
+        }
       });
     }, 100);
     setTimeout(() => {
@@ -466,7 +471,7 @@ export default {
             "swiper-button-prev"
           )[0].style.visibility = "hidden";
           this.mSwiperClass.update();
-           document.getElementsByClassName(
+          document.getElementsByClassName(
             "swiper-scrollbar"
           )[0].style.visibility = "hidden";
           this.mSwiperClass.update();
@@ -482,7 +487,7 @@ export default {
             "swiper-button-prev" + this.index
           )[0].style.visibility = "visible";
           this.mSwiperClass.update();
-           document.getElementsByClassName(
+          document.getElementsByClassName(
             "swiper-scrollbar" + this.index
           )[0].style.visibility = "visible";
           this.mSwiperClass.update();

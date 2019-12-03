@@ -6,12 +6,12 @@
       </a>
       <p class="text text-description">Brillenbastler</p>
       <a
-        class="copyright-remark text-medium"
+        class="copyright-remark description text-medium"
         target="_blanc"
         href="https://process.studio"
       >A tool by Process Studio</a>
-      <p class="text text-description">Modelle</p>
-      <p class="text text-description">Materialien</p>
+      <p class="text text-description description models">Modelle</p>
+      <p class="text text-description description materials">Materialien</p>
 
     </header>
     <Threemodel
