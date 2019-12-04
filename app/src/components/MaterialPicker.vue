@@ -35,22 +35,31 @@
             v-for="wood in woods"
             v-on:click="setMaterial(wood.name, wood.texture, wood.index)"
             :class="[selectedMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
+            :id="[wood.index]"
+            @mouseover="detectFirstChild(true, $event)"
+            @mouseleave="detectFirstChild(false, $event)"
           >
+            <!--    @mouseover="detectFirstChild(true, $event)"
+            @mouseleave="detectFirstChild(false, $event)"-->
             <h3
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.texture : wood.thumb)  + ')' }"
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
-            <span class="tooltip-box">
+            <span class="tooltip-material-box">
               <span
                 class="text-product-description swiper-description tooltip-material"
               >{{wood.name}}</span>
             </span>
           </span>
+
           <span
             v-if="activeTab === 'fabrics'"
             v-for="fabric in fabrics"
             v-on:click="setMaterial(fabric.name, fabric.texture, fabric.index)"
             :class="[selectedMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
+            :id="['slideFabric'+fabric.index]"
+            @mouseover="detectFirstChild(true, $event)"
+            @mouseleave="detectFirstChild(false, $event)"
           >
             <h3
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
@@ -65,6 +74,9 @@
             v-for="paper in papers"
             v-on:click="setMaterial(paper.name, paper.texture, paper.index)"
             :class="[selectedMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
+            :id="['slidePaper'+paper.index]"
+            @mouseover="detectFirstChild(true, $event)"
+            @mouseleave="detectFirstChild(false, $event)"
           >
             <h3
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
@@ -74,11 +86,12 @@
               class="text-product-description swiper-description tooltip-material"
             >{{paper.name}}</span>
           </span>
+          <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
         </div>
-        <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
+
+        <span ref="buttonPrev" :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
+        <span ref="buttonNext" :class="'swiper-button-next swiper-button-next'+(index) "></span>
       </span>
-      <span :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
-      <span :class="'swiper-button-next swiper-button-next'+(index) "></span>
     </ul>
   </div>
 </template>
@@ -91,7 +104,13 @@ import thumbs from "../assets/materials/*/*/*.jpg";
 export default {
   name: "MaterialPicker",
   components: {},
-  props: ["selectedModel", "index", "swiperClass", "hashMaterial"],
+  props: [
+    "selectedModel",
+    "index",
+    "swiperClass",
+    "hashMaterial",
+    "resetMaterialsTrigger"
+  ],
   data: function() {
     return {
       isSelected: false,
@@ -352,6 +371,14 @@ export default {
     };
   },
   watch: {
+    resetMaterialsTrigger: function() {
+      if (this.resetMaterialsTrigger) {
+        this.activeMaterial = "empty";
+        this.selectedMaterial = "empty";
+        this.deactivateSwiper(true);
+
+      }
+    },
     hashMaterial: function() {
       for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
         if (Number(this.index) === i) {
@@ -396,6 +423,7 @@ export default {
         loopFillGroupWithBlank: false,
         watchOverflow: true,
         slidesPerView: "auto",
+        noSwipingClass: "swiper-no-swiping",
         navigation: {
           nextEl: ".swiper-button-next" + this.index,
           prevEl: ".swiper-button-prev" + this.index
@@ -440,6 +468,50 @@ export default {
           this.deactivateSwiper();
         }
         this.selectedMaterial = this.activeMaterial;
+      }
+    },
+    detectFirstChild(hovered, event) {
+      let currentElement = event.currentTarget.getBoundingClientRect();
+      let buttonPrev = this.$refs.buttonPrev.getBoundingClientRect();
+      let buttonNext = this.$refs.buttonNext.getBoundingClientRect();
+
+      // console.log(event);
+      // console.log(this.$refs.woodLabels[1]);
+      // this.$refs.woodLabels[event.currentTarget.id-1].style.backgroundColor =
+      //   "red";
+
+      // var oTop = event.currentTarget.offsetTop;
+      // var oLeft = event.currentTarget.offsetLeft;
+      // this.$refs.woodLabels[event.currentTarget.id-1].style.top = "80px";
+      // this.$refs.woodLabels[event.currentTarget.id-1].style.left = oLeft +"px";
+      // this.$refs.woodLabels[event.currentTarget.id-1].style.position = "absolute";
+
+      let overlapPrev = !(
+        buttonPrev.right < currentElement.left ||
+        buttonPrev.left > currentElement.right ||
+        buttonPrev.bottom < currentElement.top ||
+        buttonPrev.top > currentElement.bottom
+      );
+
+      let overlapNext = !(
+        buttonNext.right < currentElement.left ||
+        buttonNext.left > currentElement.right ||
+        buttonNext.bottom < currentElement.top ||
+        buttonNext.top > currentElement.bottom
+      );
+      console.log("overlap detection");
+      if (overlapPrev) {
+        event.currentTarget.children[1].classList.add("hovering-prev");
+      }
+
+      if (overlapNext) {
+        event.currentTarget.children[1].classList.add("hovering-next");
+      }
+      if (!overlapNext) {
+        event.currentTarget.children[1].classList.remove("hovering-next");
+      }
+      if (!overlapPrev) {
+        event.currentTarget.children[1].classList.remove("hovering-prev");
       }
     },
     deactivateSwiper: function(reactivate) {

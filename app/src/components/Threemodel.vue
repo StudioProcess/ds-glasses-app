@@ -4,20 +4,26 @@
     :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']"
   >
     <ul class="three-navigation">
-      <li
-        v-on:click="fullscreen()"
-        v-bind:class="[fullscreenToggled ? 'active navigation-element fullscreen': 'navigation-element fullscreen']"
-      ></li>
-      <li
-        v-on:click="zoom()"
-        v-bind:class="[zoomed ? 'active navigation-element plus': 'navigation-element plus']"
-      ></li>
-      <li
-        v-on:click="expand()"
-        :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
-      ></li>
-      <li v-on:click="nightmode()" class="nightmode">Nightmode</li>
+      <li v-on:click="expand()">
+        <span
+          :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
+        ></span>
+        <p class="text-button">Schichten ausklappen</p>
+      </li>
+      <li v-on:click="fullscreen()">
+        <span
+          v-bind:class="[fullscreenToggled ? 'active navigation-element fullscreen': 'navigation-element fullscreen']"
+        ></span>
+        <p class="text-button">Fullscreen</p>
+      </li>
+      <li v-on:click="nightmode()">
+        <span
+          :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
+        ></span>
+        <p class="text-button">Nightmode</p>
+      </li>
     </ul>
+
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"
@@ -27,7 +33,6 @@
   <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js"></script>
 
 <script>
-// import * as THREE from '../../../node_modules/three/build/three.module.js';
 import model from "../assets/models/new_models/model1.obj";
 import model2 from "../assets/models/new_models/model2.obj";
 import model3 from "../assets/models/new_models/model3.obj";
@@ -59,7 +64,8 @@ export default {
     "setModel",
     "hoveredMaterial",
     "allHashMaterialsModel",
-    "useAsSunglasses"
+    "useAsSunglasses",
+    "resetMaterialsTrigger"
   ],
 
   data: function() {
@@ -101,12 +107,44 @@ export default {
     this.setup(); // set up scene
     this.loop(); // start game loop
 
-    window.addEventListener('resize', this.onWindowResize)
+    window.addEventListener("resize", this.onWindowResize);
   },
   beforeDestroy: function() {
     window.removeEventListener("resize", this.onWindowResize, false);
   },
   watch: {
+    resetMaterialsTrigger: function() {
+      this.currentMaterials = [];
+      for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
+        if (
+          this.objtemp.children[0].children[i].name !== "Glas" &&
+          this.objtemp.children[0].children[i].name !== "Scharnier"
+        ) {
+          this.objtemp.children[0].children[i].material.map = null;
+          this.objtemp.children[0].children[i].material.roughnessMap = null;
+          this.objtemp.children[0].children[i].material.normalMap = null;
+          this.objtemp.children[0].children[i].material.color = new THREE.Color(
+            0x473d34
+          );
+          this.objtemp.children[0].children[
+            i
+          ].material.emissive = new THREE.Color(0xded7d2);
+          this.objtemp.children[0].children[i].material.roughness = 1;
+          this.objtemp.children[0].children[i].material.metalness = 1;
+
+          this.objtemp.children[0].children[i].layers.set(0);
+
+          //   color: 0x473d34,
+          // emissive: 0xded7d2, //6b6b6b
+          // roughness: 1,
+          // metalness: 1,
+          // transparent: true,
+          // opacity: 1.0,
+          // this.objtemp.children[0].children[i].layers.set(0);
+          this.objtemp.children[0].children[i].material.needsUpdate = true;
+        }
+      }
+    },
     useAsSunglasses: function() {
       this.updateSunglasses();
     },
@@ -155,13 +193,10 @@ export default {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
         } else if (this.setModel[1] === 2) {
-          console.log("2");
           this.loadModel(model2);
         } else if (this.setModel[1] === 3) {
-          console.log("3");
           this.loadModel(model3);
         } else if (this.setModel[1] === 4) {
-          console.log("4");
           this.loadModel(model4);
         } else if (this.setModel[1] === 5) {
           this.loadModel(model5);
@@ -355,9 +390,7 @@ export default {
         name
       ).material.needsUpdate = true;
       this.objtemp.children[0].getObjectByName(name).layers.set(1);
-      console.log(
-        this.objtemp.children[0].getObjectByName(name).material.roughnessMap
-      );
+
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -629,10 +662,6 @@ export default {
         fog: true
       });
       let matStart = mat.clone();
-      let mat2 = mat.clone();
-      let mat3 = mat.clone();
-      let mat4 = mat.clone();
-      let mat5 = mat.clone();
 
       let glass = new THREE.MeshPhysicalMaterial({
         color: "#D2DDDE",
@@ -643,7 +672,6 @@ export default {
         transparent: true,
         transparency: 0.8
       });
-      // let glass = new THREE.MeshDepthMaterial({transparent: true, opacity: 0.6});
       let metall = new THREE.MeshPhongMaterial({
         shininess: 0,
         color: "#1a1a1a",
@@ -664,24 +692,7 @@ export default {
             (object.rotation.y += 179);
           object.position.y += 10;
 
-          object.getObjectByName("Glas").material = glass;
-          object.getObjectByName("Scharnier").material = metall;
-          object.getObjectByName("Glas").layers.set(2);
-          object.getObjectByName("Layer_1").material = mat;
-          object.getObjectByName("Layer_1 Layer_1B").material = mat;
-          object.getObjectByName("Layer_1 Layer_1N").material = mat;
-          object.getObjectByName("Layer_2").material = mat2;
-          object.getObjectByName("Layer_2 Layer_2B").material = mat2;
-          object.getObjectByName("Layer_2 Layer_2N").material = mat2;
-          object.getObjectByName("Layer_3").material = mat3;
-          object.getObjectByName("Layer_3 Layer_3B").material = mat3;
-          object.getObjectByName("Layer_3 Layer_3N").material = mat3;
-          object.getObjectByName("Layer_4").material = mat4;
-          object.getObjectByName("Layer_4 Layer_4B").material = mat4;
-          object.getObjectByName("Layer_4 Layer_4N").material = mat4;
-          object.getObjectByName("Layer_5").material = mat5;
-          object.getObjectByName("Layer_5 Layer_5B").material = mat5;
-          object.getObjectByName("Layer_5 Layer_5N").material = mat5;
+          this.assignBasicMaterials(object, glass, metall, mat, matStart);
           this.objtemp.add(object);
           this.modelHasLoaded = true;
           this.expanded = false;
@@ -722,6 +733,38 @@ export default {
         function(xhr) {}
       );
     },
+    assignBasicMaterials: function(object, glass, metall, mat, matStart) {
+      let mat2 = mat.clone();
+      let mat3 = mat.clone();
+      let mat4 = mat.clone();
+      let mat5 = mat.clone();
+
+      if (glass) {
+        object.getObjectByName("Glas").material = glass;
+      }
+      if (metall) {
+        object.getObjectByName("Scharnier").material = metall;
+      }
+      object.getObjectByName("Glas").layers.set(2);
+      object.getObjectByName("Layer_1").material = mat;
+      object.getObjectByName("Layer_1 Layer_1B").material = mat;
+      object.getObjectByName("Layer_1 Layer_1N").material = mat;
+      object.getObjectByName("Layer_2").material = mat2;
+      object.getObjectByName("Layer_2 Layer_2B").material = mat2;
+      object.getObjectByName("Layer_2 Layer_2N").material = mat2;
+      object.getObjectByName("Layer_3").material = mat3;
+      object.getObjectByName("Layer_3 Layer_3B").material = mat3;
+      object.getObjectByName("Layer_3 Layer_3N").material = mat3;
+      object.getObjectByName("Layer_4").material = mat4;
+      object.getObjectByName("Layer_4 Layer_4B").material = mat4;
+      object.getObjectByName("Layer_4 Layer_4N").material = mat4;
+      object.getObjectByName("Layer_5").material = mat5;
+      object.getObjectByName("Layer_5 Layer_5B").material = mat5;
+      object.getObjectByName("Layer_5 Layer_5N").material = mat5;
+      console.log(object.getObjectByName("Layer_5 Layer_5N"));
+      console.log("???");
+    },
+
     updateSunglasses: function() {
       let glass = new THREE.MeshPhysicalMaterial({
         color: "#D2DDDE",
@@ -752,7 +795,6 @@ export default {
     loop: function() {
       requestAnimationFrame(this.loop);
       this.controls.update();
-      // this.renderer.setClearColor( 0xa1a1a1 );
 
       this.renderer.autoClear = true;
       this.camera.layers.set(0);

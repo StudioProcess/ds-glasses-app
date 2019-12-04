@@ -12,7 +12,6 @@
       >A tool by Process Studio</a>
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
-
     </header>
     <Threemodel
       :useAsSunglasses="useAsSunglasses"
@@ -21,6 +20,7 @@
       :hoveredMaterial="hoveredMaterial"
       :setModel="model"
       :mat="passedMaterial"
+      :resetMaterialsTrigger="resetMaterialsTrigger"
     >{{passedMaterial}}</Threemodel>
     <div class="content-area">
       <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
@@ -32,6 +32,7 @@
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper1"
+          :resetMaterialsTrigger="resetMaterialsTrigger"
         ></Materials>
         <Materials
           index="2"
@@ -40,6 +41,7 @@
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper2"
+          :resetMaterialsTrigger="resetMaterialsTrigger"
         ></Materials>
         <Materials
           index="3"
@@ -48,6 +50,7 @@
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper3"
+          :resetMaterialsTrigger="resetMaterialsTrigger"
         ></Materials>
         <Materials
           index="4"
@@ -56,6 +59,7 @@
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper4"
+          :resetMaterialsTrigger="resetMaterialsTrigger"
         ></Materials>
         <Materials
           index="5"
@@ -64,9 +68,13 @@
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper5"
+          :resetMaterialsTrigger="resetMaterialsTrigger"
         ></Materials>
-        <span class="random text-small">Zufällig</span>
-        <span class="random reset text-small">Zurücksetzen</span>
+        <span class="random text-button">Zufällig</span>
+        <span
+          v-on:click="resetMaterials()"
+          class="random reset text-button"
+        >Zurücksetzen</span>
         <div class="payment-section">
           <h2>{{model[0]}}</h2>
           <div class="material-display">
@@ -76,21 +84,24 @@
             {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
             {{materialFive}}
           </div>
-          <h3 class="price">{{price}}*</h3>
           <span class="sunglasses text-medium">
             Sonnenbrille:
             <input v-model="useAsSunglasses" type="checkbox" />
-            <span class="sunglasses-info text-small">UV400 / schwarz</span>
+            <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->
           </span>
 
           <p
             class="text-medium infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
+          <h3 class="price">{{price}}*</h3>
+
           <span class="copy-buy">
             <a
               :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille') + '%0D%0A%0D%0ABestellcode: ' + hashCode]"
             >
-              <button :class="[fullCode ? 'buy-button active' : 'buy-button']">jetzt bestellen</button>
+              <button
+                :class="[fullCode ? 'buy-button  text-button active' : 'buy-button text-button ']"
+              >jetzt bestellen</button>
             </a>
             <span class="code">
               <span
@@ -143,6 +154,7 @@ export default {
       fullCode: false,
       hashCode: "",
       hashModelChange: false,
+      resetMaterialsTrigger: false,
       Swiper1: null,
       Swiper2: null,
       Swiper3: null,
@@ -163,6 +175,14 @@ export default {
     }
   },
   methods: {
+    resetMaterials() {
+      this.resetMaterialsTrigger = !this.resetMaterialsTrigger;
+       this.encodedArray.splice(1, 5);
+       console.log(this.encodedArray)
+      setTimeout(() => {
+        this.sentToEncode();
+      }, 100);
+    },
     copyUrl() {
       let dummy = document.createElement("input");
       this.currentUrl = window.location.href;
@@ -201,11 +221,13 @@ export default {
       this.sentToEncode();
       this.currentUrl = window.location.href;
     },
+
     setMaterialName(material) {
       this.passedMaterial[0] = material[1];
       this.passedMaterial[1] = material[2]; // chosen layer
       this.encodedArray[material[2]] = Number(material[3]);
-
+      // console.log(material[2]);
+      // console.log(this.encodedArray);
       setTimeout(() => {
         this.sentToEncode();
       }, 100);

@@ -81,6 +81,13 @@ body {
       pointer-events: none;
     }
   }
+  &-button {
+    font-family: "Roboto", sans-serif;
+    font-size: 13px;
+    letter-spacing: 1.25px;
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
   &-small {
     font-size: 10px;
     letter-spacing: 0.4;
@@ -112,20 +119,36 @@ body {
   .three-navigation {
     position: absolute;
     width: 14%;
-    height: 140px;
     list-style: none;
     align-items: center;
     text-align: center;
     display: grid;
-    top: 50%;
-    left: 6%;
-    transform: translate(-50%, -50%);
+    bottom: 0;
+    top: inherit;
+    display: flex;
+    position: absolute;
+    border-top: 1px solid #00000020;
+    width: 100%;
+    left: 0;
+    right: inherit;
+    padding: inherit;
+    height: 6vh;
+    overflow: hidden;
 
-    .navigation-element {
-      height: 42px;
-      width: 42px;
+    li {
+      width: 33%;
+      border-right: 1px solid #00000020;
+      display: flex;
+      align-items: center;
       cursor: pointer;
-      border: 1px solid #000;
+      justify-content: center;
+    }
+    .navigation-element {
+      height: 41px;
+      width: 28px;
+      margin-right: 12px;
+      margin-left: -24px;
+      cursor: pointer;
       display: inline-block;
       position: relative;
       transition: all 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -133,15 +156,15 @@ body {
         &::after {
           content: "";
           position: absolute;
-          height: 20px;
-          width: 20px;
+          height: 14px;
+          width: 14px;
           background-image: url(../src/assets/full-screen.svg);
           background-size: contain;
           background-repeat: no-repeat;
           left: 0;
           right: 0;
           margin: 0 auto;
-          margin-top: 11px;
+          margin-top: 14px;
         }
       }
       &.plus {
@@ -265,6 +288,11 @@ body {
       font-size: 12px;
       margin-top: -17px;
       font-weight: 500;
+      position: absolute;
+      margin: 0 auto;
+      bottom: 8px;
+      left: 0;
+      right: 0;
     }
     span {
       font-weight: 600;
@@ -336,6 +364,11 @@ body {
     font-weight: 400;
     display: inline-block;
     margin-top: 20px;
+    z-index: 99999;
+    height: 40px;
+    position: absolute;
+    background: red;
+    cursor: pointer;
     &:not(.reset) {
       margin-left: 28%;
     }
@@ -421,6 +454,9 @@ body {
           // outline: black 1px solid;
 
           font-weight: 500;
+
+          background: #f1edeb;
+          border: 1px solid black;
           &::after {
             content: "";
             position: absolute;
@@ -450,6 +486,11 @@ body {
 .swiper-container {
   width: 400px;
   height: 100%;
+  z-index: inherit !important;
+}
+.swiper-wrapper {
+  z-index: inherit !important;
+  // position: static !important;
 }
 .swiper-container-horizontal > .swiper-scrollbar {
   bottom: 8px;
@@ -579,7 +620,9 @@ body {
   }
   h2 {
     font-family: "Aleksei", serif;
-    font-size: 24px;
+    font-size: 34px;
+    letter-spacing: 0.25px;
+    font-weight: 500;
   }
   .sunglasses-info {
     float: right;
@@ -766,7 +809,14 @@ header {
     width: 100%;
     left: 0;
     z-index: 99999;
+
+    // position: absolute;
+    // width: 32px;
+    // height: 32px;
+    // top: -40px;
+    // background: #ff00003d;
   }
+  pointer-events: none;
   white-space: nowrap;
   line-height: 1.2;
   position: absolute;
@@ -790,6 +840,8 @@ header {
   width: max-content;
   text-align: center;
   margin-left: 16px;
+
+  opacity: 1;
   &::after {
     content: " ";
     position: absolute;
@@ -800,6 +852,36 @@ header {
     border-style: solid;
     border-color: transparent transparent black transparent;
   }
+}
+
+.hovering-prev .tooltip-material:after{
+  left: inherit;
+  bottom: inherit;
+  top: 50%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+.hovering-prev .tooltip-material {
+  margin-left: 50px;
+  margin-top: -12px;
+}
+.hovering-next .tooltip-material{
+  margin-top: -12px;
+  margin-left: -14.5px;
+
+}
+.hovering-next .tooltip-material:after{
+  top: 50%;
+  left: 100%; /* To the right of the tooltip */
+  margin-top: -5px;
+  
+  margin-left: 0.2px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
 }
 @import "./variables";
 @import "./buttons";
