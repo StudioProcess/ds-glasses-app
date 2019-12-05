@@ -33,7 +33,7 @@
           <span
             v-if="activeTab === 'woods'"
             v-for="wood in woods"
-            v-on:click="setMaterial(wood.name, wood.texture, wood.index)"
+            v-on:click="setMaterial(wood.name, wood.texture, wood.index, 'woods')"
             :class="[selectedMaterial === wood.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
             :id="[wood.index]"
             @mouseover="detectFirstChild(true, $event)"
@@ -55,7 +55,7 @@
           <span
             v-if="activeTab === 'fabrics'"
             v-for="fabric in fabrics"
-            v-on:click="setMaterial(fabric.name, fabric.texture, fabric.index)"
+            v-on:click="setMaterial(fabric.name, fabric.texture, fabric.index, 'fabrics')"
             :class="[selectedMaterial === fabric.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
             :id="['slideFabric'+fabric.index]"
             @mouseover="detectFirstChild(true, $event)"
@@ -72,7 +72,7 @@
           <span
             v-if="activeTab === 'papers'"
             v-for="paper in papers"
-            v-on:click="setMaterial(paper.name, paper.texture, paper.index)"
+            v-on:click="setMaterial(paper.name, paper.texture, paper.index, 'papers')"
             :class="[selectedMaterial === paper.name ? 'text-product-description swiper-slide swiper-slide-selected' : 'text-product-description swiper-slide', index %2 === 0 && 'even']"
             :id="['slidePaper'+paper.index]"
             @mouseover="detectFirstChild(true, $event)"
@@ -86,9 +86,8 @@
               class="text-product-description swiper-description tooltip-material"
             >{{paper.name}}</span>
           </span>
-          <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
         </div>
-
+        <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
         <span ref="buttonPrev" :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
         <span ref="buttonNext" :class="'swiper-button-next swiper-button-next'+(index) "></span>
       </span>
@@ -97,7 +96,6 @@
 </template>
 
 <script>
-// import {encode, decode} from "../../index.js"
 import images from "../assets/materials/*/*.jpg";
 import thumbs from "../assets/materials/*/*/*.jpg";
 
@@ -116,6 +114,7 @@ export default {
     return {
       isSelected: false,
       activeTab: "woods",
+      activeMaterialTab: "empty",
       activeMaterial: "empty",
       selectedMaterial: "empty",
       mSwiperClass: this.swiperClass,
@@ -379,20 +378,24 @@ export default {
         let randomNmbr = Math.floor(Math.random() * 3) + 1;
 
         if (randomNmbr === 2) {
-          this.activeTab = "papers";
+          this.setSliderContent("papers");
+          this.activeMaterialTab = "papers";
           item = this.papers[Math.floor(Math.random() * this.papers.length)];
         } else if (randomNmbr === 3) {
-          this.activeTab = "fabrics";
+          this.setSliderContent("fabrics");
+          this.activeMaterialTab = "fabrics";
           item = this.fabrics[Math.floor(Math.random() * this.fabrics.length)];
         } else {
-          this.activeTab = "woods";
+          this.setSliderContent("woods");
+          this.activeMaterialTab = "woods";
         }
-        this.deactivateSwiper();
 
         let array = [item.name, item.texture, this.index, item.index];
         this.$emit("passRandomMaterialBack", array);
         this.activeMaterial = item.name;
-        this.selectedMaterial = item.name;
+        setTimeout(() => {
+          this.selectedMaterial = item.name;
+        }, 200);
       }
     },
     resetMaterialsTrigger: function() {
@@ -401,7 +404,7 @@ export default {
         this.activeMaterial = "empty";
         this.selectedMaterial = "empty";
         this.deactivateSwiper(true);
-        this.setSliderContent('woods');
+        this.setSliderContent("woods");
       }
     },
     hashMaterial: function() {
@@ -442,7 +445,6 @@ export default {
   mounted: function() {
     setTimeout(() => {
       this.mSwiperClass = new Swiper(".swiper-container" + this.index, {
-        // slidesPerView: 7,
         spaceBetween: 4,
         slidesPerGroup: 7,
         loop: false,
@@ -487,11 +489,14 @@ export default {
       this.$emit("setHoveredMaterial", [index, this.isHovering]);
       if (hovered === true) {
         this.selectedMaterial = "empty";
-        this.deactivateSwiper(true);
+        this.setSliderContent(this.activeTab);
       }
       if (hovered === false) {
         if (this.activeMaterial !== "empty") {
           this.deactivateSwiper();
+          if (this.activeMaterialTab !== this.activeTab) {
+            this.activeTab = this.activeMaterialTab;
+          }
         }
         this.selectedMaterial = this.activeMaterial;
       }
@@ -550,11 +555,11 @@ export default {
       )[0].style.visibility = reactivate ? "visible" : "hidden";
     },
 
-
-    setMaterial: function(name, texture, index) {
+    setMaterial: function(name, texture, index, tab) {
       let array = [name, texture, this.index, index];
       this.$emit("setMaterial", array);
       this.activeMaterial = name;
+      this.activeMaterialTab = tab;
       this.deactivateSwiper();
     },
     setSliderContent: function(material) {
@@ -562,7 +567,6 @@ export default {
       setTimeout(() => {
         if (material === "papers") {
           this.deactivateSwiper();
-          this.mSwiperClass.slidesPerView = 5;
           document.getElementsByClassName(
             "swiper-button-next"
           )[0].style.visibility = "hidden";
