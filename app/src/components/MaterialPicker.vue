@@ -109,7 +109,8 @@ export default {
     "index",
     "swiperClass",
     "hashMaterial",
-    "resetMaterialsTrigger"
+    "resetMaterialsTrigger",
+    "randomMaterialsTrigger"
   ],
   data: function() {
     return {
@@ -371,15 +372,40 @@ export default {
     };
   },
   watch: {
+    randomMaterialsTrigger: function() {
+      // set random materials
+      if (this.randomMaterialsTrigger == true) {
+        let item = this.woods[Math.floor(Math.random() * this.woods.length)];
+        let randomNmbr = Math.floor(Math.random() * 3) + 1;
+
+        if (randomNmbr === 2) {
+          this.activeTab = "papers";
+          item = this.papers[Math.floor(Math.random() * this.papers.length)];
+        } else if (randomNmbr === 3) {
+          this.activeTab = "fabrics";
+          item = this.fabrics[Math.floor(Math.random() * this.fabrics.length)];
+        } else {
+          this.activeTab = "woods";
+        }
+        this.deactivateSwiper();
+
+        let array = [item.name, item.texture, this.index, item.index];
+        this.$emit("passRandomMaterialBack", array);
+        this.activeMaterial = item.name;
+        this.selectedMaterial = item.name;
+      }
+    },
     resetMaterialsTrigger: function() {
+      // reset material hover and selection
       if (this.resetMaterialsTrigger) {
         this.activeMaterial = "empty";
         this.selectedMaterial = "empty";
         this.deactivateSwiper(true);
-
+        this.setSliderContent('woods');
       }
     },
     hashMaterial: function() {
+      // set materials from hash
       for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
         if (Number(this.index) === i) {
           if (this.hashMaterial[0][i - 1] <= this.woods.length) {
@@ -499,7 +525,6 @@ export default {
         buttonNext.bottom < currentElement.top ||
         buttonNext.top > currentElement.bottom
       );
-      console.log("overlap detection");
       if (overlapPrev) {
         event.currentTarget.children[1].classList.add("hovering-prev");
       }
@@ -524,6 +549,8 @@ export default {
         "swiper-button-prev" + this.index
       )[0].style.visibility = reactivate ? "visible" : "hidden";
     },
+
+
     setMaterial: function(name, texture, index) {
       let array = [name, texture, this.index, index];
       this.$emit("setMaterial", array);

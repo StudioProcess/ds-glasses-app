@@ -21,60 +21,68 @@
       :setModel="model"
       :mat="passedMaterial"
       :resetMaterialsTrigger="resetMaterialsTrigger"
+      :randomMaterialsTrigger="randomMaterialsTrigger"
     >{{passedMaterial}}</Threemodel>
     <div class="content-area">
       <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
         <Materials
           index="1"
-          v-on:setAllHashMaterials="collectHashMaterials($event)"
+          v-on:passRandomMaterialBack="passRandomMaterials($event)"
+          v-on:setAllHashMaterials="passRandomMaterials($event)"
           :hashMaterial="setMaterialFromUrl"
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper1"
           :resetMaterialsTrigger="resetMaterialsTrigger"
+          :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
         <Materials
           index="2"
+          v-on:passRandomMaterialBack="passRandomMaterials($event)"
           v-on:setAllHashMaterials="collectHashMaterials($event)"
           :hashMaterial="setMaterialFromUrl"
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper2"
           :resetMaterialsTrigger="resetMaterialsTrigger"
+          :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
         <Materials
           index="3"
+          v-on:passRandomMaterialBack="passRandomMaterials($event)"
           v-on:setAllHashMaterials="collectHashMaterials($event)"
           :hashMaterial="setMaterialFromUrl"
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper3"
           :resetMaterialsTrigger="resetMaterialsTrigger"
+          :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
         <Materials
           index="4"
+          v-on:passRandomMaterialBack="passRandomMaterials($event)"
           v-on:setAllHashMaterials="collectHashMaterials($event)"
           :hashMaterial="setMaterialFromUrl"
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper4"
           :resetMaterialsTrigger="resetMaterialsTrigger"
+          :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
         <Materials
           index="5"
+          v-on:passRandomMaterialBack="passRandomMaterials($event)"
           v-on:setAllHashMaterials="collectHashMaterials($event)"
           :hashMaterial="setMaterialFromUrl"
           v-on:setHoveredMaterial="setHoveredMaterial($event)"
           v-on:setMaterial="setMaterialName($event)"
           swiperClass="Swiper5"
           :resetMaterialsTrigger="resetMaterialsTrigger"
+          :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
-        <span class="random text-button">Zufällig</span>
-        <span
-          v-on:click="resetMaterials()"
-          class="random reset text-button"
-        >Zurücksetzen</span>
+        <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
+        <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
         <div class="payment-section">
           <h2>{{model[0]}}</h2>
           <div class="material-display">
@@ -130,7 +138,7 @@ export default {
   data: function() {
     return {
       model: [],
-      price: "525,00€",
+      price: "280,00€",
       passedMaterial: ["Ahorn", 0],
       logo: logoPath,
       materialOne: "",
@@ -148,13 +156,13 @@ export default {
       setModelFromUrl: 0,
       setMaterialFromUrl: [],
       allHashMaterials: [{}, {}, {}, {}, {}, {}],
-      getDataFromUrl: false,
       allHashMaterialsModel: [],
       modelHasLoaded: false,
       fullCode: false,
       hashCode: "",
       hashModelChange: false,
       resetMaterialsTrigger: false,
+      randomMaterialsTrigger: false,
       Swiper1: null,
       Swiper2: null,
       Swiper3: null,
@@ -176,12 +184,25 @@ export default {
   },
   methods: {
     resetMaterials() {
-      this.resetMaterialsTrigger = !this.resetMaterialsTrigger;
-       this.encodedArray.splice(1, 5);
-       console.log(this.encodedArray)
+        this.resetMaterialsTrigger = true;
+        setTimeout(() => {
+          this.resetMaterialsTrigger = false;
+        }, 10);
+      this.encodedArray.splice(1, 5);
       setTimeout(() => {
-        this.sentToEncode();
+        this.sentToEncode(); // reset if less than 5 materials are set
+        // window.location.href.split('#')[0];
+         location.hash = "";
+         this.fullCode = false;
       }, 100);
+    },
+    randomMaterials() {
+        this.randomMaterialsTrigger = true;
+        setTimeout(() => {
+          this.randomMaterialsTrigger = false;
+        }, 10);
+
+
     },
     copyUrl() {
       let dummy = document.createElement("input");
@@ -198,10 +219,23 @@ export default {
       }, 2000);
       console.log("hashUpdate" + this.ignoreHashChange);
     },
-    collectHashMaterials(material) {
+    passRandomMaterials(material){
+         console.log(material)
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
+
+      console.log(this.allHashMaterials);
+      this.allHashMaterialsModel.push(this.allHashMaterials);
+    },
+    collectHashMaterials(material) {
+      console.log(material)
+      this.allHashMaterials[material[2]][0] = material[1];
+      this.allHashMaterials[material[2]][1] = material[2];
+      this.setMaterialName(material);
+
+      console.log(this.allHashMaterials);
+      // this.allHashMaterialsModel.push(this.allHashMaterials);
     },
     setHoveredMaterial(info) {
       if (this.updateHoverOnce === false) {
@@ -226,8 +260,7 @@ export default {
       this.passedMaterial[0] = material[1];
       this.passedMaterial[1] = material[2]; // chosen layer
       this.encodedArray[material[2]] = Number(material[3]);
-      // console.log(material[2]);
-      // console.log(this.encodedArray);
+
       setTimeout(() => {
         this.sentToEncode();
       }, 100);
@@ -289,13 +322,14 @@ export default {
             }, 300);
 
             tempArray[i - 1] = layers[i];
-            console.log(this.setMaterialFromUrl);
+            // console.log(this.setMaterialFromUrl);
           }
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
+          console.log("temparray:")
+          console.log(tempArray)
           this.hashModelChange = true;
           this.validHash = true;
-          this.getDataFromUrl = true;
           console.log("Decode (from URL) OK");
         }
       } else {
