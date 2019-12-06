@@ -24,8 +24,8 @@
       </li>
     </ul>
 
-    <span class="view-plus" ref="pos1"></span>
-    <span class="view-plus"></span>
+    <span class="view-plus" ref="posOne" v-on:click="setCameraPosition(1)"></span>
+    <span class="view-plus" ref="posTwo" v-on:click="setCameraPosition(2)"></span>
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"
@@ -99,6 +99,7 @@ export default {
       normal_m: new THREE.TextureLoader().load(normal_map),
 
       pos1: null,
+      pos2: null,
       nightModeLightsGroup: new THREE.Group(),
       occlusionRenderTarget: null,
       occlusionComposer: null,
@@ -395,7 +396,6 @@ export default {
         name
       ).material.needsUpdate = true;
       this.objtemp.children[0].getObjectByName(name).layers.set(1);
-
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -482,43 +482,44 @@ export default {
         }
         return positions;
       });
-      console.log("currentmodeL")
-      console.log(this.currentModelIndex)
-      if(this.currentModelIndex !== 2 && this.currentModelIndex !== 5){
-      tl.staggerTo(
-        child,
-        0.5,
-        {
-          cycle: {
-            z: this.expanded
-              ? [0, 0]
-              : function(j) {
-                  return 40 - (j*3);
-                },
-            delay: function(j) {
-              return Math.abs(Math.floor(5 / 2) - j) * 0.25;
-            }
-          }
-        },
-        0
-      );}else{
+      console.log("currentmodeL");
+      console.log(this.currentModelIndex);
+      if (this.currentModelIndex !== 2 && this.currentModelIndex !== 5) {
         tl.staggerTo(
-        child,
-        1,
-        {
-          cycle: {
-            z: this.expanded
-              ? [0, 0]
-              : function(j) {
-                  return 40 - (j*6);
-                },
-            delay: function(j) {
-              return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+          child,
+          0.5,
+          {
+            cycle: {
+              z: this.expanded
+                ? [0, 0]
+                : function(j) {
+                    return 40 - j * 3;
+                  },
+              delay: function(j) {
+                return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+              }
             }
-          }
-        },
-        0
-      );
+          },
+          0
+        );
+      } else {
+        tl.staggerTo(
+          child,
+          1,
+          {
+            cycle: {
+              z: this.expanded
+                ? [0, 0]
+                : function(j) {
+                    return 40 - j * 6;
+                  },
+              delay: function(j) {
+                return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+              }
+            }
+          },
+          0
+        );
       }
       // tlTwo.staggerTo(
       //   //GLAS AND SCHARNIER
@@ -649,11 +650,14 @@ export default {
       this.setupPostprocessing();
 
       // SETUP SPHERES FOR ZOOM VIEW
-      let posGeo = new THREE.SphereBufferGeometry(0.5, 16, 16);
+      let posGeo = new THREE.SphereBufferGeometry(0.5, 2, 2);
       let posMat = new THREE.MeshBasicMaterial({ color: 0xff001e });
       this.pos1 = new THREE.Mesh(posGeo, posMat);
+      this.pos2 = new THREE.Mesh(posGeo, posMat);
       this.pos1.position.set(20, -10, 10);
-      this.scene.add(this.pos1)
+      this.pos2.position.set(-80, 0, 10);
+      this.scene.add(this.pos1);
+      this.scene.add(this.pos2);
 
       let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
       let planeTexLoader = new THREE.TextureLoader();
@@ -849,10 +853,59 @@ export default {
         this.composer.render(this.scene, this.camera);
       }
 
-
+      // console.log(tempV.x);
+      if (this.modelHasLoaded && this.$refs.three !== undefined) {
+        this.mapViewPlus(this.pos1, this.$refs.posOne);
+        this.mapViewPlus(this.pos2, this.$refs.posTwo);
+      }
     },
-    onMouseMove: function(){
-      console.log("????????")
+
+    mapViewPlus: function(positionSphere, viewPlus) {
+      const tempV = new THREE.Vector3();
+      positionSphere.updateWorldMatrix(true, false);
+      positionSphere.getWorldPosition(tempV);
+      tempV.project(this.camera);
+      let tempX = (tempV.x * 0.5 + 0.5) * this.$refs.three.clientWidth;
+      let tempY = (tempV.y * -0.5 + 0.5) * this.$refs.three.clientHeight - 16;
+      let style =
+        "translate(-50%, -50%) translate(" + tempX + "px," + tempY + "px)";
+      viewPlus.style.transform = style;
+    },
+    setCameraPosition: function(index) {
+      let xTarget,
+        yTarget,
+        zTarget,
+        camNewPosition,
+        targetNewPos,
+        tweenDuration;
+      if (index === 1) {
+        //zoom to layers
+        console.log("changing 1");
+        // xTarget = 20;
+        // yTarget = -10;
+        // zTarget = 10;
+        this.camera.position.set(0, 0, 0);
+        this.controls.update();
+      } else if (index === 2) {
+        console.log("changing 2");
+        // xTarget = -50;
+        // yTarget = 0;
+        // zTarget = -200;
+        this.camera.position.set(0, -20, -220); // 0 -10 -145
+        TweenMax.to(this.objtemp.children[0].rotation, 0.0, {
+          y: 2.3,
+          // z: 0.2
+        });
+        TweenMax.to(this.objtemp.children[0].position, 0.0, {
+          x: 60
+        });
+        this.controls.update();
+      }
+
+      // this.controls.target.set(xTarget, xTarget, xTarget);
+      this.controls.update();
+    },
+    onMouseMove: function() {
       this.$refs.pos1.style.backgroundColor = "green";
     },
     onWindowResize: function() {

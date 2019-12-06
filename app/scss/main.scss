@@ -119,13 +119,14 @@ body {
   .view-plus {
     position: absolute;
     left: 0;
-    right: 0;
+    top: 0;
     height: 32px;
     width: 32px;
-    bottom: 0;
-    top: 50%;
+    display: inline;
+    // bottom: 0;
+    // top: 50%;
     background-repeat: no-repeat;
-    margin: 0 auto;
+    // margin: 0 auto;
     background-image: url(../src/assets/view-plus.svg);
     cursor: pointer;
     background-size: contain;
@@ -868,7 +869,7 @@ header {
   }
 }
 
-.hovering-prev .tooltip-material:after{
+.hovering-prev .tooltip-material:after {
   left: inherit;
   bottom: inherit;
   top: 50%;
@@ -882,16 +883,15 @@ header {
   margin-left: 50px;
   margin-top: -12px;
 }
-.hovering-next .tooltip-material{
+.hovering-next .tooltip-material {
   margin-top: -12px;
   margin-left: -14.5px;
-
 }
-.hovering-next .tooltip-material:after{
+.hovering-next .tooltip-material:after {
   top: 50%;
   left: 100%; /* To the right of the tooltip */
   margin-top: -5px;
-  
+
   margin-left: 0.2px;
   border-width: 5px;
   border-style: solid;

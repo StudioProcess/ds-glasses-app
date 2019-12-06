@@ -60,21 +60,21 @@ export default {
         {
           url: images["glasses02-sl"],
           urlHover: images["glassesSteg"],
-          name: "N°1 - Schlüsselloch",
+          name: "N°2 - Schlüsselloch",
           price: "525€",
           model: 5,
         },
         {
           url: images["glasses03-sl"],
           urlHover: images["glassesSteg"],
-          name: "N°2 - Schlüsselloch",
+          name: "N°3 - Schlüsselloch",
           price: "525€",
           model: 6,
         },
         {
           url: images["glasses04-sl"],
           urlHover: images["glassesSteg"],
-          name: "N°3 - Schlüsselloch",
+          name: "N°4 - Schlüsselloch",
           price: "525€",
           model: 7,
         }
