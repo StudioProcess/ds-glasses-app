@@ -24,8 +24,8 @@
       </li>
     </ul>
 
-    <span class="view-plus" ref="posOne" v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"></span>
-    <span class="view-plus" ref="posTwo" v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"></span>
+    <span :class="[positionLocked && !this.$refs.posOne.classList.contains('active') ? 'view-plus hide' : 'view-plus']" ref="posOne" v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"></span>
+    <span :class="[positionLocked && !this.$refs.posTwo.classList.contains('active') ? 'view-plus hide' : 'view-plus']" ref="posTwo" v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"></span>
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"

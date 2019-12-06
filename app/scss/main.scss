@@ -113,6 +113,7 @@ body {
   width: 60vw;
   display: flex;
   background: #f8f5f3;
+  overflow: hidden;
   &.nightmode {
     background: #0f0f0f;
   }
@@ -123,17 +124,29 @@ body {
     height: 32px;
     width: 32px;
     display: inline;
-    // bottom: 0;
-    // top: 50%;
+    opacity: 0.6;
     background-repeat: no-repeat;
-    // margin: 0 auto;
     background-image: url(../src/assets/view-plus.svg);
     cursor: pointer;
     background-size: contain;
+    transition: 1s all cubic-bezier(0.075, 0.82, 0.165, 1);
+    &:hover {
+      opacity: 1;
+      height: 38px;
+      width: 38px;
+    }
+    &.hide {
+      opacity: 0;
+    }
     &.active {
-      height: 42px;
-      width: 42px;
-      opacity: 0.2;
+      background-image: url(../src/assets/view-minus.svg);
+      height: 62px;
+      width: 62px;
+      opacity: 0.3;
+
+      & .view-plus:not(.active){
+        background: pink;
+      }
     }
   }
   .three-navigation {
