@@ -130,6 +130,11 @@ body {
     background-image: url(../src/assets/view-plus.svg);
     cursor: pointer;
     background-size: contain;
+    &.active {
+      height: 42px;
+      width: 42px;
+      opacity: 0.2;
+    }
   }
   .three-navigation {
     position: absolute;

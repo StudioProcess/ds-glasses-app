@@ -24,8 +24,8 @@
       </li>
     </ul>
 
-    <span class="view-plus" ref="posOne" v-on:click="setCameraPosition(1)"></span>
-    <span class="view-plus" ref="posTwo" v-on:click="setCameraPosition(2)"></span>
+    <span class="view-plus" ref="posOne" v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"></span>
+    <span class="view-plus" ref="posTwo" v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"></span>
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"
@@ -85,6 +85,7 @@ export default {
       camera: null,
       controls: null,
       lightReset: false,
+      positionLocked: false,
       modelHasLoaded: false,
       currentMaterials: [],
       nightMode: false,
@@ -655,7 +656,7 @@ export default {
       this.pos1 = new THREE.Mesh(posGeo, posMat);
       this.pos2 = new THREE.Mesh(posGeo, posMat);
       this.pos1.position.set(20, -10, 10);
-      this.pos2.position.set(-80, 0, 10);
+      this.pos2.position.set(-80, 0, 0);
       this.scene.add(this.pos1);
       this.scene.add(this.pos2);
 
@@ -871,38 +872,49 @@ export default {
         "translate(-50%, -50%) translate(" + tempX + "px," + tempY + "px)";
       viewPlus.style.transform = style;
     },
-    setCameraPosition: function(index) {
+    setCameraPosition: function(event, cameraX, cameraY, cameraZ, moveX, rotateY, rotateYReset) {
       let xTarget,
         yTarget,
         zTarget,
         camNewPosition,
         targetNewPos,
         tweenDuration;
-      if (index === 1) {
-        //zoom to layers
-        console.log("changing 1");
-        // xTarget = 20;
-        // yTarget = -10;
-        // zTarget = 10;
-        this.camera.position.set(0, 0, 0);
+      if (!this.positionLocked) {
+        TweenMax.to(this.objtemp.children[0].rotation, 1.0, {
+          y: rotateY //rotateY
+        });
+        TweenMax.to(this.camera.position, 1.0, {
+          x: cameraX,//cameraX
+          y:cameraY,//cameraY
+          z: cameraZ//cameraZ
+        });
+        TweenMax.to(this.objtemp.children[0].position, 1.0, {
+          x: moveX, //moveX
+          // z: -20 //moveX
+        });
+
+        this.controls.enabled = false;
         this.controls.update();
-      } else if (index === 2) {
-        console.log("changing 2");
-        // xTarget = -50;
-        // yTarget = 0;
-        // zTarget = -200;
-        this.camera.position.set(0, -20, -220); // 0 -10 -145
-        TweenMax.to(this.objtemp.children[0].rotation, 0.0, {
-          y: 2.3,
-          // z: 0.2
+
+        event.currentTarget.classList.add("active");
+      } else {
+        //RESET
+        this.controls.enabled = true;
+        this.controls.update();
+        TweenMax.to(this.camera.position, 1.0, {
+          x: 0,
+          y: -10,
+          z: -145
+        });
+        event.currentTarget.classList.remove("active");
+        TweenMax.to(this.objtemp.children[0].rotation, 1.0, {
+          y: rotateYReset
         });
         TweenMax.to(this.objtemp.children[0].position, 0.0, {
-          x: 60
+          x: 0
         });
-        this.controls.update();
       }
-
-      // this.controls.target.set(xTarget, xTarget, xTarget);
+      this.positionLocked = !this.positionLocked;
       this.controls.update();
     },
     onMouseMove: function() {
