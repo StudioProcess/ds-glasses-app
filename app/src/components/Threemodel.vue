@@ -24,6 +24,8 @@
       </li>
     </ul>
 
+    <span class="view-plus" ref="pos1"></span>
+    <span class="view-plus"></span>
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"
@@ -96,6 +98,7 @@ export default {
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
 
+      pos1: null,
       nightModeLightsGroup: new THREE.Group(),
       occlusionRenderTarget: null,
       occlusionComposer: null,
@@ -108,9 +111,11 @@ export default {
     this.loop(); // start game loop
 
     window.addEventListener("resize", this.onWindowResize);
+    window.addEventListener("onmousemove", this.onMouseMove);
   },
   beforeDestroy: function() {
     window.removeEventListener("resize", this.onWindowResize, false);
+    window.removeEventListener("onmousemove", this.onMouseMove, false);
   },
   watch: {
     resetMaterialsTrigger: function() {
@@ -269,7 +274,7 @@ export default {
           texture.repeat.set(1, 1);
           tempTexture = texture;
           if (this.mat[1] % 2 === 0) {
-            // texture.rotation = 1.5;
+            texture.rotation = 1.5;
             // roughness_m.rotation = 1.5;
             // normal_m.rotation = 1.5;
             // displacement_m.rotation = 1.5;
@@ -433,7 +438,7 @@ export default {
 
       let child = this.objtemp.children[0].children
         .slice(0)
-        .reverse()
+        // .reverse()
         .map(o => {
           let positions = [];
           if (
@@ -477,7 +482,9 @@ export default {
         }
         return positions;
       });
-
+      console.log("currentmodeL")
+      console.log(this.currentModelIndex)
+      if(this.currentModelIndex !== 2 && this.currentModelIndex !== 5){
       tl.staggerTo(
         child,
         0.5,
@@ -486,7 +493,24 @@ export default {
             z: this.expanded
               ? [0, 0]
               : function(j) {
-                  return 3 * j;
+                  return 40 - (j*3);
+                },
+            delay: function(j) {
+              return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+            }
+          }
+        },
+        0
+      );}else{
+        tl.staggerTo(
+        child,
+        1,
+        {
+          cycle: {
+            z: this.expanded
+              ? [0, 0]
+              : function(j) {
+                  return 40 - (j*6);
                 },
             delay: function(j) {
               return Math.abs(Math.floor(5 / 2) - j) * 0.25;
@@ -495,6 +519,7 @@ export default {
         },
         0
       );
+      }
       // tlTwo.staggerTo(
       //   //GLAS AND SCHARNIER
       //   extras,
@@ -622,6 +647,13 @@ export default {
       this.controls.update();
 
       this.setupPostprocessing();
+
+      // SETUP SPHERES FOR ZOOM VIEW
+      let posGeo = new THREE.SphereBufferGeometry(0.5, 16, 16);
+      let posMat = new THREE.MeshBasicMaterial({ color: 0xff001e });
+      this.pos1 = new THREE.Mesh(posGeo, posMat);
+      this.pos1.position.set(20, -10, 10);
+      this.scene.add(this.pos1)
 
       let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
       let planeTexLoader = new THREE.TextureLoader();
@@ -816,6 +848,12 @@ export default {
         this.camera.layers.set(1);
         this.composer.render(this.scene, this.camera);
       }
+
+
+    },
+    onMouseMove: function(){
+      console.log("????????")
+      this.$refs.pos1.style.backgroundColor = "green";
     },
     onWindowResize: function() {
       const container = this.$refs.three;

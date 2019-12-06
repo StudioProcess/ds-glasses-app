@@ -116,6 +116,20 @@ body {
   &.nightmode {
     background: #0f0f0f;
   }
+  .view-plus {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 32px;
+    width: 32px;
+    bottom: 0;
+    top: 50%;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    background-image: url(../src/assets/view-plus.svg);
+    cursor: pointer;
+    background-size: contain;
+  }
   .three-navigation {
     position: absolute;
     width: 14%;
@@ -558,13 +572,13 @@ body {
 }
 .swiper-button-prev {
   background-image: url(../src/assets/arrow-left.svg);
-  margin-left: -18px;
-  margin-top: -2px;
+  margin-left: -14px;
+  margin-top: -8px;
 }
 .swiper-button-next {
   background-image: url(../src/assets/arrow-right.svg);
   right: -3px;
-  margin-top: -3px;
+  margin-top: -8px;
   transform: translateX(12px);
 }
 

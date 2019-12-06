@@ -482,6 +482,7 @@ export default {
         }
       }
       this.activeTab = arrayName;
+      this.activeMaterialTab = arrayName;
       this.$emit("setAllHashMaterials", tempArray);
     },
     setHovered: function(index, hovered) {
