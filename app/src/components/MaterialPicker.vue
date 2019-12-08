@@ -271,8 +271,8 @@ export default {
         },
         {
           name: "Verpackungsmaterial/Packpapier",
-          texture: images["paper"]["verpackungsMaterial"],
-          thumb: thumbs["paper"]["thumbnails"]["verpackungsMaterial"],
+          texture: images["paper"]["verpackungsmaterial"],
+          thumb: thumbs["paper"]["thumbnails"]["verpackungsmaterial"],
           index: 25
         }
       ],

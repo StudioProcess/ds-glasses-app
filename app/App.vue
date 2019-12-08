@@ -4,7 +4,7 @@
       <a href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
-      <p class="text text-description">Brillenbastler</p>
+      <p class="text text-description">Schichtler — die App zum Brillen gestalten</p>
       <a
         class="copyright-remark description text-medium"
         target="_blanc"
@@ -26,6 +26,7 @@
     <div class="content-area">
       <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
+        <div class="material-picker-stretch">
         <Materials
           index="1"
           v-on:passRandomMaterialBack="passRandomMaterials($event)"
@@ -81,9 +82,13 @@
           :resetMaterialsTrigger="resetMaterialsTrigger"
           :randomMaterialsTrigger="randomMaterialsTrigger"
         ></Materials>
+             <div class="random-butons">
         <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
         <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
+        </div>
+        </div>
         <div class="payment-section">
+           <p class="text text-description description">Produktinformation</p>
           <h2>{{model[0]}}</h2>
           <div class="material-display">
             {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
@@ -101,7 +106,7 @@
           <p
             class="text-medium infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
-          <h3 class="price">{{price}}*</h3>
+          <h3 class="price">{{price}}</h3>
 
           <span class="copy-buy">
             <a

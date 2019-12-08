@@ -26,6 +26,7 @@ body {
   opacity: 0;
   animation: 2s cubic-bezier(0.075, 0.82, 0.165, 1) loadingAnim forwards;
   animation-delay: 2s;
+  overflow: hidden;
   h1,
   h2,
   h3,
@@ -118,6 +119,7 @@ body {
     background: #0f0f0f;
   }
   .view-plus {
+    display: block;
     position: absolute;
     left: 0;
     top: 0;
@@ -137,6 +139,7 @@ body {
     }
     &.hide {
       opacity: 0;
+      display: none;
     }
     &.active {
       background-image: url(../src/assets/view-minus.svg);
@@ -144,7 +147,7 @@ body {
       width: 62px;
       opacity: 0.3;
 
-      & .view-plus:not(.active){
+      & .view-plus:not(.active) {
         background: pink;
       }
     }
@@ -175,6 +178,21 @@ body {
       align-items: center;
       cursor: pointer;
       justify-content: center;
+      transition: 1s all cubic-bezier(0.075, 0.82, 0.165, 1);
+      &:hover {
+        background: #00000010;
+      }
+    }
+    &.nightmode {
+      border-top: 1px solid #ffffff20;
+
+      li {
+        color: #fff;
+        border-right: 1px solid #ffffff20;
+        &:hover {
+          background: #ffffff10;
+        }
+      }
     }
     .navigation-element {
       height: 41px;
@@ -298,23 +316,12 @@ body {
     &:hover {
       cursor: pointer;
     }
-    &Image {
-      // height: 19vh;
-      // width: 100%;
-      // position: relative;
-      // display: block;
-      // background-size: contain;
-      // border: 2px solid red;
-      // background-repeat: no-repeat;
-      // &:hover {
-      //   background-image: url(../src/assets/glasses/glassesSteg.png) !important;
-      // }
-    }
     img {
       width: 100%;
       margin-top: -13%;
       width: 64%;
       width: 9.3vw;
+      width: 7.3vw;
     }
 
     h4 {
@@ -390,35 +397,45 @@ body {
     text-align: center;
     font-size: 10px;
   }
-  .random {
-    text-transform: uppercase;
-    text-decoration: underline;
-    opacity: 0.4;
-    font-weight: 400;
-    display: inline-block;
-    margin-top: 20px;
-    z-index: 99999;
-    height: 40px;
-    position: absolute;
-    left: 75px;
-    cursor: pointer;
-    &:not(.reset) {
-      margin-left: 28%;
-    }
-    &.reset {
-      margin-left: 4%;
-    }
+  .random-butons {
+    margin-left: 14%;
+    margin-top: -4%;
 
-    &::before {
-      content: "";
-      position: absolute;
-      height: 12px;
-      width: 12px;
-      background-image: url("../src/assets/random.svg");
-      margin-left: -19px;
-      margin-top: 3px;
-      background-repeat: no-repeat;
+    .random {
+      text-transform: uppercase;
+      text-decoration: underline;
+      opacity: 0.4;
+      font-weight: 400;
+      display: inline-block;
+      margin-top: 20px;
+      height: 40px;
+      margin-left: 15px;
+      cursor: pointer;
+      &:not(.reset) {
+        // margin-left: 28%;
+        margin-right: 12px;
+      }
+      &.reset {
+        // margin-left: 4%;
+      }
+      &::before {
+        content: "";
+        position: absolute;
+        height: 12px;
+        width: 12px;
+        background-image: url("../src/assets/random.svg");
+        margin-left: -19px;
+        margin-top: 3px;
+        background-repeat: no-repeat;
+      }
     }
+  }
+
+  .material-picker-stretch {
+    margin-top: 2vh;
+    height: 57vh;
+    display: flex;
+    flex-wrap: wrap;
   }
   .material-picker {
     display: flex;
@@ -427,6 +444,7 @@ body {
     margin-left: 9.4%;
     &:not(:first-child) {
       margin-top: 8px;
+      margin-top: 2px;
     }
     .index {
       line-height: 7.2;
@@ -451,6 +469,7 @@ body {
         align-items: center;
         cursor: pointer;
         height: 30px;
+        height: 24px;
         &:not(.text-description) {
           opacity: 0.3;
         }
@@ -467,6 +486,7 @@ body {
         display: block;
         width: 91%;
         padding: 35px 17px 20px 9px;
+        padding: 30px 17px 14px 9px;
         &-text-selected {
           position: absolute;
           z-index: 4;
@@ -506,6 +526,7 @@ body {
     }
     .tab-overview {
       height: 32px;
+      height: 24px;
       background: white;
       box-shadow: 1px 15px 74px -52px rgba(0, 0, 0, 0.75);
       -webkit-box-shadow: 1px 15px 74px -52px rgba(0, 0, 0, 0.75);
@@ -629,12 +650,18 @@ body {
 
 .payment-section {
   height: auto;
+  height: 30vh;
   margin-top: 27px;
   width: 76.4%;
   margin-left: 13.4%;
   position: absolute;
   bottom: 42px;
   left: 0;
+  .text-description {
+    line-height: 3;
+    border-top: 1px solid #00000020;
+    padding-top: 0px;
+  }
   .infoGlass {
     text-decoration: underline;
     font-weight: 400;
@@ -648,8 +675,8 @@ body {
   }
   .price {
     font-family: "Roboto", sans-serif;
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 24px;
   }
   h2 {
     font-family: "Aleksei", serif;
@@ -757,6 +784,8 @@ body {
     height: 42px;
     background: $color-emphasize;
     color: black;
+    text-decoration: none;
+    font-weight: 500;
     text-transform: uppercase;
     // border-radius: 4px;
     font-family: "Roboto", sans-serif;
@@ -782,6 +811,7 @@ header {
   height: 6vh;
   position: absolute;
   width: 100%;
+  padding-left: 0.8vw;
   background-color: #fff;
   border-bottom: 1px solid #00000020;
   z-index: 99;
@@ -801,18 +831,18 @@ header {
     &::before {
       content: "";
       position: absolute;
-      margin-left: -2.5vh;
+      margin-left: -2.31vw;
       top: 0;
       height: 100%;
       border-left: 1px solid #00000020;
     }
   }
   .materials {
-    margin-left: 74.8vw;
+    margin-left: 72.8vw;
     &::before {
       content: "";
       position: absolute;
-      margin-left: -5.37vh;
+      margin-left: -2.2vw;
       top: 0;
       height: 100%;
       border-left: 1px solid #00000020;

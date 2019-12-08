@@ -3,7 +3,7 @@
     ref="three"
     :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']"
   >
-    <ul class="three-navigation">
+    <ul :class="[nightMode ? 'three-navigation nightmode' :'three-navigation']">
       <li v-on:click="expand()">
         <span
           :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
@@ -24,8 +24,16 @@
       </li>
     </ul>
 
-    <span :class="[positionLocked && !this.$refs.posOne.classList.contains('active') ? 'view-plus hide' : 'view-plus']" ref="posOne" v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"></span>
-    <span :class="[positionLocked && !this.$refs.posTwo.classList.contains('active') ? 'view-plus hide' : 'view-plus']" ref="posTwo" v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"></span>
+    <span
+      :class="[(positionLocked && !this.$refs.posOne.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
+      ref="posOne"
+      v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"
+    ></span>
+    <span
+      :class="[(positionLocked && !this.$refs.posTwo.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
+      ref="posTwo"
+      v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"
+    ></span>
     <div id="three-model"></div>
     <span
       class="three-currentmaterial"
@@ -48,6 +56,7 @@ import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
 import shadow from "../assets/shadow.png";
+import particle from "../assets/particle.png";
 import { encode, decode } from "../../index.js";
 
 import {
@@ -98,13 +107,14 @@ export default {
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
-
+      isLoading: false,
       pos1: null,
       pos2: null,
       nightModeLightsGroup: new THREE.Group(),
       occlusionRenderTarget: null,
       occlusionComposer: null,
-      composer: null
+      composer: null,
+      composerTwo: null
     };
   },
 
@@ -196,7 +206,8 @@ export default {
       console.log("update model");
       this.$emit("modelLoaded", false);
       this.modelHasLoaded = false;
-      setTimeout(() => {
+      // setTimeout(() => {
+      if (!this.isLoading) {
         if (this.setModel[1] === 1) {
           this.loadModel(model);
         } else if (this.setModel[1] === 2) {
@@ -213,7 +224,8 @@ export default {
           this.loadModel(model7);
         }
         this.objtemp.remove(this.objtemp.children[0]);
-      }, 30);
+      }
+      // }, 30);
     } else if (this.hoveredMaterial) {
       if (this.hoveredMaterial[1] === true) {
         if (this.hoveredMaterial[0] === "1") {
@@ -308,18 +320,27 @@ export default {
   },
   methods: {
     setupPostprocessing: function() {
-      let geometry = new THREE.SphereBufferGeometry(1.9, 16, 16);
-      let material = new THREE.MeshBasicMaterial({ color: 0xeeffff });
+      let geometry = new THREE.SphereBufferGeometry(90.9, 2, 1);
+      let material = new THREE.PointsMaterial( { color: 0x888888, size: 10, transparency: true, alphaTest: 0.5, map: new THREE.TextureLoader().load(particle)} );
+      
+      let materialTwo = new THREE.MeshBasicMaterial({ color: 0xeeff00 });
       let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
-      let lightSphere = new THREE.Mesh(geometry, material);
-      let rotationSphere = new THREE.Mesh(rotationSphereGeo, material);
+      let lightSphere = new THREE.Points(geometry, material);
+      let lightSphereTwo = new THREE.Mesh(geometry, materialTwo);
+      // let rotationSphere = new THREE.Mesh(rotationSphereGeo, material);
 
-      rotationSphere.layers.set(1);
       lightSphere.position.z = 70;
-      rotationSphere.position.z = 70;
       lightSphere.layers.set(1);
 
+      lightSphereTwo.layers.set(1);
+      lightSphereTwo.position.set(20, -10, -80);
+      let pointLightTwo = new THREE.PointLight(0xffffff, 13.0, 220);
+      pointLightTwo.position.set(20, -10, -80);
+      pointLightTwo.layers.set(1);
+
       this.nightModeLightsGroup.add(lightSphere);
+      // this.nightModeLightsGroup.add(lightSphereTwo);
+      // this.nightModeLightsGroup.add(pointLightTwo);
       // this.scene.add(this.nightModeLightsGroup);
 
       let pointLightStart = new THREE.PointLight(0xffffff, 13.0, 220);
@@ -338,6 +359,7 @@ export default {
       // }
 
       this.nightModeLightsGroup.layers.set(1);
+      console.log(GodRaysEffect)
       let godraysEffect = new GodRaysEffect(this.camera, lightSphere, {
         resolutionScale: 1,
         density: 0.8,
@@ -346,19 +368,40 @@ export default {
         samples: 100,
         resolution: 240
       });
+      let godraysEffectTwo = new GodRaysEffect(this.camera, lightSphereTwo, {
+        resolutionScale: 1,
+        density: 0.8,
+        decay: 0.95,
+        weight: 0.9,
+        samples: 100,
+        resolution: 240
+      });
       let renderPass = new RenderPass(this.scene, this.camera);
+      let renderPassTwo = new RenderPass(this.scene, this.camera);
       let effectPass = new EffectPass(this.camera, godraysEffect);
+      let effectPassTwo = new EffectPass(this.camera, godraysEffectTwo);
       effectPass.renderToScreen = true;
-
+      effectPassTwo.renderToScreen = true;
       this.composer = new EffectComposer(this.renderer);
+      this.composerTwo = new EffectComposer(this.renderer);
       this.composer.addPass(renderPass);
       this.composer.addPass(effectPass);
+      this.composerTwo.addPass(renderPassTwo);
+      this.composerTwo.addPass(effectPassTwo);
     },
     nightmode: function() {
       this.nightMode = !this.nightMode;
       if (this.nightMode) {
+        this.scene.add(this.nightModeLightsGroup);
+        // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
+        //   y: 360,
+        //   z: 180,
+        //   repeat: -1
+        // });
         this.lights(true);
       } else {
+        this.scene.remove(this.nightModeLightsGroup);
+
         this.lights();
       }
     },
@@ -437,29 +480,6 @@ export default {
       var tl = new TimelineMax({ paused: false });
       var tlTwo = new TimelineMax({ paused: false });
 
-      let child = this.objtemp.children[0].children
-        .slice(0)
-        // .reverse()
-        .map(o => {
-          let positions = [];
-          if (
-            o.name !== "Glas" &&
-            o.name !== "Scharnier" &&
-            o.name !== "Layer_1 Layer_1B" &&
-            o.name !== "Layer_2 Layer_2B" &&
-            o.name !== "Layer_3 Layer_3B" &&
-            o.name !== "Layer_4 Layer_4B" &&
-            o.name !== "Layer_5 Layer_5B" &&
-            o.name !== "Layer_1 Layer_1N" &&
-            o.name !== "Layer_2 Layer_2N" &&
-            o.name !== "Layer_3 Layer_3N" &&
-            o.name !== "Layer_4 Layer_4N" &&
-            o.name !== "Layer_5 Layer_5N"
-          ) {
-            positions = o.position;
-          }
-          return positions;
-        });
       let extras = this.objtemp.children[0].children.map(o => {
         let positions = [];
         if (
@@ -483,9 +503,109 @@ export default {
         }
         return positions;
       });
-      console.log("currentmodeL");
-      console.log(this.currentModelIndex);
-      if (this.currentModelIndex !== 2 && this.currentModelIndex !== 5) {
+      let glasAndScharnier = this.objtemp.children[0].children
+        .slice(0)
+        // .reverse()
+        .map(o => {
+          let positions = [];
+          if (o.name === "Glas") {
+            positions = o.position;
+          }
+          return positions;
+        });
+      if (!this.expanded) {
+        let child = this.objtemp.children[0].children
+          .slice(0)
+          // .reverse()
+          .map(o => {
+            let positions = [];
+            if (
+              o.name !== "Glas" &&
+              o.name !== "Scharnier" &&
+              o.name !== "Layer_1 Layer_1B" &&
+              o.name !== "Layer_2 Layer_2B" &&
+              o.name !== "Layer_3 Layer_3B" &&
+              o.name !== "Layer_4 Layer_4B" &&
+              o.name !== "Layer_5 Layer_5B" &&
+              o.name !== "Layer_1 Layer_1N" &&
+              o.name !== "Layer_2 Layer_2N" &&
+              o.name !== "Layer_3 Layer_3N" &&
+              o.name !== "Layer_4 Layer_4N" &&
+              o.name !== "Layer_5 Layer_5N"
+            ) {
+              positions = o.position;
+            }
+            return positions;
+          });
+
+        console.log("expand 1, 3, 5, 6, 8");
+        tl.staggerTo(
+          child,
+          0.4,
+          {
+            cycle: {
+              z:
+                this.currentModelIndex !== 2 && this.currentModelIndex !== 5
+                  ? function(j) {
+                      return 40 - j * 3;
+                    }
+                  : function(j) {
+                      return 40 - j * 6;
+                    },
+              delay: function(j) {
+                return Math.sin(0.003) * j;
+              }
+            }
+          },
+          0
+        );
+        tl.staggerTo(
+          glasAndScharnier,
+          0.3,
+          {
+            cycle: {
+              z:
+                // this.currentModelIndex !== 2 && this.currentModelIndex !== 5
+                // ?
+                function(j) {
+                  return 40 - j * 1;
+                },
+              // : function(j) {
+              //     return 40 - j * 5.7;
+              //   },
+              delay: function(j) {
+                return Math.sin(0.003) * j;
+              }
+            }
+          },
+          0
+        );
+      } else {
+        // INFLATE
+        let child = this.objtemp.children[0].children
+          .slice(0)
+          .reverse()
+          .map(o => {
+            let positions = [];
+            if (
+              o.name !== "Glas" &&
+              o.name !== "Scharnier" &&
+              o.name !== "Layer_1 Layer_1B" &&
+              o.name !== "Layer_2 Layer_2B" &&
+              o.name !== "Layer_3 Layer_3B" &&
+              o.name !== "Layer_4 Layer_4B" &&
+              o.name !== "Layer_5 Layer_5B" &&
+              o.name !== "Layer_1 Layer_1N" &&
+              o.name !== "Layer_2 Layer_2N" &&
+              o.name !== "Layer_3 Layer_3N" &&
+              o.name !== "Layer_4 Layer_4N" &&
+              o.name !== "Layer_5 Layer_5N"
+            ) {
+              positions = o.position;
+            }
+            return positions;
+          });
+        console.log("inflate 1, 3, 4, 6");
         tl.staggerTo(
           child,
           0.5,
@@ -494,28 +614,30 @@ export default {
               z: this.expanded
                 ? [0, 0]
                 : function(j) {
-                    return 40 - j * 3;
+                    return 0;
                   },
               delay: function(j) {
-                return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+                return 0.005 * j;
               }
             }
           },
           0
         );
-      } else {
         tl.staggerTo(
-          child,
-          1,
+          glasAndScharnier,
+          0.3,
           {
             cycle: {
-              z: this.expanded
-                ? [0, 0]
-                : function(j) {
-                    return 40 - j * 6;
-                  },
+              z:
+                this.currentModelIndex !== 2 && this.currentModelIndex !== 5
+                  ? function(j) {
+                      return 0;
+                    }
+                  : function(j) {
+                      return 0;
+                    },
               delay: function(j) {
-                return Math.abs(Math.floor(5 / 2) - j) * 0.25;
+                return Math.sin(0.003) * j;
               }
             }
           },
@@ -643,6 +765,7 @@ export default {
       this.controls.maxDistance = 180;
       this.controls.enableDamping = true;
       this.controls.dampingFactor = 0.05;
+      this.controls.enablePan = false;
 
       this.camera.position.z = -145;
       this.camera.position.y = -10;
@@ -716,59 +839,127 @@ export default {
       });
 
       const loader = new THREE.OBJLoader();
+      if (!this.isLoading) {
+        loader.load(
+          model,
+          function(object) {
+            object.traverse(function(child) {
+              if (child instanceof THREE.Mesh) {
+                child.material = matStart;
+                child.layers.set(0);
+              }
+            }),
+              (object.rotation.y += 179);
+            object.position.y += 10;
 
-      loader.load(
-        model,
-        function(object) {
-          object.traverse(function(child) {
-            if (child instanceof THREE.Mesh) {
-              child.material = matStart;
-              child.layers.set(0);
-            }
-          }),
-            (object.rotation.y += 179);
-          object.position.y += 10;
+            this.assignBasicMaterials(object, glass, metall, mat, matStart);
+            this.objtemp.add(object);
+            this.modelHasLoaded = true;
+            this.expanded = false;
+            this.$emit("modelLoaded", true);
 
-          this.assignBasicMaterials(object, glass, metall, mat, matStart);
-          this.objtemp.add(object);
-          this.modelHasLoaded = true;
-          this.expanded = false;
-          this.$emit("modelLoaded", true);
+            if (this.currentMaterials.length > 0) {
+              if (this.currentMaterials[1] !== undefined) {
+                this.assignMaterial(this.currentMaterials[1], "Layer_1");
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_1 Layer_1B"
+                );
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_1 Layer_1N"
+                );
+              }
+              if (this.currentMaterials[2] !== undefined) {
+                this.assignMaterial(this.currentMaterials[2], "Layer_2");
+                this.assignMaterial(
+                  this.currentMaterials[2],
+                  "Layer_2 Layer_2B"
+                );
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_2 Layer_2N"
+                );
+              }
+              if (this.currentMaterials[3] !== undefined) {
+                this.assignMaterial(this.currentMaterials[3], "Layer_3");
+                this.assignMaterial(
+                  this.currentMaterials[3],
+                  "Layer_3 Layer_3B"
+                );
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_3 Layer_3N"
+                );
+              }
+              if (this.currentMaterials[4] !== undefined) {
+                this.assignMaterial(this.currentMaterials[4], "Layer_4");
+                this.assignMaterial(
+                  this.currentMaterials[4],
+                  "Layer_4 Layer_4B"
+                );
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_4 Layer_4N"
+                );
+              }
+              if (this.currentMaterials[5] !== undefined) {
+                this.assignMaterial(this.currentMaterials[5], "Layer_5");
+                this.assignMaterial(
+                  this.currentMaterials[5],
+                  "Layer_5 Layer_5B"
+                );
+                this.assignMaterial(
+                  this.currentMaterials[1],
+                  "Layer_5 Layer_5N"
+                );
+              }
+              if (this.useAsSunglasses) {
+                this.updateSunglasses();
+              }
+            }
 
-          if (this.currentMaterials.length > 0) {
-            if (this.currentMaterials[1] !== undefined) {
-              this.assignMaterial(this.currentMaterials[1], "Layer_1");
-              this.assignMaterial(this.currentMaterials[1], "Layer_1 Layer_1B");
-              this.assignMaterial(this.currentMaterials[1], "Layer_1 Layer_1N");
+            if (
+              this.positionLocked &&
+              this.$refs.posOne.classList.contains("active")
+            ) {
+              TweenMax.to(object.rotation, 0, {
+                y: "+=0.9" //rotateY
+              });
+              TweenMax.to(this.camera.position, 0, {
+                x: 0, //cameraX
+                y: 0, //cameraY
+                z: -20 //cameraZ
+              });
+              TweenMax.to(object.position, 0, {
+                x: 0 //moveX
+                // z: -20 //moveX
+              });
             }
-            if (this.currentMaterials[2] !== undefined) {
-              this.assignMaterial(this.currentMaterials[2], "Layer_2");
-              this.assignMaterial(this.currentMaterials[2], "Layer_2 Layer_2B");
-              this.assignMaterial(this.currentMaterials[1], "Layer_2 Layer_2N");
+            if (
+              this.positionLocked &&
+              this.$refs.posTwo.classList.contains("active")
+            ) {
+              TweenMax.to(object.rotation, 0, {
+                y: "-=0.9" //rotateY
+              });
+              TweenMax.to(this.camera.position, 0, {
+                x: 0, //cameraX
+                y: -20, //cameraY
+                z: -220 //cameraZ
+              });
+              TweenMax.to(object.position, 0, {
+                x: 60 //moveX
+              });
             }
-            if (this.currentMaterials[3] !== undefined) {
-              this.assignMaterial(this.currentMaterials[3], "Layer_3");
-              this.assignMaterial(this.currentMaterials[3], "Layer_3 Layer_3B");
-              this.assignMaterial(this.currentMaterials[1], "Layer_3 Layer_3N");
-            }
-            if (this.currentMaterials[4] !== undefined) {
-              this.assignMaterial(this.currentMaterials[4], "Layer_4");
-              this.assignMaterial(this.currentMaterials[4], "Layer_4 Layer_4B");
-              this.assignMaterial(this.currentMaterials[1], "Layer_4 Layer_4N");
-            }
-            if (this.currentMaterials[5] !== undefined) {
-              this.assignMaterial(this.currentMaterials[5], "Layer_5");
-              this.assignMaterial(this.currentMaterials[5], "Layer_5 Layer_5B");
-              this.assignMaterial(this.currentMaterials[1], "Layer_5 Layer_5N");
-            }
-            if (this.useAsSunglasses) {
-              this.updateSunglasses();
-            }
+            this.isLoading = false;
+          }.bind(this),
+
+          function(xhr) {
+            this.isLoading = true;
           }
-        }.bind(this),
-
-        function(xhr) {}
-      );
+        );
+      }
     },
     assignBasicMaterials: function(object, glass, metall, mat, matStart) {
       let mat2 = mat.clone();
@@ -850,7 +1041,10 @@ export default {
       this.renderer.render(this.scene, this.camera);
 
       if (this.nightMode) {
+        // this.camera.layers.set(1);
+        // this.composerTwo.render(this.scene, this.camera);
         this.camera.layers.set(1);
+        //  this.renderer.autoClear = false;
         this.composer.render(this.scene, this.camera);
       }
 
@@ -872,7 +1066,15 @@ export default {
         "translate(-50%, -50%) translate(" + tempX + "px," + tempY + "px)";
       viewPlus.style.transform = style;
     },
-    setCameraPosition: function(event, cameraX, cameraY, cameraZ, moveX, rotateY, rotateYReset) {
+    setCameraPosition: function(
+      event,
+      cameraX,
+      cameraY,
+      cameraZ,
+      moveX,
+      rotateY,
+      rotateYReset
+    ) {
       let xTarget,
         yTarget,
         zTarget,
@@ -884,12 +1086,12 @@ export default {
           y: rotateY //rotateY
         });
         TweenMax.to(this.camera.position, 1.0, {
-          x: cameraX,//cameraX
-          y:cameraY,//cameraY
-          z: cameraZ//cameraZ
+          x: cameraX, //cameraX
+          y: cameraY, //cameraY
+          z: cameraZ //cameraZ
         });
         TweenMax.to(this.objtemp.children[0].position, 1.0, {
-          x: moveX, //moveX
+          x: moveX //moveX
           // z: -20 //moveX
         });
 
