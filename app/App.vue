@@ -24,7 +24,7 @@
       :randomMaterialsTrigger="randomMaterialsTrigger"
     >{{passedMaterial}}</Threemodel>
     <div class="content-area">
-      <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
+      <Glasses v-on:sendMessage="modelHasLoaded && setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
         <div class="material-picker-stretch">
           <Materials
@@ -171,7 +171,7 @@ export default {
       setMaterialFromUrl: [],
       allHashMaterials: [{}, {}, {}, {}, {}, {}],
       allHashMaterialsModel: [],
-      modelHasLoaded: false,
+      modelHasLoaded: true,
       fullCode: false,
       hashCode: "",
       hashModelChange: false,
@@ -189,6 +189,7 @@ export default {
   },
   watch: {
     modelHasLoaded: function() {
+      console.log(this.modelHasLoaded)
       if (this.modelHasLoaded) {
         if (this.encodedArray[0] === undefined) {
           this.setCurrentModel(this.model);

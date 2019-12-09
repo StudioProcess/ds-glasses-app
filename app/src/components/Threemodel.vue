@@ -100,10 +100,8 @@ export default {
       nightMode: false,
       pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
-      spotLight: new THREE.SpotLight(0xfdefe5, 1.5, 50),
       pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
       pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
-      ambientLight: new THREE.AmbientLight(0xfdefe5, 1.0), //fdefe5
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
@@ -177,6 +175,10 @@ export default {
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.offset.set(0, 0);
             texture.repeat.set(1, 1);
+            texture.rotation = 0;
+            if ((i + 1) % 2 === 0) {
+              texture.rotation = 1.57;
+            }
             if (this.allHashMaterialsModel[0][i][1] === "1") {
               this.assignMaterial(texture, "Layer_1");
               this.assignMaterial(texture, "Layer_1 Layer_1B");
@@ -290,11 +292,11 @@ export default {
           texture.offset.set(0, 0);
           texture.repeat.set(1, 1);
           tempTexture = texture;
-          if (this.mat[1] % 2 === 0) {
-            texture.rotation = 1.5;
-            // roughness_m.rotation = 1.5;
-            // normal_m.rotation = 1.5;
-            // displacement_m.rotation = 1.5;
+          
+          
+          texture.rotation = 0;
+          if ((this.mat[1]) % 2 === 0) {
+          texture.rotation = 1.57;  
           }
           if (this.mat[1] === "1") {
             this.assignMaterial(texture, "Layer_1");
@@ -343,7 +345,10 @@ export default {
         map: new THREE.TextureLoader().load(particle)
       });
 
-      let materialTwo = new THREE.MeshNormalMaterial({ color: 0xeeff00, wireframe: true });
+      let materialTwo = new THREE.MeshNormalMaterial({
+        color: 0xeeff00,
+        wireframe: true
+      });
       let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
       this.lightSphere = new THREE.Points(geometry, material);
       this.lightSphere.position.z = 70;
@@ -741,12 +746,12 @@ export default {
         this.scene.remove(pointLightStart);
         this.scene.remove(this.pointLightBack);
       } else {
-        this.scene.add(directionalLight);
-        this.scene.add(this.pointLightLeft);
-        this.scene.add(this.pointLight);
-        this.scene.add(pointLightBg);
-        this.scene.add(pointLightStart);
-        this.scene.add(this.pointLightBack);
+        // this.scene.add(directionalLight);
+        // this.scene.add(this.pointLightLeft);
+        // this.scene.add(this.pointLight);
+        // this.scene.add(pointLightBg);
+        // this.scene.add(pointLightStart);
+        // this.scene.add(this.pointLightBack);
       }
     },
     setup: function() {
