@@ -719,7 +719,7 @@ export default {
 
       pointLightBg.layers.set(4); //backgroundLayer
 
-      let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
+      let pointLightStart = new THREE.PointLight(0xffffff, 0.5);
       pointLightStart.position.z = -160;
       pointLightStart.layers.set(0); //backgroundLayer
 
