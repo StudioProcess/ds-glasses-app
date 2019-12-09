@@ -530,6 +530,7 @@ export default {
         }
         return positions;
       });
+
       let glasAndScharnier = this.objtemp.children[0].children
         .slice(0)
         // .reverse()
@@ -541,6 +542,7 @@ export default {
           return positions;
         });
       if (!this.expanded) {
+        this.objtemp.children[0].getObjectByName("Glas").visible = false;
         let child = this.objtemp.children[0].children
           .slice(0)
           // .reverse()
@@ -586,29 +588,9 @@ export default {
           },
           0
         );
-        tl.staggerTo(
-          glasAndScharnier,
-          0.3,
-          {
-            cycle: {
-              z:
-                // this.currentModelIndex !== 2 && this.currentModelIndex !== 5
-                // ?
-                function(j) {
-                  return 40 - j * 1;
-                },
-              // : function(j) {
-              //     return 40 - j * 5.7;
-              //   },
-              delay: function(j) {
-                return Math.sin(0.003) * j;
-              }
-            }
-          },
-          0
-        );
       } else {
         // INFLATE
+        this.objtemp.children[0].getObjectByName("Glas").visible = true;
         let child = this.objtemp.children[0].children
           .slice(0)
           .reverse()
@@ -645,26 +627,6 @@ export default {
                   },
               delay: function(j) {
                 return 0.005 * j;
-              }
-            }
-          },
-          0
-        );
-        tl.staggerTo(
-          glasAndScharnier,
-          0.3,
-          {
-            cycle: {
-              z:
-                this.currentModelIndex !== 2 && this.currentModelIndex !== 5
-                  ? function(j) {
-                      return 0;
-                    }
-                  : function(j) {
-                      return 0;
-                    },
-              delay: function(j) {
-                return Math.sin(0.003) * j;
               }
             }
           },
@@ -868,7 +830,7 @@ export default {
         metalness: 0.9,
         color: "#303030",
         roughnessMap: new THREE.TextureLoader().load(roughness_map_metal),
-        map: new THREE.TextureLoader().load(map_metal),
+        map: new THREE.TextureLoader().load(map_metal)
       });
       const loader = new THREE.OBJLoader();
       if (!this.isLoading) {
@@ -890,7 +852,7 @@ export default {
             this.expanded = false;
             this.$emit("modelLoaded", true);
             object.getObjectByName("Scharnier").position.z += 1;
-            if(model === model3 || model === model6){
+            if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
             console.log(model === model3 || model === model6);
