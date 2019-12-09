@@ -24,7 +24,11 @@
       :randomMaterialsTrigger="randomMaterialsTrigger"
     >{{passedMaterial}}</Threemodel>
     <div class="content-area">
-      <Glasses v-on:sendMessage="modelHasLoaded && setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
+      <Glasses
+        v-on:sendMessage="setCurrentModel($event)"
+        :currentModelLoaded="modelHasLoaded"
+        :hashModelNumber="setModelFromUrl"
+      ></Glasses>
       <div class="material-picker-container">
         <div class="material-picker-stretch">
           <Materials
@@ -101,12 +105,16 @@
             Sonnenbrille:
             <input v-model="useAsSunglasses" type="checkbox" />
             <div v-if="useAsSunglasses" class="dropdown">
-              <button class="dropbtn">{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
-              <div class="dropdown-content">
-                <a v-on:click="sunglasses = 'Schwarz'">Schwarz</a>
-                <a v-on:click="sunglasses = 'Braun'">Braun</a>
-                <a v-on:click="sunglasses = 'Schwarz verlaufend'">Schwarz verlaufend</a>
-                <a v-on:click="sunglasses = 'Braun verlaufend'">Braun verlaufend</a>
+              <button
+                class="dropbtn"
+                @mouseover="dropdownClicked = false"
+           
+              >{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
+              <div :class="[dropdownClicked ? 'dropdown-content clicked' : 'dropdown-content']">
+                <a v-on:click="setSunglasses('Schwarz')">Schwarz</a>
+                <a v-on:click="setSunglasses('Braun')">Braun</a>
+                <a v-on:click="setSunglasses('Schwarz verlaufend')">Schwarz verlaufend</a>
+                <a v-on:click="setSunglasses('Braun verlaufend')">Braun verlaufend</a>
               </div>
             </div>
             <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->
@@ -184,12 +192,13 @@ export default {
       Swiper5: null,
       msg: "",
       useAsSunglasses: false,
-      sunglasses: '',
+      sunglasses: "",
+      dropdownClicked: false
     };
   },
   watch: {
     modelHasLoaded: function() {
-      console.log(this.modelHasLoaded)
+      console.log(this.modelHasLoaded);
       if (this.modelHasLoaded) {
         if (this.encodedArray[0] === undefined) {
           this.setCurrentModel(this.model);
@@ -199,6 +208,10 @@ export default {
     }
   },
   methods: {
+    setSunglasses(glasses) {
+      this.sunglasses = glasses;
+      this.dropdownClicked = true;
+    },
     resetMaterials() {
       this.resetMaterialsTrigger = true;
       setTimeout(() => {

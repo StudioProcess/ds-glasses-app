@@ -3,7 +3,7 @@
     <div
       class="glasses"
       v-for="(glassesModel, index) in glasses"
-      v-on:click="clickedGlasses(index, glassesModel.name, glassesModel.model)"
+      v-on:click="currentModelLoaded && clickedGlasses(index, glassesModel.name, glassesModel.model)"
       @mouseover="hoveringGlasses(index)"
       v-bind:class="{selected: (isSelected && currentIndex === index || !isSelected && index === 0 )}"
     >
@@ -23,7 +23,7 @@ import images from "../assets/glasses/*.png";
 export default {
   name: "GlassesPicker",
   components: {},
-  props: ["selectedModel", "hashModelNumber"],
+  props: ["selectedModel", "hashModelNumber", "currentModelLoaded"],
   data: function() {
     return {
       isSelected: false,
@@ -82,6 +82,9 @@ export default {
     };
   },
   watch: {
+    modelHasLoaded: function(){
+        console.log("modelhasloaded" + this.currentModelLoaded);
+    },
     hashModelNumber: function(){
     if(this.hashModelNumber !== 0){
       this.isSelected = true;
@@ -91,6 +94,7 @@ export default {
   },
   methods: {
     clickedGlasses: function(index, name, model) {
+      console.log("modelhasloaded" + this.currentModelLoaded);
       this.isSelected = true;
       this.currentIndex = index;
       this.$emit("sendMessage", [name, model]);

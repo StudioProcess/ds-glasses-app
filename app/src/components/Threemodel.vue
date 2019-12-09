@@ -292,11 +292,10 @@ export default {
           texture.offset.set(0, 0);
           texture.repeat.set(1, 1);
           tempTexture = texture;
-          
-          
+
           texture.rotation = 0;
-          if ((this.mat[1]) % 2 === 0) {
-          texture.rotation = 1.57;  
+          if (this.mat[1] % 2 === 0) {
+            texture.rotation = 1.57;
           }
           if (this.mat[1] === "1") {
             this.assignMaterial(texture, "Layer_1");
@@ -423,6 +422,7 @@ export default {
       }
     },
     hoverMaterial: function(name, expand) {
+      if(this.modelHasLoaded){
       TweenMax.to(
         this.objtemp.children[0].getObjectByName(name).position,
         1.2,
@@ -431,7 +431,7 @@ export default {
           ease: Power2.easeOut
         }
       );
-    },
+    }},
     assignMaterial: function(
       texture,
       name
@@ -439,24 +439,28 @@ export default {
       // this.normal_map,
       // displacement_map
     ) {
-      this.objtemp.children[0].getObjectByName(name).material.map = texture;
-      this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
+      if (this.modelHasLoaded) {
+        this.objtemp.children[0].getObjectByName(name).material.map = texture;
+        this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
-      this.objtemp.children[0].getObjectByName(name).material.roughness = 3.0;
-      this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
-      this.objtemp.children[0].getObjectByName(name).material.emissive = false;
+        this.objtemp.children[0].getObjectByName(name).material.roughness = 3.0;
+        this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
+        this.objtemp.children[0].getObjectByName(
+          name
+        ).material.emissive = false;
 
-      this.objtemp.children[0].getObjectByName(
-        name
-      ).material.roughnessMap = this.roughness_m;
-      this.objtemp.children[0].getObjectByName(
-        name
-      ).material.normalMap = this.normal_m;
-      this.objtemp.children[0].getObjectByName(name).fog = false;
-      this.objtemp.children[0].getObjectByName(
-        name
-      ).material.needsUpdate = true;
-      this.objtemp.children[0].getObjectByName(name).layers.set(1);
+        this.objtemp.children[0].getObjectByName(
+          name
+        ).material.roughnessMap = this.roughness_m;
+        this.objtemp.children[0].getObjectByName(
+          name
+        ).material.normalMap = this.normal_m;
+        this.objtemp.children[0].getObjectByName(name).fog = false;
+        this.objtemp.children[0].getObjectByName(
+          name
+        ).material.needsUpdate = true;
+        this.objtemp.children[0].getObjectByName(name).layers.set(1);
+      }
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
@@ -707,7 +711,6 @@ export default {
       pointLightBg.copy(this.pointLight);
       pointLightBg.intensity = 1.9;
 
-      
       pointLightBg.layers.set(4); //backgroundLayer
 
       let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
@@ -747,7 +750,7 @@ export default {
         this.scene.remove(this.pointLightBack);
       } else {
         this.scene.add(pointLightBg);
-        // this.scene.add(directionalLight);
+        this.scene.add(directionalLight);
         this.scene.add(this.pointLightLeft);
         this.scene.add(this.pointLight);
         this.scene.add(pointLightBg);
@@ -776,7 +779,7 @@ export default {
       this.camera = new THREE.PerspectiveCamera(75, W / H, 10, 1000); //75
       this.scene.fog = new THREE.Fog("#faf6f4", 100, 400);
 
-      // this.lights();
+      this.lights();
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
       this.controls.minDistance = 50;
@@ -825,7 +828,7 @@ export default {
       );
 
       this.scene.add(this.objtemp);
-      console.log(this.scene)
+      console.log(this.scene);
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({

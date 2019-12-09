@@ -229,9 +229,9 @@ body {
         &::after {
           content: "";
           position: absolute;
-          height: 19px;
+          height: 17px;
           width: 28px;
-          background-image: url(../src/assets/sun-empty.svg);
+          background-image: url(../src/assets/moon.svg);
           background-size: contain;
           background-repeat: no-repeat;
           left: 0;
@@ -1029,6 +1029,10 @@ header {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+.dropdown:hover .dropdown-content.clicked {
+  display: none;
+}
+
 .dropdown:hover .dropbtn {
   &::after {
     background-image: url(../src/assets/arrow-dropup.svg);
