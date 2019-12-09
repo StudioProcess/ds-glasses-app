@@ -86,7 +86,7 @@ body {
     font-family: "Roboto", sans-serif;
     font-size: 13px;
     letter-spacing: 1.25px;
-    text-decoration: underline;
+    // text-decoration: underline;
     text-transform: uppercase;
   }
   &-small {
@@ -170,10 +170,12 @@ body {
     padding: inherit;
     height: 6vh;
     overflow: hidden;
-
+    
     li {
       width: 33%;
-      border-right: 1px solid #00000020;
+      &:not(:last-child) {
+        border-right: 1px solid #00000020;
+      }
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -183,17 +185,7 @@ body {
         background: #00000010;
       }
     }
-    &.nightmode {
-      border-top: 1px solid #ffffff20;
 
-      li {
-        color: #fff;
-        border-right: 1px solid #ffffff20;
-        &:hover {
-          background: #ffffff10;
-        }
-      }
-    }
     .navigation-element {
       height: 41px;
       width: 28px;
@@ -233,6 +225,21 @@ body {
           margin-top: 13px;
         }
       }
+      &.nightmode {
+        &::after {
+          content: "";
+          position: absolute;
+          height: 19px;
+          width: 28px;
+          background-image: url(../src/assets/sun-empty.svg);
+          background-size: contain;
+          background-repeat: no-repeat;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+          margin-top: 12px;
+        }
+      }
       &.expanded {
         &::after {
           content: "";
@@ -249,14 +256,12 @@ body {
         }
       }
       &.active {
-        transform: scale(0.8);
-        border: 1px solid #000;
-        &.plus::after {
-          margin-top: 20px;
-          background-image: url(../src/assets/minus.svg);
+        &.nightmode::after {
+          margin-top: 13px;
+          height: 16px;
+          background-image: url(../src/assets/sun.svg);
         }
         &.expanded::after {
-          // margin-top: 20px;
           background-image: url(../src/assets/shrink.svg);
         }
         &.fullscreen::after {
@@ -266,6 +271,35 @@ body {
       }
       &:not(:first-child) {
         margin-top: 8px;
+      }
+    }
+    &.nightmode {
+      border-top: 1px solid #ffffff20;
+      .fullscreen::after {
+        background-image: url(../src/assets/full-screen-white.svg);
+      }
+      .expanded::after {
+        background-image: url(../src/assets/expand-white.svg);
+      }
+      .fullscreen.active {
+        &::after {
+          background-image: url(../src/assets/contract-white.svg);
+        }
+      }
+      .expanded.active {
+        &::after {
+          background-image: url(../src/assets/shrink-white.svg);
+        }
+      }
+      li {
+        color: #fff;
+        
+        &:not(:last-child) {
+          border-right: 1px solid #ffffff20;
+        }
+        &:hover {
+          background: #ffffff10;
+        }
       }
     }
   }
@@ -381,7 +415,7 @@ body {
   z-index: 10;
   padding-top: 44px;
   position: relative;
-  cursor: ew-resize;
+
   .material-index {
     position: absolute;
     z-index: 999999;
@@ -442,6 +476,7 @@ body {
     width: 79.4%;
     height: 72px;
     margin-left: 9.4%;
+    cursor: ew-resize;
     &:not(:first-child) {
       margin-top: 8px;
       margin-top: 2px;
@@ -944,6 +979,61 @@ header {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent black;
+}
+
+.dropbtn {
+
+  border: none;
+  cursor: pointer;
+  &::after {
+    content: "";
+    position: absolute;
+    background-image: url(../src/assets/arrow-dropdown.svg);
+    height: 14px;
+    width: 14px;
+    background-size: contain;
+    // margin-top: -2px;
+
+  }
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 4px 6px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown:hover .dropbtn {
+  &::after {
+    background-image: url(../src/assets/arrow-dropup.svg);
+  }
+  
 }
 @import "./variables";
 @import "./buttons";

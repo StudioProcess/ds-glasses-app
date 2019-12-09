@@ -18,7 +18,7 @@
       </li>
       <li v-on:click="nightmode()">
         <span
-          :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
+          :class="[nightMode ? 'active navigation-element nightmode' : 'navigation-element nightmode']"
         ></span>
         <p class="text-button">Nightmode</p>
       </li>
@@ -114,7 +114,10 @@ export default {
       occlusionRenderTarget: null,
       occlusionComposer: null,
       composer: null,
-      composerTwo: null
+      lightSphere: null,
+      nMPoint1: null,
+      nMPoint2: null,
+      nMPoint3: null
     };
   },
 
@@ -320,33 +323,53 @@ export default {
   },
   methods: {
     setupPostprocessing: function() {
-      let geometry = new THREE.SphereBufferGeometry(90.9, 2, 1);
-      let material = new THREE.PointsMaterial( { color: 0x888888, size: 10, transparency: true, alphaTest: 0.5, map: new THREE.TextureLoader().load(particle)} );
-      
-      let materialTwo = new THREE.MeshBasicMaterial({ color: 0xeeff00 });
+      let geometry = new THREE.ConeGeometry(300, 300, 2);
+      // var geometry = new THREE.Geometry();
+      // var v1 = new THREE.Vector3(20, 0, 20);
+      // var v2 = new THREE.Vector3(20, 0, 0);
+      // var v3 = new THREE.Vector3(20, 20, 0);
+
+      // geometry.vertices.push(v1);
+      // geometry.vertices.push(v2);
+      // geometry.vertices.push(v3);
+
+      // geometry.faces.push(new THREE.Face3(0, 1, 2));
+      // geometry.computeFaceNormals();
+      let material = new THREE.PointsMaterial({
+        color: 0x888888,
+        size: 30,
+        transparency: true,
+        alphaTest: 0.5,
+        map: new THREE.TextureLoader().load(particle)
+      });
+
+      let materialTwo = new THREE.MeshNormalMaterial({ color: 0xeeff00, wireframe: true });
       let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
-      let lightSphere = new THREE.Points(geometry, material);
-      let lightSphereTwo = new THREE.Mesh(geometry, materialTwo);
-      // let rotationSphere = new THREE.Mesh(rotationSphereGeo, material);
+      this.lightSphere = new THREE.Points(geometry, material);
+      this.lightSphere.position.z = 70;
+      this.lightSphere.layers.set(1);
 
-      lightSphere.position.z = 70;
-      lightSphere.layers.set(1);
-
-      lightSphereTwo.layers.set(1);
-      lightSphereTwo.position.set(20, -10, -80);
       let pointLightTwo = new THREE.PointLight(0xffffff, 13.0, 220);
       pointLightTwo.position.set(20, -10, -80);
       pointLightTwo.layers.set(1);
 
-      this.nightModeLightsGroup.add(lightSphere);
-      // this.nightModeLightsGroup.add(lightSphereTwo);
-      // this.nightModeLightsGroup.add(pointLightTwo);
-      // this.scene.add(this.nightModeLightsGroup);
+      TweenMax.to(this.lightSphere.rotation, 4000.0, {
+        y: 360,
+        z: 180,
+        repeat: -1
+      });
 
-      let pointLightStart = new THREE.PointLight(0xffffff, 13.0, 220);
-      pointLightStart.position.z = 70;
-      pointLightStart.layers.set(1);
-      this.nightModeLightsGroup.add(pointLightStart);
+      this.nightModeLightsGroup.add(this.lightSphere);
+
+      this.nMPoint1 = new THREE.PointLight(0x00ffff, 13.0, 220);
+      this.nMPoint1.layers.set(1);
+      this.nMPoint2 = new THREE.PointLight(0xff0000, 13.0, 220);
+      this.nMPoint2.layers.set(1);
+      this.nMPoint3 = new THREE.PointLight(0xffff00, 13.0, 220);
+      this.nMPoint3.layers.set(1);
+      this.nightModeLightsGroup.add(this.nMPoint1);
+      this.nightModeLightsGroup.add(this.nMPoint2);
+      this.nightModeLightsGroup.add(this.nMPoint3);
       // if(this.nightMode){
       // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
       //     y: 360,
@@ -359,35 +382,24 @@ export default {
       // }
 
       this.nightModeLightsGroup.layers.set(1);
-      console.log(GodRaysEffect)
-      let godraysEffect = new GodRaysEffect(this.camera, lightSphere, {
+      console.log(GodRaysEffect);
+      let godraysEffect = new GodRaysEffect(this.camera, this.lightSphere, {
         resolutionScale: 1,
         density: 0.8,
-        decay: 0.95,
+        decay: 0.8,
         weight: 0.9,
         samples: 100,
-        resolution: 240
+        exposure: 1,
+        resolution: 240,
+        bluriness: 9
       });
-      let godraysEffectTwo = new GodRaysEffect(this.camera, lightSphereTwo, {
-        resolutionScale: 1,
-        density: 0.8,
-        decay: 0.95,
-        weight: 0.9,
-        samples: 100,
-        resolution: 240
-      });
+
       let renderPass = new RenderPass(this.scene, this.camera);
-      let renderPassTwo = new RenderPass(this.scene, this.camera);
       let effectPass = new EffectPass(this.camera, godraysEffect);
-      let effectPassTwo = new EffectPass(this.camera, godraysEffectTwo);
       effectPass.renderToScreen = true;
-      effectPassTwo.renderToScreen = true;
       this.composer = new EffectComposer(this.renderer);
-      this.composerTwo = new EffectComposer(this.renderer);
       this.composer.addPass(renderPass);
       this.composer.addPass(effectPass);
-      this.composerTwo.addPass(renderPassTwo);
-      this.composerTwo.addPass(effectPassTwo);
     },
     nightmode: function() {
       this.nightMode = !this.nightMode;
@@ -1041,10 +1053,15 @@ export default {
       this.renderer.render(this.scene, this.camera);
 
       if (this.nightMode) {
-        // this.camera.layers.set(1);
-        // this.composerTwo.render(this.scene, this.camera);
+        let vector = this.lightSphere.geometry.vertices[1].clone();
+        let vectorTwo = this.lightSphere.geometry.vertices[2].clone();
+        let vectorThree = this.lightSphere.geometry.vertices[3].clone();
+        vector.applyMatrix4(this.lightSphere.matrixWorld);
+        // console.log(vector.x);
+        this.nMPoint1.position.set(vector.x, vector.y, vector.z);
+        this.nMPoint2.position.set(vectorTwo.x, vectorTwo.y, vectorTwo.z);
+        this.nMPoint3.position.set(vectorThree.x, vectorThree.y, vectorThree.z);
         this.camera.layers.set(1);
-        //  this.renderer.autoClear = false;
         this.composer.render(this.scene, this.camera);
       }
 

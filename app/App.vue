@@ -27,68 +27,68 @@
       <Glasses v-on:sendMessage="setCurrentModel($event)" :hashModelNumber="setModelFromUrl"></Glasses>
       <div class="material-picker-container">
         <div class="material-picker-stretch">
-        <Materials
-          index="1"
-          v-on:passRandomMaterialBack="passRandomMaterials($event)"
-          v-on:setAllHashMaterials="passRandomMaterials($event)"
-          :hashMaterial="setMaterialFromUrl"
-          v-on:setHoveredMaterial="setHoveredMaterial($event)"
-          v-on:setMaterial="setMaterialName($event)"
-          swiperClass="Swiper1"
-          :resetMaterialsTrigger="resetMaterialsTrigger"
-          :randomMaterialsTrigger="randomMaterialsTrigger"
-        ></Materials>
-        <Materials
-          index="2"
-          v-on:passRandomMaterialBack="passRandomMaterials($event)"
-          v-on:setAllHashMaterials="collectHashMaterials($event)"
-          :hashMaterial="setMaterialFromUrl"
-          v-on:setHoveredMaterial="setHoveredMaterial($event)"
-          v-on:setMaterial="setMaterialName($event)"
-          swiperClass="Swiper2"
-          :resetMaterialsTrigger="resetMaterialsTrigger"
-          :randomMaterialsTrigger="randomMaterialsTrigger"
-        ></Materials>
-        <Materials
-          index="3"
-          v-on:passRandomMaterialBack="passRandomMaterials($event)"
-          v-on:setAllHashMaterials="collectHashMaterials($event)"
-          :hashMaterial="setMaterialFromUrl"
-          v-on:setHoveredMaterial="setHoveredMaterial($event)"
-          v-on:setMaterial="setMaterialName($event)"
-          swiperClass="Swiper3"
-          :resetMaterialsTrigger="resetMaterialsTrigger"
-          :randomMaterialsTrigger="randomMaterialsTrigger"
-        ></Materials>
-        <Materials
-          index="4"
-          v-on:passRandomMaterialBack="passRandomMaterials($event)"
-          v-on:setAllHashMaterials="collectHashMaterials($event)"
-          :hashMaterial="setMaterialFromUrl"
-          v-on:setHoveredMaterial="setHoveredMaterial($event)"
-          v-on:setMaterial="setMaterialName($event)"
-          swiperClass="Swiper4"
-          :resetMaterialsTrigger="resetMaterialsTrigger"
-          :randomMaterialsTrigger="randomMaterialsTrigger"
-        ></Materials>
-        <Materials
-          index="5"
-          v-on:passRandomMaterialBack="passRandomMaterials($event)"
-          v-on:setAllHashMaterials="collectHashMaterials($event)"
-          :hashMaterial="setMaterialFromUrl"
-          v-on:setHoveredMaterial="setHoveredMaterial($event)"
-          v-on:setMaterial="setMaterialName($event)"
-          swiperClass="Swiper5"
-          :resetMaterialsTrigger="resetMaterialsTrigger"
-          :randomMaterialsTrigger="randomMaterialsTrigger"
-        ></Materials>
-             <div class="random-butons">
-        <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
-        <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
-        </div>
+          <Materials
+            index="1"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
+            v-on:setAllHashMaterials="passRandomMaterials($event)"
+            :hashMaterial="setMaterialFromUrl"
+            v-on:setHoveredMaterial="setHoveredMaterial($event)"
+            v-on:setMaterial="setMaterialName($event)"
+            swiperClass="Swiper1"
+            :resetMaterialsTrigger="resetMaterialsTrigger"
+            :randomMaterialsTrigger="randomMaterialsTrigger"
+          ></Materials>
+          <Materials
+            index="2"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
+            v-on:setAllHashMaterials="collectHashMaterials($event)"
+            :hashMaterial="setMaterialFromUrl"
+            v-on:setHoveredMaterial="setHoveredMaterial($event)"
+            v-on:setMaterial="setMaterialName($event)"
+            swiperClass="Swiper2"
+            :resetMaterialsTrigger="resetMaterialsTrigger"
+            :randomMaterialsTrigger="randomMaterialsTrigger"
+          ></Materials>
+          <Materials
+            index="3"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
+            v-on:setAllHashMaterials="collectHashMaterials($event)"
+            :hashMaterial="setMaterialFromUrl"
+            v-on:setHoveredMaterial="setHoveredMaterial($event)"
+            v-on:setMaterial="setMaterialName($event)"
+            swiperClass="Swiper3"
+            :resetMaterialsTrigger="resetMaterialsTrigger"
+            :randomMaterialsTrigger="randomMaterialsTrigger"
+          ></Materials>
+          <Materials
+            index="4"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
+            v-on:setAllHashMaterials="collectHashMaterials($event)"
+            :hashMaterial="setMaterialFromUrl"
+            v-on:setHoveredMaterial="setHoveredMaterial($event)"
+            v-on:setMaterial="setMaterialName($event)"
+            swiperClass="Swiper4"
+            :resetMaterialsTrigger="resetMaterialsTrigger"
+            :randomMaterialsTrigger="randomMaterialsTrigger"
+          ></Materials>
+          <Materials
+            index="5"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
+            v-on:setAllHashMaterials="collectHashMaterials($event)"
+            :hashMaterial="setMaterialFromUrl"
+            v-on:setHoveredMaterial="setHoveredMaterial($event)"
+            v-on:setMaterial="setMaterialName($event)"
+            swiperClass="Swiper5"
+            :resetMaterialsTrigger="resetMaterialsTrigger"
+            :randomMaterialsTrigger="randomMaterialsTrigger"
+          ></Materials>
+          <div class="random-butons">
+            <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
+            <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
+          </div>
         </div>
         <div class="payment-section">
-           <p class="text text-description description">Produktinformation</p>
+          <p class="text text-description description">Produktinformation</p>
           <h2>{{model[0]}}</h2>
           <div class="material-display">
             {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
@@ -100,6 +100,15 @@
           <span class="sunglasses text-medium">
             Sonnenbrille:
             <input v-model="useAsSunglasses" type="checkbox" />
+            <div v-if="useAsSunglasses" class="dropdown">
+              <button class="dropbtn">{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
+              <div class="dropdown-content">
+                <a v-on:click="sunglasses = 'Schwarz'">Schwarz</a>
+                <a v-on:click="sunglasses = 'Braun'">Braun</a>
+                <a v-on:click="sunglasses = 'Schwarz verlaufend'">Schwarz verlaufend</a>
+                <a v-on:click="sunglasses = 'Braun verlaufend'">Braun verlaufend</a>
+              </div>
+            </div>
             <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->
           </span>
 
@@ -110,7 +119,7 @@
 
           <span class="copy-buy">
             <a
-              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille') + '%0D%0A%0D%0ABestellcode: ' + hashCode]"
+              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille' + sunglasses) + '%0D%0A%0D%0ABestellcode: ' + hashCode]"
             >
               <button
                 :class="[fullCode ? 'buy-button  text-button active' : 'buy-button text-button ']"
@@ -174,7 +183,8 @@ export default {
       Swiper4: null,
       Swiper5: null,
       msg: "",
-      useAsSunglasses: false
+      useAsSunglasses: false,
+      sunglasses: '',
     };
   },
   watch: {
@@ -189,25 +199,23 @@ export default {
   },
   methods: {
     resetMaterials() {
-        this.resetMaterialsTrigger = true;
-        setTimeout(() => {
-          this.resetMaterialsTrigger = false;
-        }, 10);
+      this.resetMaterialsTrigger = true;
+      setTimeout(() => {
+        this.resetMaterialsTrigger = false;
+      }, 10);
       this.encodedArray.splice(1, 5);
       setTimeout(() => {
         this.sentToEncode(); // reset if less than 5 materials are set
         // window.location.href.split('#')[0];
-         location.hash = "";
-         this.fullCode = false;
+        location.hash = "";
+        this.fullCode = false;
       }, 100);
     },
     randomMaterials() {
-        this.randomMaterialsTrigger = true;
-        setTimeout(() => {
-          this.randomMaterialsTrigger = false;
-        }, 10);
-
-
+      this.randomMaterialsTrigger = true;
+      setTimeout(() => {
+        this.randomMaterialsTrigger = false;
+      }, 10);
     },
     copyUrl() {
       let dummy = document.createElement("input");
@@ -224,8 +232,8 @@ export default {
       }, 2000);
       console.log("hashUpdate" + this.ignoreHashChange);
     },
-    passRandomMaterials(material){
-         console.log(material)
+    passRandomMaterials(material) {
+      console.log(material);
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
@@ -234,7 +242,7 @@ export default {
       this.allHashMaterialsModel.push(this.allHashMaterials);
     },
     collectHashMaterials(material) {
-      console.log(material)
+      console.log(material);
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
@@ -331,8 +339,8 @@ export default {
           }
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
-          console.log("temparray:")
-          console.log(tempArray)
+          console.log("temparray:");
+          console.log(tempArray);
           this.hashModelChange = true;
           this.validHash = true;
           console.log("Decode (from URL) OK");
