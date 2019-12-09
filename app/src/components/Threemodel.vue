@@ -101,7 +101,7 @@ export default {
       modelHasLoaded: false,
       currentMaterials: [],
       nightMode: false,
-      pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
+      pointLight: new THREE.PointLight(0xffffff, 3.9), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
       pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
       pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
@@ -452,7 +452,7 @@ export default {
         this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
         this.objtemp.children[0].getObjectByName(
           name
-        ).material.emissive = false;
+        ).material.emissive = 0x000000;
 
         this.objtemp.children[0].getObjectByName(
           name

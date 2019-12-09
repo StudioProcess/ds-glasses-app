@@ -148,7 +148,7 @@ body {
       opacity: 0.3;
 
       & .view-plus:not(.active) {
-        background: pink;
+        // background: pink;
       }
     }
   }
@@ -170,7 +170,7 @@ body {
     padding: inherit;
     height: 6vh;
     overflow: hidden;
-    
+
     li {
       width: 33%;
       &:not(:last-child) {
@@ -269,7 +269,6 @@ body {
           background-image: url(../src/assets/shrink.svg);
           width: 24px;
           margin-top: 16.5px;
-    
         }
         &.fullscreen::after {
           margin-top: 12px;
@@ -300,7 +299,7 @@ body {
       }
       li {
         color: #fff;
-        
+
         &:not(:last-child) {
           border-right: 1px solid #ffffff20;
         }
@@ -353,8 +352,8 @@ body {
     text-align: center;
     border-bottom: 1px solid #00000020;
     height: 14.14%;
-    &.even{
-      background-color: #F8F5F3;
+    &.even {
+      background-color: #f8f5f3;
     }
     &:hover {
       cursor: pointer;
@@ -499,7 +498,6 @@ body {
 
     .overview,
     .tab-overview {
-    
       position: relative;
       display: flex;
       list-style-type: none;
@@ -525,14 +523,38 @@ body {
         }
       }
       .swiper {
-        height: 34px;
         height: 30px;
-        // background-color: #fcfcfc;
         position: absolute;
         display: block;
         width: 91%;
         padding: 35px 17px 20px 9px;
         padding: 30px 17px 14px 9px;
+        .detector {
+          // border:solid red;
+          width: 42px;
+          height: 100%;
+          position: absolute;
+          z-index: 999;
+          pointer-events: none;
+          &-left {
+            top: 0;
+            left: 0;
+          }
+          &-right {
+            // border:solid blue;
+            top: 0;
+            right: 0;
+          }
+        }
+        &:hover {
+          // padding: 30px 16px 14px 14px;
+          // width: 85%;
+          
+
+          // width: 81%;
+          // margin-left: 5%;
+          // background: pink;
+        }
         &-text-selected {
           position: absolute;
           z-index: 4;
@@ -552,6 +574,7 @@ body {
           font-weight: 500;
 
           background: #f1edeb;
+
           &::after {
             content: "";
             position: absolute;
@@ -566,8 +589,8 @@ body {
         }
       }
       &.even {
-        background-color: #F8F5F3;
-        background-color: #F8F5F360;
+        background-color: #f8f5f3;
+        background-color: #f8f5f360;
         .swiper .swiper-text-selected {
           background: #c2c2c2;
           background: #cdc8c6;
@@ -585,7 +608,6 @@ body {
       z-index: 999;
     }
   }
- 
 }
 
 .swiper-container {
@@ -631,7 +653,7 @@ body {
     display: none;
   }
   &:not(.swiper-slide-selected):hover {
-    outline: 1px black solid; /* inner stroke */
+    // outline: 1px black solid; /* inner stroke */
     outline-offset: -1px;
     transform: scale(1.1);
     z-index: 90;
@@ -979,8 +1001,16 @@ header {
   border-color: transparent black transparent transparent;
 }
 .hovering-prev .tooltip-material {
-  margin-left: 50px;
-  margin-top: -12px;
+  // margin-left: 50px;
+  // margin-top: -12px;
+
+  transform: translateX(-11%) translateY(-4px);
+}
+ .hovering-next.blocked{
+    display: none;
+}
+.hovering-prev.blocked {
+  display: none;
 }
 .hovering-next .tooltip-material {
   margin-top: -12px;
@@ -998,7 +1028,6 @@ header {
 }
 
 .dropbtn {
-
   border: none;
   cursor: pointer;
   &.alert {
@@ -1012,7 +1041,6 @@ header {
     width: 14px;
     background-size: contain;
     // margin-top: -2px;
-
   }
 }
 
@@ -1028,7 +1056,7 @@ header {
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
@@ -1042,7 +1070,9 @@ header {
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
@@ -1056,7 +1086,6 @@ header {
   &::after {
     background-image: url(../src/assets/arrow-dropup.svg);
   }
-  
 }
 @import "./variables";
 @import "./buttons";

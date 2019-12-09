@@ -110,10 +110,10 @@
                 @mouseover="dropdownClicked = false"
               >{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
               <div :class="[dropdownClicked ? 'dropdown-content clicked' : 'dropdown-content']">
-                <a v-on:click="setSunglasses('Schwarz')">Schwarz</a>
-                <a v-on:click="setSunglasses('Braun')">Braun</a>
-                <a v-on:click="setSunglasses('Schwarz verlaufend')">Schwarz verlaufend</a>
-                <a v-on:click="setSunglasses('Braun verlaufend')">Braun verlaufend</a>
+                <a class="text-medium" v-on:click="setSunglasses('Schwarz')">Schwarz</a>
+                <a class="text-medium" v-on:click="setSunglasses('Braun')">Braun</a>
+                <a class="text-medium" v-on:click="setSunglasses('Schwarz verlaufend')">Schwarz verlaufend</a>
+                <a class="text-medium" v-on:click="setSunglasses('Braun verlaufend')">Braun verlaufend</a>
               </div>
             </div>
             <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->

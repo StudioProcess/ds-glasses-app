@@ -22,7 +22,10 @@
           v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
         >Stoff</li>
       </ul>
+
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
+        <span ref="detectorLeft" class="detector detector-left"></span>
+        <span ref="detectorRight" class="detector detector-right"></span>
         <strong
           v-if="selectedMaterial !== 'empty'"
           class="swiper-text-selected text-product-description"
@@ -88,9 +91,9 @@
           </span>
         </div>
         <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
-        <span ref="buttonPrev" :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
-        <span ref="buttonNext" :class="'swiper-button-next swiper-button-next'+(index) "></span>
       </span>
+      <span ref="buttonPrev" :class="'swiper-button-prev swiper-button-prev'+(index) "></span>
+      <span ref="buttonNext" :class="'swiper-button-next swiper-button-next'+(index) "></span>
     </ul>
   </div>
 </template>
@@ -446,7 +449,7 @@ export default {
     setTimeout(() => {
       this.mSwiperClass = new Swiper(".swiper-container" + this.index, {
         spaceBetween: 4,
-        slidesPerGroup: 7,
+        // slidesPerGroup: 7,
         loop: false,
         loopFillGroupWithBlank: false,
         watchOverflow: true,
@@ -504,34 +507,41 @@ export default {
     },
     detectFirstChild(hovered, event) {
       let currentElement = event.currentTarget.getBoundingClientRect();
+      let detectorLeft = this.$refs.detectorLeft.getBoundingClientRect();
+      let detectorRight = this.$refs.detectorRight.getBoundingClientRect();
       let buttonPrev = this.$refs.buttonPrev.getBoundingClientRect();
       let buttonNext = this.$refs.buttonNext.getBoundingClientRect();
 
-      // console.log(event);
-      // console.log(this.$refs.woodLabels[1]);
-      // this.$refs.woodLabels[event.currentTarget.id-1].style.backgroundColor =
-      //   "red";
-
-      // var oTop = event.currentTarget.offsetTop;
-      // var oLeft = event.currentTarget.offsetLeft;
-      // this.$refs.woodLabels[event.currentTarget.id-1].style.top = "80px";
-      // this.$refs.woodLabels[event.currentTarget.id-1].style.left = oLeft +"px";
-      // this.$refs.woodLabels[event.currentTarget.id-1].style.position = "absolute";
-
-      let overlapPrev = !(
+      let overlapButtonPrev = !(
         buttonPrev.right < currentElement.left ||
         buttonPrev.left > currentElement.right ||
         buttonPrev.bottom < currentElement.top ||
         buttonPrev.top > currentElement.bottom
       );
-
-      let overlapNext = !(
+      let overlapButtonNext = !(
         buttonNext.right < currentElement.left ||
         buttonNext.left > currentElement.right ||
         buttonNext.bottom < currentElement.top ||
         buttonNext.top > currentElement.bottom
       );
+      // console.log(detectorLeft.right/1.05)
+      // console.log(currentElement.left)
+      let overlapPrev = !(
+        detectorLeft.right < currentElement.left ||
+        detectorLeft.left > currentElement.right ||
+        detectorLeft.bottom < currentElement.top ||
+        detectorLeft.top > currentElement.bottom
+      );
+
+      let overlapNext = !(
+        detectorRight.right < currentElement.left ||
+        detectorRight.left > currentElement.right ||
+        detectorRight.bottom < currentElement.top ||
+        detectorRight.top > currentElement.bottom
+      );
+
       if (overlapPrev) {
+        console.log("hovering prev");
         event.currentTarget.children[1].classList.add("hovering-prev");
       }
 
@@ -543,6 +553,16 @@ export default {
       }
       if (!overlapPrev) {
         event.currentTarget.children[1].classList.remove("hovering-prev");
+      }
+      if (overlapButtonPrev || overlapButtonNext) {
+        console.log(event.currentTarget.id);
+        if (event.currentTarget.id !== '1') {
+          console.log("blocked")
+          event.currentTarget.children[1].classList.add("blocked");
+        }
+      }
+      if (!overlapButtonPrev && !overlapButtonNext) {
+        event.currentTarget.children[1].classList.remove("blocked");
       }
     },
     deactivateSwiper: function(reactivate) {
