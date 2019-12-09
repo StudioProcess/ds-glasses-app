@@ -98,10 +98,10 @@ export default {
       modelHasLoaded: false,
       currentMaterials: [],
       nightMode: false,
-      // pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
-      // pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
-      // pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
-      // pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
+      pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
+      pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
+      pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
+      pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
@@ -409,7 +409,7 @@ export default {
     nightmode: function() {
       this.nightMode = !this.nightMode;
       if (this.nightMode) {
-        this.scene.add(this.nightModeLightsGroup);
+        // this.scene.add(this.nightModeLightsGroup);
         // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
         //   y: 360,
         //   z: 180,
@@ -419,7 +419,7 @@ export default {
       } else {
         this.scene.remove(this.nightModeLightsGroup);
 
-        // this.lights();
+        this.lights();
       }
     },
     hoverMaterial: function(name, expand) {
@@ -708,11 +708,11 @@ export default {
       pointLightBg.intensity = 1.9;
 
       
-      // pointLightBg.layers.set(4); //backgroundLayer
+      pointLightBg.layers.set(4); //backgroundLayer
 
       let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
       pointLightStart.position.z = -160;
-      // pointLightStart.layers.set(0); //backgroundLayer
+      pointLightStart.layers.set(0); //backgroundLayer
 
       this.pointLightBack.position.set(0, -10, 90);
 
@@ -746,13 +746,13 @@ export default {
         this.scene.remove(pointLightStart);
         this.scene.remove(this.pointLightBack);
       } else {
-        // this.scene.add(pointLightBg);
+        this.scene.add(pointLightBg);
         // this.scene.add(directionalLight);
-        // this.scene.add(this.pointLightLeft);
-        // this.scene.add(this.pointLight);
-        // this.scene.add(pointLightBg);
-        // this.scene.add(pointLightStart);
-        // this.scene.add(this.pointLightBack);
+        this.scene.add(this.pointLightLeft);
+        this.scene.add(this.pointLight);
+        this.scene.add(pointLightBg);
+        this.scene.add(pointLightStart);
+        this.scene.add(this.pointLightBack);
       }
     },
     setup: function() {
