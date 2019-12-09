@@ -326,7 +326,6 @@ body {
     width: 100%;
 
     .three-navigation {
-      left: 6.5%;
     }
   }
 }
@@ -744,6 +743,10 @@ body {
     clear: both;
     display: block;
     margin-top: 16px;
+    pointer-events: none;
+    &.active {
+      pointer-events: all;
+    }
   }
   .code {
     max-width: 124px;
@@ -839,14 +842,10 @@ body {
     text-decoration: none;
     font-weight: 500;
     text-transform: uppercase;
-    // border-radius: 4px;
     font-family: "Roboto", sans-serif;
     letter-spacing: 0.4px;
     padding: 0 16px;
     opacity: 0.3;
-    // right: 6%;
-    // position: absolute;
-    cursor: pointer;
     pointer-events: none;
     border: none;
     &.active {
@@ -1002,6 +1001,9 @@ header {
 
   border: none;
   cursor: pointer;
+  &.alert {
+    color: red;
+  }
   &::after {
     content: "";
     position: absolute;

@@ -27,7 +27,7 @@
     <span
       :class="[(positionLocked && !this.$refs.posOne.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
       ref="posOne"
-      v-on:click="setCameraPosition($event, 0, 0, -20, 0, '+=0.9', '-=0.9')"
+      v-on:click="setCameraPosition($event, 0, 0, -70, 0, '+=0.9', '-=0.9')"
     ></span>
     <span
       :class="[(positionLocked && !this.$refs.posTwo.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
@@ -488,6 +488,7 @@ export default {
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth / 2, window.innerHeight);
       }
+      this.onWindowResize();
     },
     zoom: function() {
       this.zoomed = !this.zoomed;
@@ -862,16 +863,13 @@ export default {
         transparency: 0.8
       });
       let metall = new THREE.MeshStandardMaterial({
-        // shininess: 0,
         emissive: 0x1f1f1f, //6b6b6b
         roughness: 3.8,
         metalness: 0.9,
         color: "#303030",
-        // specular: 0xebebeb,
         roughnessMap: new THREE.TextureLoader().load(roughness_map_metal),
         map: new THREE.TextureLoader().load(map_metal),
       });
-      console.log(metall)
       const loader = new THREE.OBJLoader();
       if (!this.isLoading) {
         loader.load(
@@ -891,8 +889,11 @@ export default {
             this.modelHasLoaded = true;
             this.expanded = false;
             this.$emit("modelLoaded", true);
-            console.log(object.getObjectByName("Scharnier"))
             object.getObjectByName("Scharnier").position.z += 1;
+            if(model === model3 || model === model6){
+              object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
+            }
+            console.log(model === model3 || model === model6);
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
