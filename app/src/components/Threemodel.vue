@@ -98,10 +98,10 @@ export default {
       modelHasLoaded: false,
       currentMaterials: [],
       nightMode: false,
-      pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
-      pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
-      pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
-      pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
+      // pointLight: new THREE.PointLight(0xffffff, 13.9, 360), //4.9 360
+      // pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
+      // pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
+      // pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       normal_m: new THREE.TextureLoader().load(normal_map),
@@ -419,7 +419,7 @@ export default {
       } else {
         this.scene.remove(this.nightModeLightsGroup);
 
-        this.lights();
+        // this.lights();
       }
     },
     hoverMaterial: function(name, expand) {
@@ -707,12 +707,12 @@ export default {
       pointLightBg.copy(this.pointLight);
       pointLightBg.intensity = 1.9;
 
-      this.scene.add(pointLightBg);
-      pointLightBg.layers.set(4); //backgroundLayer
+      
+      // pointLightBg.layers.set(4); //backgroundLayer
 
       let pointLightStart = new THREE.PointLight(0xffffff, 2.0, 220);
       pointLightStart.position.z = -160;
-      pointLightStart.layers.set(0); //backgroundLayer
+      // pointLightStart.layers.set(0); //backgroundLayer
 
       this.pointLightBack.position.set(0, -10, 90);
 
@@ -746,6 +746,7 @@ export default {
         this.scene.remove(pointLightStart);
         this.scene.remove(this.pointLightBack);
       } else {
+        // this.scene.add(pointLightBg);
         // this.scene.add(directionalLight);
         // this.scene.add(this.pointLightLeft);
         // this.scene.add(this.pointLight);
@@ -775,7 +776,7 @@ export default {
       this.camera = new THREE.PerspectiveCamera(75, W / H, 10, 1000); //75
       this.scene.fog = new THREE.Fog("#faf6f4", 100, 400);
 
-      this.lights();
+      // this.lights();
 
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
       this.controls.minDistance = 50;
@@ -824,6 +825,7 @@ export default {
       );
 
       this.scene.add(this.objtemp);
+      console.log(this.scene)
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
