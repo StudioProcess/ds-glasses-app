@@ -5,7 +5,7 @@
       v-for="(glassesModel, index) in glasses"
       v-on:click="currentModelLoaded && clickedGlasses(index, glassesModel.name, glassesModel.model)"
       @mouseover="hoveringGlasses(index)"
-      v-bind:class="{selected: (isSelected && currentIndex === index || !isSelected && index === 0 )}"
+      v-bind:class="[(isSelected && currentIndex === index || !isSelected && index === 0 ) && 'selected', !(index % 2 === 0) && 'even' ]"
     >
       <img :src="[glassesModel.url]" :alt="glassesModel.name" />
 

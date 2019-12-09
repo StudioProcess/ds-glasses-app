@@ -5,7 +5,7 @@
     class="material-picker"
   >
     <!-- <span class="index text-medium">{{index}}</span> -->
-    <ul class="overview">
+    <ul :class="[!(index % 2 === 0) ?  'overview even' : 'overview']">
       <span class="text-description material-index">{{index}}</span>
 
       <ul class="tab-overview">
@@ -270,7 +270,7 @@ export default {
           index: 24
         },
         {
-          name: "Verpackungsmaterial/Packpapier",
+          name: "Packpapier",
           texture: images["paper"]["verpackungsmaterial"],
           thumb: thumbs["paper"]["thumbnails"]["verpackungsmaterial"],
           index: 25
