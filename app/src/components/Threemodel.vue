@@ -103,8 +103,8 @@ export default {
       nightMode: false,
       pointLight: new THREE.PointLight(0xffffff, 3.9), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
-      pointLightLeft: new THREE.PointLight(0xffffff, 3.9, 310),
-      pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
+      pointLightLeft: new THREE.PointLight(0xffffff, 1.9),
+      pointLightRight: new THREE.PointLight(0xffffff, 2.9),
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
@@ -357,7 +357,7 @@ export default {
       this.lightSphere.position.z = 70;
       this.lightSphere.layers.set(1);
 
-      let pointLightTwo = new THREE.PointLight(0xffffff, 13.0, 220);
+      let pointLightTwo = new THREE.PointLight(0xffffff, 4.0, 0);
       pointLightTwo.position.set(20, -10, -80);
       pointLightTwo.layers.set(1);
 
@@ -817,7 +817,7 @@ export default {
         function(texture) {
           texture.rotation;
           let depthmat = new THREE.MeshStandardMaterial({
-            color: 0xfff,
+            color: 0x3d3d3d,
             emissive: 0xbfbab8,
             transparent: true,
             wireframe: false,
