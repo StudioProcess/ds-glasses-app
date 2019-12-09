@@ -818,7 +818,7 @@ export default {
             opacity: 0.2,
             map: texture
           });
-          console.log(texture);
+          // console.log(texture);
           let bgPlane = new THREE.Mesh(planeGeo, depthmat);
           this.scene.add(bgPlane);
           bgPlane.layers.set(4);
@@ -828,7 +828,9 @@ export default {
       );
 
       this.scene.add(this.objtemp);
-      console.log(this.scene);
+      console.log("obj:")
+      console.log(this.objtemp)
+      // console.log(this.scene);
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({

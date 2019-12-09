@@ -102,13 +102,12 @@
             {{materialFive}}
           </div>
           <span class="sunglasses text-medium">
-            Sonnenbrille:
+            Sonnenbrille (40€):
             <input v-model="useAsSunglasses" type="checkbox" />
             <div v-if="useAsSunglasses" class="dropdown">
               <button
                 class="dropbtn"
                 @mouseover="dropdownClicked = false"
-           
               >{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
               <div :class="[dropdownClicked ? 'dropdown-content clicked' : 'dropdown-content']">
                 <a v-on:click="setSunglasses('Schwarz')">Schwarz</a>
@@ -123,11 +122,11 @@
           <p
             class="text-medium infoGlass"
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
-          <h3 class="price">{{price}}</h3>
+          <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
           <span class="copy-buy">
             <a
-              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Details deiner Bestellung:%0D%0A'+model[0]+'%0D%0AMaterialien:'+materialOne + materialTwo + materialThree +  materialFour + materialFive + '%0D%0A%0D%0A' + (useAsSunglasses && 'Sonnenbrille' + sunglasses) + '%0D%0A%0D%0ABestellcode: ' + hashCode]"
+              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +'%0D%0AGlas:%20%20%20%20%20%20%20%20%20%20%20%20%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + '%0D%0A%0D%0APreis:%20%20%20%20%20%20%20%20%20%20%20%20%'+ (useAsSunglasses ? (price + 40 + ',00€') : (price + ',00€')) +'%0D%0A%0D%0ABestellcode: ' + hashCode + '%0D%0A%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' +'%0D%0ADieser Link führt direkt zu deiner persönlichen Schwarz-Brille:%20'+currentUrl]"
             >
               <button
                 :class="[fullCode ? 'buy-button  text-button active' : 'buy-button text-button ']"
@@ -160,7 +159,7 @@ export default {
   data: function() {
     return {
       model: [],
-      price: "280,00€",
+      price: 280.0,
       passedMaterial: ["Ahorn", 0],
       logo: logoPath,
       materialOne: "",
@@ -360,15 +359,20 @@ export default {
           console.log("Decode (from URL) OK");
         }
       } else {
-        console.log("ignore changes");
         this.model = ["N°1 - Moluptatum", 1];
-        // this.encodedArray[0] = 1;
       }
     }
   },
   mounted() {
     document.addEventListener("DOMContentLoaded", this.loadFromHash);
     window.addEventListener("hashchange", this.loadFromHash);
+    console.log(this.hashModelChange);
+    console.log(this.model.length);
+    setTimeout(() => {
+      if (!this.hashModelChange && this.model.length === 0) {
+        this.model = ["N°1 - Moluptatum", 1];
+      }
+    }, 50);
   },
   upated() {},
   components: {
