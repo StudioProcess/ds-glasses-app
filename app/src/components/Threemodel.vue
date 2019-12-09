@@ -53,6 +53,9 @@ import model7 from "../assets/models/new_models/model4sl.obj";
 import { OrbitControls } from "../../../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLoader.js";
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
+import roughness_map_metal from "../assets/materials/maps/Metal_rgh.jpg";
+import map_metal from "../assets/materials/maps/Metal_col.jpg";
+
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
 import shadow from "../assets/shadow.png";
@@ -104,6 +107,7 @@ export default {
       pointLightRight: new THREE.PointLight(0xffffff, 3.9, 310),
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
+      roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
       normal_m: new THREE.TextureLoader().load(normal_map),
       isLoading: false,
       pos1: null,
@@ -422,16 +426,17 @@ export default {
       }
     },
     hoverMaterial: function(name, expand) {
-      if(this.modelHasLoaded){
-      TweenMax.to(
-        this.objtemp.children[0].getObjectByName(name).position,
-        1.2,
-        {
-          y: expand === true ? 30 : 0,
-          ease: Power2.easeOut
-        }
-      );
-    }},
+      if (this.modelHasLoaded) {
+        TweenMax.to(
+          this.objtemp.children[0].getObjectByName(name).position,
+          1.2,
+          {
+            y: expand === true ? 30 : 0,
+            ease: Power2.easeOut
+          }
+        );
+      }
+    },
     assignMaterial: function(
       texture,
       name
@@ -828,8 +833,8 @@ export default {
       );
 
       this.scene.add(this.objtemp);
-      console.log("obj:")
-      console.log(this.objtemp)
+      console.log("obj:");
+      console.log(this.objtemp);
       // console.log(this.scene);
     },
     loadModel: function(model) {
@@ -856,12 +861,17 @@ export default {
         transparent: true,
         transparency: 0.8
       });
-      let metall = new THREE.MeshPhongMaterial({
-        shininess: 0,
-        color: "#1a1a1a",
-        specular: 0xebebeb
+      let metall = new THREE.MeshStandardMaterial({
+        // shininess: 0,
+        emissive: 0x1f1f1f, //6b6b6b
+        roughness: 3.8,
+        metalness: 0.9,
+        color: "#303030",
+        // specular: 0xebebeb,
+        roughnessMap: new THREE.TextureLoader().load(roughness_map_metal),
+        map: new THREE.TextureLoader().load(map_metal),
       });
-
+      console.log(metall)
       const loader = new THREE.OBJLoader();
       if (!this.isLoading) {
         loader.load(
@@ -881,7 +891,8 @@ export default {
             this.modelHasLoaded = true;
             this.expanded = false;
             this.$emit("modelLoaded", true);
-
+            console.log(object.getObjectByName("Scharnier"))
+            object.getObjectByName("Scharnier").position.z += 1;
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
