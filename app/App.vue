@@ -13,7 +13,7 @@
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
     </header>
-    <!-- <Threemodel
+    <Threemodel
       :useAsSunglasses="useAsSunglasses"
       v-on:modelLoaded="modelHasLoaded = $event"
       :allHashMaterialsModel="allHashMaterialsModel"
@@ -22,7 +22,7 @@
       :mat="passedMaterial"
       :resetMaterialsTrigger="resetMaterialsTrigger"
       :randomMaterialsTrigger="randomMaterialsTrigger"
-    >{{passedMaterial}}</Threemodel> -->
+    >{{passedMaterial}}</Threemodel>
     <div class="content-area">
       <Glasses
         v-on:sendMessage="setCurrentModel($event)"
@@ -112,8 +112,14 @@
               <div :class="[dropdownClicked ? 'dropdown-content clicked' : 'dropdown-content']">
                 <a class="text-medium" v-on:click="setSunglasses('Schwarz')">Schwarz</a>
                 <a class="text-medium" v-on:click="setSunglasses('Braun')">Braun</a>
-                <a class="text-medium" v-on:click="setSunglasses('Schwarz verlaufend')">Schwarz verlaufend</a>
-                <a class="text-medium" v-on:click="setSunglasses('Braun verlaufend')">Braun verlaufend</a>
+                <a
+                  class="text-medium"
+                  v-on:click="setSunglasses('Schwarz verlaufend')"
+                >Schwarz verlaufend</a>
+                <a
+                  class="text-medium"
+                  v-on:click="setSunglasses('Braun verlaufend')"
+                >Braun verlaufend</a>
               </div>
             </div>
             <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->
@@ -124,14 +130,16 @@
           >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
           <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
-          <span :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'copy-buy active' : 'copy-buy']">
+          <span
+            :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'copy-buy active' : 'copy-buy']"
+          >
             <a
               :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+
               model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +
               '%0D%0AGlas:%20%20%20%20%20%20%20%20%20%20%20%20%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
               '%0D%0A%0D%0APreis:%20%20%20%20%20%20%20%20%20%20%20%20'+ (useAsSunglasses ? (price + 40) : (price))+',00€'+ '%0D%0A%0D%0ABestellcode: ' + hashCode + '%0D%0A%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' +'%0D%0ADieser Link führt direkt zu deiner persönlichen Schwarz-Brille:%20'+currentUrl]"
             >
-            <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
+              <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
               <button
                 :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'buy-button text-button active' : 'buy-button text-button ']"
               >jetzt bestellen</button>
@@ -195,7 +203,7 @@ export default {
       Swiper5: null,
       msg: "",
       useAsSunglasses: false,
-      sunglasses: '',
+      sunglasses: "",
       dropdownClicked: false
     };
   },
@@ -206,6 +214,8 @@ export default {
         if (this.encodedArray[0] === undefined) {
           this.setCurrentModel(this.model);
         }
+        console.log("modelHasLoaded - allHashMaterials:");
+        console.log(this.allHashMaterials);
         this.allHashMaterialsModel.push(this.allHashMaterials);
       }
     }
@@ -221,9 +231,10 @@ export default {
         this.resetMaterialsTrigger = false;
       }, 10);
       this.encodedArray.splice(1, 5);
+      this.allHashMaterials = [{}, {}, {}, {}, {}, {}];
+      this.allHashMaterialsModel = [];
       setTimeout(() => {
         this.sentToEncode(); // reset if less than 5 materials are set
-        // window.location.href.split('#')[0];
         location.hash = "";
         this.fullCode = false;
       }, 100);
@@ -363,15 +374,14 @@ export default {
           console.log("Decode (from URL) OK");
         }
       } else {
-        this.model = ["N°1 - Moluptatum", 1];
+        // this.model = ["N°1 - Moluptatum", 1];
       }
     }
   },
   mounted() {
     document.addEventListener("DOMContentLoaded", this.loadFromHash);
     window.addEventListener("hashchange", this.loadFromHash);
-    console.log(this.hashModelChange);
-    console.log(this.model.length);
+
     setTimeout(() => {
       if (!this.hashModelChange && this.model.length === 0) {
         this.model = ["N°1 - Moluptatum", 1];

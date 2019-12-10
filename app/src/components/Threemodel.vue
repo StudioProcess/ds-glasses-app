@@ -136,6 +136,9 @@ export default {
   },
   watch: {
     resetMaterialsTrigger: function() {
+      console.log("RESET MATERIAL TRIGGER")
+      // this.currentMaterials = [];
+      
       this.currentMaterials = [];
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
@@ -171,6 +174,7 @@ export default {
       this.updateSunglasses();
     },
     allHashMaterialsModel: function() {
+      if(this.allHashMaterialsModel[0]){
       for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
         var loader = new THREE.TextureLoader();
         loader.load(
@@ -206,13 +210,14 @@ export default {
             }
           }.bind(this)
         );
-      }
+      }}
     }
   },
 
   updated() {
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
+      console.log(this.currentMaterials)
       this.$emit("modelLoaded", false);
       this.modelHasLoaded = false;
       // setTimeout(() => {
@@ -770,7 +775,7 @@ export default {
       const H = container.clientHeight;
 
       this.renderer.setSize(W, H);
-      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setPixelRatio(window.devicePixelRatio / 4);
       document
         .getElementById("three-model")
         .appendChild(this.renderer.domElement);
@@ -887,7 +892,8 @@ export default {
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
-            console.log(model === model3 || model === model6);
+            console.log("LOAD MODEL:")
+            console.log(this.currentMaterials)
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
