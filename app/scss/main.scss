@@ -522,6 +522,24 @@ body {
           opacity: 1;
         }
       }
+      .detector {
+        width: 42px;
+        height: 100%;
+        position: absolute;
+        z-index: 999;
+        pointer-events: none;
+        &-left {
+          top: 0;
+          left: 0;
+          // border: 1px solid red;
+        }
+        &-right {
+          width: 69px;
+          top: 0;
+          right: 0;
+          // border: 1px solid red;
+        }
+      }
       .swiper {
         height: 30px;
         position: absolute;
@@ -529,32 +547,8 @@ body {
         width: 91%;
         padding: 35px 17px 20px 9px;
         padding: 30px 17px 14px 9px;
-        .detector {
-          // border:solid red;
-          width: 42px;
-          height: 100%;
-          position: absolute;
-          z-index: 999;
-          pointer-events: none;
-          &-left {
-            top: 0;
-            left: 0;
-          }
-          &-right {
-            // border:solid blue;
-            top: 0;
-            right: 0;
-          }
-        }
-        &:hover {
-          // padding: 30px 16px 14px 14px;
-          // width: 85%;
-          
+        
 
-          // width: 81%;
-          // margin-left: 5%;
-          // background: pink;
-        }
         &-text-selected {
           position: absolute;
           z-index: 4;
@@ -650,7 +644,8 @@ body {
   .swiper-description {
     // visibility: hidden;
     position: absolute;
-    display: none;
+    // display: none;
+    visibility: hidden;
   }
   &:not(.swiper-slide-selected):hover {
     // outline: 1px black solid; /* inner stroke */
@@ -659,7 +654,8 @@ body {
     z-index: 90;
     .swiper-description {
       line-height: 2;
-      display: block;
+      visibility: visible;
+      // display: block;
     }
   }
 }
@@ -667,11 +663,9 @@ body {
 .swiper-button-prev,
 .swiper-button-next {
   margin-top: -3px;
-  height: 8px;
-  width: 8px;
   background-repeat: no-repeat;
   background-size: contain;
-  height: 32px;
+  height: 34px;
   width: 21px;
   background-size: 7px;
   margin-top: -11px;
@@ -697,7 +691,7 @@ body {
 
 .overview:hover .swiper-button-next {
   opacity: 1;
-  transform: translateX(-3px);
+  transform: translateX(0px);
 }
 
 .overview:hover .swiper-button-prev {
@@ -945,12 +939,18 @@ header {
     width: 100%;
     left: 0;
     z-index: 99999;
+    pointer-events: none;
 
-    // position: absolute;
-    // width: 32px;
-    // height: 32px;
-    // top: -40px;
-    // background: #ff00003d;
+    &.hovering-prev {
+      left: inherit;
+      top: 1px;
+    }
+    &.hovering-next {
+      top: 5px;
+      left: 50%;
+      top: -2px;
+      left: 13%;
+    }
   }
   pointer-events: none;
   white-space: nowrap;
@@ -967,7 +967,7 @@ header {
   text-align: left;
   z-index: 999;
 
-  font-size: 10px;
+  font-size: 9px;
   top: 45%;
 
   display: block;
@@ -976,8 +976,8 @@ header {
   width: max-content;
   text-align: center;
   margin-left: 16px;
-
   opacity: 1;
+  display: block;
   &::after {
     content: " ";
     position: absolute;
@@ -1001,27 +1001,26 @@ header {
   border-color: transparent black transparent transparent;
 }
 .hovering-prev .tooltip-material {
-  // margin-left: 50px;
-  // margin-top: -12px;
-
   transform: translateX(-11%) translateY(-4px);
 }
- .hovering-next.blocked{
-    display: none;
+.hovering-next.blocked {
+  // display: none;
 }
 .hovering-prev.blocked {
-  display: none;
+  // display: none;
 }
 .hovering-next .tooltip-material {
-  margin-top: -12px;
-  margin-left: -14.5px;
+  // margin-top: -12px;
+  // margin-left: -14.5px;
+  transform: translateX(-100%);
+  margin-left: inherit;
 }
 .hovering-next .tooltip-material:after {
   top: 50%;
   left: 100%; /* To the right of the tooltip */
   margin-top: -5px;
 
-  margin-left: 0.2px;
+  margin-left: 0.01px;
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent transparent black;

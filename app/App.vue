@@ -13,7 +13,7 @@
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
     </header>
-    <Threemodel
+    <!-- <Threemodel
       :useAsSunglasses="useAsSunglasses"
       v-on:modelLoaded="modelHasLoaded = $event"
       :allHashMaterialsModel="allHashMaterialsModel"
@@ -22,7 +22,7 @@
       :mat="passedMaterial"
       :resetMaterialsTrigger="resetMaterialsTrigger"
       :randomMaterialsTrigger="randomMaterialsTrigger"
-    >{{passedMaterial}}</Threemodel>
+    >{{passedMaterial}}</Threemodel> -->
     <div class="content-area">
       <Glasses
         v-on:sendMessage="setCurrentModel($event)"
@@ -126,8 +126,12 @@
 
           <span :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'copy-buy active' : 'copy-buy']">
             <a
-              :href="['mailto:example@hi?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +'%0D%0AGlas:%20%20%20%20%20%20%20%20%20%20%20%20%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + '%0D%0A%0D%0APreis:%20%20%20%20%20%20%20%20%20%20%20%20%'+ (useAsSunglasses ? (price + 40 + ',00€') : (price + ',00€')) +'%0D%0A%0D%0ABestellcode: ' + hashCode + '%0D%0A%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' +'%0D%0ADieser Link führt direkt zu deiner persönlichen Schwarz-Brille:%20'+currentUrl]"
+              :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+
+              model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +
+              '%0D%0AGlas:%20%20%20%20%20%20%20%20%20%20%20%20%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
+              '%0D%0A%0D%0APreis:%20%20%20%20%20%20%20%20%20%20%20%20'+ (useAsSunglasses ? (price + 40) : (price))+',00€'+ '%0D%0A%0D%0ABestellcode: ' + hashCode + '%0D%0A%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' +'%0D%0ADieser Link führt direkt zu deiner persönlichen Schwarz-Brille:%20'+currentUrl]"
             >
+            <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
               <button
                 :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'buy-button text-button active' : 'buy-button text-button ']"
               >jetzt bestellen</button>

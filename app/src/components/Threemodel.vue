@@ -427,12 +427,44 @@ export default {
     },
     hoverMaterial: function(name, expand) {
       if (this.modelHasLoaded) {
+        // console.log(this.currentModelIndex);
+        let expandingValue = 4.0;
+        if(this.currentModelIndex === 1){
+          expandingValue = 4.0;
+        }
+        if(this.currentModelIndex === 2 || this.currentModelIndex === 5){
+           expandingValue = 4.8;
+        }
+        if(this.currentModelIndex === 3 || this.currentModelIndex === 6){
+           expandingValue = 3.82;
+        }
+         if(this.currentModelIndex === 4 || this.currentModelIndex === 7){
+           expandingValue = 3.62;
+        }
+        // if (
+        //   this.currentModelIndex === 2 ||
+        //   this.currentModelIndex === 5 ||
+        //   this.currentModelIndex === 1 ||
+        //   this.currentModelIndex === 3 ||
+        //   this.currentModelIndex === 6
+        // ) {
+        //   expandingValue = 5.0;
+        //   console.log("change expandingvalue");
+        // }
         TweenMax.to(
           this.objtemp.children[0].getObjectByName(name).position,
           1.2,
           {
             y: expand === true ? 30 : 0,
+            z: expand === true ? expandingValue : 0, //3.8
             ease: Power2.easeOut
+          }
+        );
+        TweenMax.to(
+          this.objtemp.children[0].getObjectByName(name).rotation,
+          1.2,
+          {
+            x: expand === true ? -0.03 : 0,
           }
         );
       }

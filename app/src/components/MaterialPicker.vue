@@ -22,10 +22,9 @@
           v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
         >Stoff</li>
       </ul>
-
+      <span ref="detectorLeft" class="detector detector-left"></span>
+      <span ref="detectorRight" class="detector detector-right"></span>
       <span :class="'swiper swiper-wood swiper-container swiper-container'+index">
-        <span ref="detectorLeft" class="detector detector-left"></span>
-        <span ref="detectorRight" class="detector detector-right"></span>
         <strong
           v-if="selectedMaterial !== 'empty'"
           class="swiper-text-selected text-product-description"
@@ -48,7 +47,7 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.texture : wood.thumb)  + ')' }"
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
-            <span class="tooltip-material-box">
+            <span class="tooltip-material-box hovering-next">
               <span
                 class="text-product-description swiper-description tooltip-material"
               >{{wood.name}}</span>
@@ -68,9 +67,11 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === fabric.name ? fabric.texture : fabric.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span
-              class="text-product-description swiper-description tooltip-material"
-            >{{fabric.name}}</span>
+            <span class="tooltip-material-box hovering-next">
+              <span
+                class="text-product-description swiper-description tooltip-material"
+              >{{fabric.name}}</span>
+            </span>
           </span>
           <span
             v-if="activeTab === 'papers'"
@@ -85,9 +86,11 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-            <span
-              class="text-product-description swiper-description tooltip-material"
-            >{{paper.name}}</span>
+             <span class="tooltip-material-box hovering-next">
+              <span
+                class="text-product-description swiper-description tooltip-material"
+              >{{paper.name}}</span>
+            </span>
           </span>
         </div>
         <div :class="'swiper-scrollbar swiper-scrollbar'+(index)"></div>
@@ -505,27 +508,25 @@ export default {
         this.selectedMaterial = this.activeMaterial;
       }
     },
-    detectFirstChild(hovered, event) {
-      let currentElement = event.currentTarget.getBoundingClientRect();
+    detectFirstChild: function(hovered, event) {
+      let currentElement = event.currentTarget.children[1].children[0].getBoundingClientRect();
       let detectorLeft = this.$refs.detectorLeft.getBoundingClientRect();
       let detectorRight = this.$refs.detectorRight.getBoundingClientRect();
       let buttonPrev = this.$refs.buttonPrev.getBoundingClientRect();
       let buttonNext = this.$refs.buttonNext.getBoundingClientRect();
 
-      let overlapButtonPrev = !(
-        buttonPrev.right < currentElement.left ||
-        buttonPrev.left > currentElement.right ||
-        buttonPrev.bottom < currentElement.top ||
-        buttonPrev.top > currentElement.bottom
-      );
-      let overlapButtonNext = !(
-        buttonNext.right < currentElement.left ||
-        buttonNext.left > currentElement.right ||
-        buttonNext.bottom < currentElement.top ||
-        buttonNext.top > currentElement.bottom
-      );
-      // console.log(detectorLeft.right/1.05)
-      // console.log(currentElement.left)
+      // let overlapButtonPrev = !(
+      //   buttonPrev.right < currentElement.left ||
+      //   buttonPrev.left > currentElement.right ||
+      //   buttonPrev.bottom < currentElement.top ||
+      //   buttonPrev.top > currentElement.bottom
+      // );
+      // let overlapButtonNext = !(
+      //   buttonNext.right < currentElement.left ||
+      //   buttonNext.left > currentElement.right ||
+      //   buttonNext.bottom < currentElement.top ||
+      //   buttonNext.top > currentElement.bottom
+      // );
       let overlapPrev = !(
         detectorLeft.right < currentElement.left ||
         detectorLeft.left > currentElement.right ||
@@ -541,29 +542,26 @@ export default {
       );
 
       if (overlapPrev) {
-        console.log("hovering prev");
         event.currentTarget.children[1].classList.add("hovering-prev");
-      }
-
-      if (overlapNext) {
-        event.currentTarget.children[1].classList.add("hovering-next");
       }
       if (!overlapNext) {
         event.currentTarget.children[1].classList.remove("hovering-next");
       }
+      if (overlapNext) {
+        event.currentTarget.children[1].classList.add("hovering-next");
+      }
       if (!overlapPrev) {
         event.currentTarget.children[1].classList.remove("hovering-prev");
       }
-      if (overlapButtonPrev || overlapButtonNext) {
-        console.log(event.currentTarget.id);
-        if (event.currentTarget.id !== '1') {
-          console.log("blocked")
-          event.currentTarget.children[1].classList.add("blocked");
-        }
-      }
-      if (!overlapButtonPrev && !overlapButtonNext) {
-        event.currentTarget.children[1].classList.remove("blocked");
-      }
+      // if (overlapButtonPrev || overlapButtonNext) {
+      //   console.log(event.currentTarget.id);
+      //   if (event.currentTarget.id !== "1" || this.activeTab) {
+      //     console.log("blocked");
+      //   }
+      // }
+      // if (!overlapButtonPrev && !overlapButtonNext) {
+        // event.currentTarget.children[1].classList.remove("blocked");
+      // }
     },
     deactivateSwiper: function(reactivate) {
       this.mSwiperClass.allowSlideNext = reactivate ? true : false;
