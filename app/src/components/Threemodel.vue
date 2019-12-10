@@ -63,6 +63,7 @@ import particle from "../assets/particle.png";
 import { encode, decode } from "../../index.js";
 
 import {
+  BloomEffect,
   GodRaysShader,
   GodRaysEffect,
   RenderPass,
@@ -119,7 +120,8 @@ export default {
       lightSphere: null,
       nMPoint1: null,
       nMPoint2: null,
-      nMPoint3: null
+      nMPoint3: null,
+      time: 0.0
     };
   },
 
@@ -137,8 +139,6 @@ export default {
   watch: {
     resetMaterialsTrigger: function() {
       console.log("RESET MATERIAL TRIGGER");
-      // this.currentMaterials = [];
-
       this.currentMaterials = [];
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
@@ -148,24 +148,25 @@ export default {
           this.objtemp.children[0].children[i].material.map = null;
           this.objtemp.children[0].children[i].material.roughnessMap = null;
           this.objtemp.children[0].children[i].material.normalMap = null;
-          this.objtemp.children[0].children[i].material.color = new THREE.Color(
-            0x473d34
-          );
+          if (!this.nightMode) {
+            this.objtemp.children[0].children[
+              i
+            ].material.color = new THREE.Color(0x473d34);
+          } else {
+            this.objtemp.children[0].children[
+              i
+            ].material.color = new THREE.Color(0x262626);
+          }
           this.objtemp.children[0].children[
             i
           ].material.emissive = new THREE.Color(0xded7d2);
           this.objtemp.children[0].children[i].material.roughness = 1;
           this.objtemp.children[0].children[i].material.metalness = 1;
-
-          this.objtemp.children[0].children[i].layers.set(0);
-
-          //   color: 0x473d34,
-          // emissive: 0xded7d2, //6b6b6b
-          // roughness: 1,
-          // metalness: 1,
-          // transparent: true,
-          // opacity: 1.0,
-          // this.objtemp.children[0].children[i].layers.set(0);
+          if (!this.nightMode) {
+            this.objtemp.children[0].children[i].layers.set(0);
+          }else{
+            this.objtemp.children[0].children[i].layers.set(1);
+          }
           this.objtemp.children[0].children[i].material.needsUpdate = true;
         }
       }
@@ -174,10 +175,7 @@ export default {
       this.updateSunglasses();
     },
     allHashMaterialsModel: function() {
-      console.log("allhashmaterialsmodel:")
-      console.log(this.allHashMaterialsModel[0])
       if (this.allHashMaterialsModel[0]) {
-        console.log("allhashmaterialsmodel enter function")
         for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
           var loader = new THREE.TextureLoader();
           loader.load(
@@ -337,23 +335,23 @@ export default {
   },
   methods: {
     setupPostprocessing: function() {
-      let geometry = new THREE.ConeGeometry(300, 300, 2);
-      // var geometry = new THREE.Geometry();
-      // var v1 = new THREE.Vector3(20, 0, 20);
-      // var v2 = new THREE.Vector3(20, 0, 0);
-      // var v3 = new THREE.Vector3(20, 20, 0);
+      var geometry = new THREE.Geometry();
+      var v1 = new THREE.Vector3(-60, 0, 20);
+      var v2 = new THREE.Vector3(-60, 0, 5);
+      var v3 = new THREE.Vector3(-60, -60, 5);
 
-      // geometry.vertices.push(v1);
-      // geometry.vertices.push(v2);
-      // geometry.vertices.push(v3);
+      geometry.vertices.push(v1);
+      geometry.vertices.push(v2);
+      geometry.vertices.push(v3);
 
-      // geometry.faces.push(new THREE.Face3(0, 1, 2));
-      // geometry.computeFaceNormals();
+      geometry.faces.push(new THREE.Face3(0, 1, 2));
+      geometry.computeFaceNormals();
+
       let material = new THREE.PointsMaterial({
-        color: 0x888888,
-        size: 30,
+        color: 0xffffff,
+        size: 25,
         transparency: true,
-        alphaTest: 0.5,
+        alphaTest: 0.9,
         map: new THREE.TextureLoader().load(particle)
       });
 
@@ -363,56 +361,70 @@ export default {
       });
       let rotationSphereGeo = new THREE.SphereBufferGeometry(100, 16, 16);
       this.lightSphere = new THREE.Points(geometry, material);
-      this.lightSphere.position.z = 70;
+      this.lightSphere.position.z = 20;
       this.lightSphere.layers.set(1);
 
       let pointLightTwo = new THREE.PointLight(0xffffff, 4.0, 0);
       pointLightTwo.position.set(20, -10, -80);
       pointLightTwo.layers.set(1);
 
-      TweenMax.to(this.lightSphere.rotation, 4000.0, {
-        y: 360,
+      TweenMax.to(this.lightSphere.rotation, 5600.0, {
+        y: -360,
         z: 180,
+        repeat: -1,
+        yoyo: true
+      });
+
+      let R = 60;
+      let R2 = 20;
+      let R3 = 30;
+      let mult = 2;
+      TweenMax.set(this.lightSphere.geometry.vertices[0], { z: R });
+      TweenMax.set(this.lightSphere.geometry.vertices[1], { z: -200 });
+      TweenMax.set(this.lightSphere.geometry.vertices[2], { z: 20, x: 20 });
+      TweenMax.to(this.lightSphere.geometry.vertices[0], 20, {
+        bezier: {
+          curviness: 1.5,
+          values: [
+            { x: 0 * mult, z: R * mult },
+            { x: (R / 2) * mult, z: (R / 2) * mult },
+            { x: 0 * mult, z: -40 * mult },
+            { x: (-R / 2) * mult, z: (R / 2) * mult },
+            { x: 0 * mult - 2.1, z: R * mult - 2.1 }
+          ],
+          autoRotate: 90
+        },
+        ease: Linear.easeNone,
         repeat: -1
       });
 
       this.nightModeLightsGroup.add(this.lightSphere);
 
-      this.nMPoint1 = new THREE.PointLight(0x00ffff, 13.0, 220);
+      this.nMPoint1 = new THREE.PointLight(0xffffff, 1.9); //0x0000ff
       this.nMPoint1.layers.set(1);
-      this.nMPoint2 = new THREE.PointLight(0xff0000, 13.0, 220);
+      this.nMPoint2 = new THREE.PointLight(0xffffff, 1.9); //0xff0000
       this.nMPoint2.layers.set(1);
-      this.nMPoint3 = new THREE.PointLight(0xffff00, 13.0, 220);
+      this.nMPoint3 = new THREE.PointLight(0xffffff, 1.3); //0xffff00
       this.nMPoint3.layers.set(1);
       this.nightModeLightsGroup.add(this.nMPoint1);
       this.nightModeLightsGroup.add(this.nMPoint2);
       this.nightModeLightsGroup.add(this.nMPoint3);
-      // if(this.nightMode){
-      // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
-      //     y: 360,
-      //     z: 180,
-      //     repeat: -1,
-      //   });
-
-      // }else{
-
-      // }
+    
 
       this.nightModeLightsGroup.layers.set(1);
-      console.log(GodRaysEffect);
-      let godraysEffect = new GodRaysEffect(this.camera, this.lightSphere, {
-        resolutionScale: 1,
-        density: 0.8,
-        decay: 0.8,
-        weight: 0.9,
-        samples: 100,
-        exposure: 1,
-        resolution: 240,
-        bluriness: 9
-      });
-
       let renderPass = new RenderPass(this.scene, this.camera);
-      let effectPass = new EffectPass(this.camera, godraysEffect);
+      let effectPass = new EffectPass(
+        this.camera,
+        new BloomEffect(this.camera, this.lightSphere, {
+          kernelSize: 5,
+          scale: 0.1,
+          threshold: 3,
+          screenMode: "DIFFERENCE",
+          smoothing: 0,
+          opacity: 4
+        })
+      );
+
       effectPass.renderToScreen = true;
       this.composer = new EffectComposer(this.renderer);
       this.composer.addPass(renderPass);
@@ -421,14 +433,31 @@ export default {
     nightmode: function() {
       this.nightMode = !this.nightMode;
       if (this.nightMode) {
-        // this.scene.add(this.nightModeLightsGroup);
-        // TweenMax.to(this.nightModeLightsGroup.rotation, 4000.0, {
-        //   y: 360,
-        //   z: 180,
-        //   repeat: -1
-        // });
+        this.scene.fog.near = 300;
+        this.scene.fog.color = new THREE.Color(0x0f0f0f);
+        for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
+          this.objtemp.children[0].children[i].material.emissiveIntensity = 0;
+          if (this.objtemp.children[0].children[i].material) {
+            this.objtemp.children[0].children[
+              i
+            ].material.color = new THREE.Color(0x262626);
+          }
+          this.objtemp.children[0].children[i].material.needsUpdate = true;
+          this.objtemp.children[0].children[i].layers.set(1);
+        }
+        this.scene.add(this.nightModeLightsGroup);
         this.lights(true);
       } else {
+        for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
+          this.objtemp.children[0].children[i].material.emissiveIntensity = 0.5;
+          if (this.objtemp.children[0].children[i].material) {
+            this.objtemp.children[0].children[
+              i
+            ].material.color = new THREE.Color(0x473d34);
+          }
+          this.objtemp.children[0].children[i].material.needsUpdate = true;
+          this.objtemp.children[0].children[i].layers.set(1);
+        }
         this.scene.remove(this.nightModeLightsGroup);
 
         this.lights();
@@ -436,7 +465,6 @@ export default {
     },
     hoverMaterial: function(name, expand) {
       if (this.modelHasLoaded) {
-        // console.log(this.currentModelIndex);
         let expandingValue = 4.0;
         if (this.currentModelIndex === 1) {
           expandingValue = 4.0;
@@ -450,16 +478,7 @@ export default {
         if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
           expandingValue = 3.62;
         }
-        // if (
-        //   this.currentModelIndex === 2 ||
-        //   this.currentModelIndex === 5 ||
-        //   this.currentModelIndex === 1 ||
-        //   this.currentModelIndex === 3 ||
-        //   this.currentModelIndex === 6
-        // ) {
-        //   expandingValue = 5.0;
-        //   console.log("change expandingvalue");
-        // }
+
         TweenMax.to(
           this.objtemp.children[0].getObjectByName(name).position,
           1.2,
@@ -478,15 +497,12 @@ export default {
         );
       }
     },
-    assignMaterial: function(
-      texture,
-      name
-    ) {
+    assignMaterial: function(texture, name) {
       if (this.modelHasLoaded) {
-        console.log("assign material:")
-        console.log(name)
-        console.log(texture.image.currentSrc)
-        
+        console.log("assign material:");
+        console.log(name);
+        console.log(texture.image.currentSrc);
+
         this.objtemp.children[0].getObjectByName(name).material.map = texture;
         this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
@@ -675,42 +691,6 @@ export default {
           0
         );
       }
-      // tlTwo.staggerTo(
-      //   //GLAS AND SCHARNIER
-      //   extras,
-      //   0.3,
-      //   {
-      //     cycle: {
-      //       z: this.expanded
-      //         ? [0, 0]
-      //         : function(j) {
-      //             return 6 * j + 0.3;
-      //           },
-      //       delay: function(j) {
-      //         return Math.abs(Math.floor(5 / 2) - j) * 0.25;
-      //       }
-      //     }
-      //   },
-      //   0
-      // );
-
-      // tlTwo.staggerTo(
-      //   extras,
-      //   0.3,
-      //   {
-      //     cycle: {
-      //       z: this.expanded
-      //         ? [0, 0]
-      //         : function(j) {
-      //             return (6 * j)+0.3;
-      //           },
-      //       delay: function(j) {
-      //        return Math.abs(Math.floor(5 / 2) - j) * 0.25;
-      //       }
-      //     }
-      //   },
-      //   0
-      // );
       this.expanded = !this.expanded;
     },
 
@@ -780,7 +760,7 @@ export default {
       const H = container.clientHeight;
 
       this.renderer.setSize(W, H);
-      this.renderer.setPixelRatio(window.devicePixelRatio / 4);
+      this.renderer.setPixelRatio(window.devicePixelRatio); // / 4
       document
         .getElementById("three-model")
         .appendChild(this.renderer.domElement);
@@ -828,7 +808,6 @@ export default {
             opacity: 0.2,
             map: texture
           });
-          // console.log(texture);
           let bgPlane = new THREE.Mesh(planeGeo, depthmat);
           this.scene.add(bgPlane);
           bgPlane.layers.set(4);
@@ -838,9 +817,6 @@ export default {
       );
 
       this.scene.add(this.objtemp);
-      console.log("obj:");
-      console.log(this.objtemp);
-      // console.log(this.scene);
     },
     loadModel: function(model) {
       let mat = new THREE.MeshStandardMaterial({
@@ -1063,6 +1039,7 @@ export default {
     },
     loop: function() {
       requestAnimationFrame(this.loop);
+
       this.controls.update();
 
       this.renderer.autoClear = true;
@@ -1082,19 +1059,22 @@ export default {
       this.renderer.render(this.scene, this.camera);
 
       if (this.nightMode) {
-        let vector = this.lightSphere.geometry.vertices[1].clone();
-        let vectorTwo = this.lightSphere.geometry.vertices[2].clone();
-        let vectorThree = this.lightSphere.geometry.vertices[3].clone();
+        this.lightSphere.geometry.verticesNeedUpdate = true;
+
+        let vector = this.lightSphere.geometry.vertices[0].clone();
+        let vectorTwo = this.lightSphere.geometry.vertices[1].clone();
+        let vectorThree = this.lightSphere.geometry.vertices[2].clone();
         vector.applyMatrix4(this.lightSphere.matrixWorld);
-        // console.log(vector.x);
+
         this.nMPoint1.position.set(vector.x, vector.y, vector.z);
         this.nMPoint2.position.set(vectorTwo.x, vectorTwo.y, vectorTwo.z);
         this.nMPoint3.position.set(vectorThree.x, vectorThree.y, vectorThree.z);
+
+        this.renderer.autoClear = false;
         this.camera.layers.set(1);
         this.composer.render(this.scene, this.camera);
       }
 
-      // console.log(tempV.x);
       if (this.modelHasLoaded && this.$refs.three !== undefined) {
         this.mapViewPlus(this.pos1, this.$refs.posOne);
         this.mapViewPlus(this.pos2, this.$refs.posTwo);
