@@ -136,9 +136,9 @@ export default {
   },
   watch: {
     resetMaterialsTrigger: function() {
-      console.log("RESET MATERIAL TRIGGER")
+      console.log("RESET MATERIAL TRIGGER");
       // this.currentMaterials = [];
-      
+
       this.currentMaterials = [];
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
@@ -174,50 +174,54 @@ export default {
       this.updateSunglasses();
     },
     allHashMaterialsModel: function() {
-      if(this.allHashMaterialsModel[0]){
-      for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
-        var loader = new THREE.TextureLoader();
-        loader.load(
-          this.allHashMaterialsModel[0][i][0],
-          function(texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.offset.set(0, 0);
-            texture.repeat.set(1, 1);
-            texture.rotation = 0;
-            if ((i + 1) % 2 === 0) {
-              texture.rotation = 1.57;
-            }
-            if (this.allHashMaterialsModel[0][i][1] === "1") {
-              this.assignMaterial(texture, "Layer_1");
-              this.assignMaterial(texture, "Layer_1 Layer_1B");
-              this.assignMaterial(texture, "Layer_1 Layer_1N");
-            } else if (this.allHashMaterialsModel[0][i][1] === "2") {
-              this.assignMaterial(texture, "Layer_2");
-              this.assignMaterial(texture, "Layer_2 Layer_2B");
-              this.assignMaterial(texture, "Layer_2 Layer_2N");
-            } else if (this.allHashMaterialsModel[0][i][1] === "3") {
-              this.assignMaterial(texture, "Layer_3");
-              this.assignMaterial(texture, "Layer_3 Layer_3B");
-              this.assignMaterial(texture, "Layer_3 Layer_3N");
-            } else if (this.allHashMaterialsModel[0][i][1] === "4") {
-              this.assignMaterial(texture, "Layer_4");
-              this.assignMaterial(texture, "Layer_4 Layer_4B");
-              this.assignMaterial(texture, "Layer_4 Layer_4N");
-            } else if (this.allHashMaterialsModel[0][i][1] === "5") {
-              this.assignMaterial(texture, "Layer_5");
-              this.assignMaterial(texture, "Layer_5 Layer_5B");
-              this.assignMaterial(texture, "Layer_5 Layer_5N");
-            }
-          }.bind(this)
-        );
-      }}
+      console.log("allhashmaterialsmodel:")
+      console.log(this.allHashMaterialsModel[0])
+      if (this.allHashMaterialsModel[0]) {
+        console.log("allhashmaterialsmodel enter function")
+        for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
+          var loader = new THREE.TextureLoader();
+          loader.load(
+            this.allHashMaterialsModel[0][i][0],
+            function(texture) {
+              texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+              texture.offset.set(0, 0);
+              texture.repeat.set(1, 1);
+              texture.rotation = 0;
+              if ((i + 1) % 2 === 0) {
+                texture.rotation = 1.57;
+              }
+              if (this.allHashMaterialsModel[0][i][1] === "1") {
+                this.assignMaterial(texture, "Layer_1");
+                this.assignMaterial(texture, "Layer_1 Layer_1B");
+                this.assignMaterial(texture, "Layer_1 Layer_1N");
+              } else if (this.allHashMaterialsModel[0][i][1] === "2") {
+                this.assignMaterial(texture, "Layer_2");
+                this.assignMaterial(texture, "Layer_2 Layer_2B");
+                this.assignMaterial(texture, "Layer_2 Layer_2N");
+              } else if (this.allHashMaterialsModel[0][i][1] === "3") {
+                this.assignMaterial(texture, "Layer_3");
+                this.assignMaterial(texture, "Layer_3 Layer_3B");
+                this.assignMaterial(texture, "Layer_3 Layer_3N");
+              } else if (this.allHashMaterialsModel[0][i][1] === "4") {
+                this.assignMaterial(texture, "Layer_4");
+                this.assignMaterial(texture, "Layer_4 Layer_4B");
+                this.assignMaterial(texture, "Layer_4 Layer_4N");
+              } else if (this.allHashMaterialsModel[0][i][1] === "5") {
+                this.assignMaterial(texture, "Layer_5");
+                this.assignMaterial(texture, "Layer_5 Layer_5B");
+                this.assignMaterial(texture, "Layer_5 Layer_5N");
+              }
+            }.bind(this)
+          );
+        }
+      }
     }
   },
 
   updated() {
     if (this.setModel[1] !== this.currentModelIndex) {
       console.log("update model");
-      console.log(this.currentMaterials)
+      console.log(this.currentMaterials);
       this.$emit("modelLoaded", false);
       this.modelHasLoaded = false;
       // setTimeout(() => {
@@ -434,17 +438,17 @@ export default {
       if (this.modelHasLoaded) {
         // console.log(this.currentModelIndex);
         let expandingValue = 4.0;
-        if(this.currentModelIndex === 1){
+        if (this.currentModelIndex === 1) {
           expandingValue = 4.0;
         }
-        if(this.currentModelIndex === 2 || this.currentModelIndex === 5){
-           expandingValue = 4.8;
+        if (this.currentModelIndex === 2 || this.currentModelIndex === 5) {
+          expandingValue = 4.8;
         }
-        if(this.currentModelIndex === 3 || this.currentModelIndex === 6){
-           expandingValue = 3.82;
+        if (this.currentModelIndex === 3 || this.currentModelIndex === 6) {
+          expandingValue = 3.82;
         }
-         if(this.currentModelIndex === 4 || this.currentModelIndex === 7){
-           expandingValue = 3.62;
+        if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
+          expandingValue = 3.62;
         }
         // if (
         //   this.currentModelIndex === 2 ||
@@ -469,7 +473,7 @@ export default {
           this.objtemp.children[0].getObjectByName(name).rotation,
           1.2,
           {
-            x: expand === true ? -0.03 : 0,
+            x: expand === true ? -0.03 : 0
           }
         );
       }
@@ -477,11 +481,12 @@ export default {
     assignMaterial: function(
       texture,
       name
-      // this.roughness_map,
-      // this.normal_map,
-      // displacement_map
     ) {
       if (this.modelHasLoaded) {
+        console.log("assign material:")
+        console.log(name)
+        console.log(texture.image.currentSrc)
+        
         this.objtemp.children[0].getObjectByName(name).material.map = texture;
         this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
@@ -892,8 +897,8 @@ export default {
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
-            console.log("LOAD MODEL:")
-            console.log(this.currentMaterials)
+            console.log("LOAD MODEL:");
+            console.log(this.currentMaterials);
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
@@ -913,7 +918,7 @@ export default {
                   "Layer_2 Layer_2B"
                 );
                 this.assignMaterial(
-                  this.currentMaterials[1],
+                  this.currentMaterials[2],
                   "Layer_2 Layer_2N"
                 );
               }
@@ -924,7 +929,7 @@ export default {
                   "Layer_3 Layer_3B"
                 );
                 this.assignMaterial(
-                  this.currentMaterials[1],
+                  this.currentMaterials[3],
                   "Layer_3 Layer_3N"
                 );
               }
@@ -935,7 +940,7 @@ export default {
                   "Layer_4 Layer_4B"
                 );
                 this.assignMaterial(
-                  this.currentMaterials[1],
+                  this.currentMaterials[4],
                   "Layer_4 Layer_4N"
                 );
               }
@@ -946,7 +951,7 @@ export default {
                   "Layer_5 Layer_5B"
                 );
                 this.assignMaterial(
-                  this.currentMaterials[1],
+                  this.currentMaterials[5],
                   "Layer_5 Layer_5N"
                 );
               }

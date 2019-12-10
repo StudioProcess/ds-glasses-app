@@ -214,9 +214,9 @@ export default {
         if (this.encodedArray[0] === undefined) {
           this.setCurrentModel(this.model);
         }
-        console.log("modelHasLoaded - allHashMaterials:");
-        console.log(this.allHashMaterials);
-        this.allHashMaterialsModel.push(this.allHashMaterials);
+        if (this.allHashMaterials[1][0]) {
+          this.allHashMaterialsModel.push(this.allHashMaterials);
+        }
       }
     }
   },
