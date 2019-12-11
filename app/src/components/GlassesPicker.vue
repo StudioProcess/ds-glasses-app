@@ -86,10 +86,12 @@ export default {
         console.log("modelhasloaded" + this.currentModelLoaded);
     },
     hashModelNumber: function(){
+      console.log("HASHMODELNUMBER")
+      console.log(this.hashModelNumber)
     if(this.hashModelNumber !== 0){
       this.isSelected = true;
-      this.currentIndex = this.hashModelNumber;
-      this.$emit("sendMessage", [this.glasses[this.hashModelNumber].name, this.glasses[this.hashModelNumber].model]);
+      this.currentIndex = this.hashModelNumber-1;
+      this.$emit("sendMessage", [this.glasses[this.hashModelNumber-1].name, this.glasses[this.hashModelNumber-1].model]);
     }},
   },
   methods: {

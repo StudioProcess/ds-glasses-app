@@ -204,14 +204,15 @@ export default {
       msg: "",
       useAsSunglasses: false,
       sunglasses: "",
-      dropdownClicked: false
+      dropdownClicked: false,
+      materialsLoadedFromHash: false
     };
   },
   watch: {
     modelHasLoaded: function() {
       console.log(this.modelHasLoaded);
       if (this.modelHasLoaded) {
-        if (this.encodedArray[0] === undefined) {
+        if (this.encodedArray[0] === undefined && !this.materialsLoadedFromHash) {
           this.setCurrentModel(this.model);
         }
         if (this.allHashMaterials[1][0]) {
@@ -261,22 +262,15 @@ export default {
       console.log("hashUpdate" + this.ignoreHashChange);
     },
     passRandomMaterials(material) {
-      console.log(material);
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
-
-      console.log(this.allHashMaterials);
       this.allHashMaterialsModel.push(this.allHashMaterials);
     },
     collectHashMaterials(material) {
-      console.log(material);
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
-
-      console.log(this.allHashMaterials);
-      // this.allHashMaterialsModel.push(this.allHashMaterials);
     },
     setHoveredMaterial(info) {
       if (this.updateHoverOnce === false) {
@@ -291,9 +285,11 @@ export default {
       }
     },
     setCurrentModel(model) {
+      console.log("SET CURRENT MODEL")
+      console.log(model)
       this.model = model;
       this.encodedArray[0] = Number(model[1]);
-      this.sentToEncode();
+      this.sentToEncode(false, true);
       this.currentUrl = window.location.href;
     },
 
@@ -302,9 +298,7 @@ export default {
       this.passedMaterial[1] = material[2]; // chosen layer
       this.encodedArray[material[2]] = Number(material[3]);
 
-      setTimeout(() => {
-        this.sentToEncode();
-      }, 100);
+      this.sentToEncode(true, false);
 
       if (material[2] === "1") {
         this.materialOne = material[0];
@@ -318,21 +312,21 @@ export default {
         this.materialFive = material[0];
       }
     },
-    sentToEncode: function() {
-      let incomplete = this.encodedArray.length < 6;
-      if (incomplete) {
-        console.log(this.encodedArray);
-        console.log("layers incomplete");
-        return;
-      }
-      let arr = this.encodedArray.map(i => parseInt(i));
-      setTimeout(() => {
+    sentToEncode: function(noModel, noMaterials) {
+      if (!this.materialsLoadedFromHash) {
+        let incomplete = this.encodedArray.length < 6;
+        if (incomplete) {
+          console.log(this.encodedArray);
+          console.log("layers incomplete");
+          return;
+        }
+        let arr = this.encodedArray.map(i => parseInt(i));
+
         let id = encode(arr);
         if (id === false) {
           console.log("Encode Error");
           this.validHash = false;
         } else {
-          console.log(id);
           this.hashCode = id;
           location.hash = id;
           this.fullCode = true;
@@ -341,16 +335,18 @@ export default {
           this.validHash = true;
           this.currentUrl = window.location.href;
         }
-      }, 200);
+      }
     },
     loadFromHash: function(e) {
       if (this.ignoreHashChange) {
+        this.materialsLoadedFromHash = false;
         this.ignoreHashChange = false;
         return;
       }
 
       let code = location.hash.slice(1);
       if (code) {
+        this.materialsLoadedFromHash = true;
         let layers = decode(code);
         if (layers === false) {
           console.log("Decode (from URL) Error");
@@ -358,23 +354,19 @@ export default {
           this.setModelFromUrl = layers[0];
           let tempArray = [];
           for (let i = 1; i < 6; i++) {
-            setTimeout(() => {
-              this.encodedArray[i] = Number(layers[i]);
-            }, 300);
-
+            this.encodedArray[i] = Number(layers[i]);
             tempArray[i - 1] = layers[i];
-            // console.log(this.setMaterialFromUrl);
           }
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
-          console.log("temparray:");
-          console.log(tempArray);
+          console.log(this.setMaterialFromUrl)
           this.hashModelChange = true;
           this.validHash = true;
           console.log("Decode (from URL) OK");
+          setTimeout(() => {
+            this.materialsLoadedFromHash = false;
+          }, 300);
         }
-      } else {
-        // this.model = ["N°1 - Moluptatum", 1];
       }
     }
   },

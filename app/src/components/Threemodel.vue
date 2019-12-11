@@ -114,6 +114,7 @@ export default {
       pos1: null,
       pos2: null,
       nightModeLightsGroup: new THREE.Group(),
+      pivot: new THREE.Group(),
       occlusionRenderTarget: null,
       occlusionComposer: null,
       composer: null,
@@ -164,7 +165,7 @@ export default {
           this.objtemp.children[0].children[i].material.metalness = 1;
           if (!this.nightMode) {
             this.objtemp.children[0].children[i].layers.set(0);
-          }else{
+          } else {
             this.objtemp.children[0].children[i].layers.set(1);
           }
           this.objtemp.children[0].children[i].material.needsUpdate = true;
@@ -336,9 +337,9 @@ export default {
   methods: {
     setupPostprocessing: function() {
       var geometry = new THREE.Geometry();
-      var v1 = new THREE.Vector3(-60, 0, 20);
-      var v2 = new THREE.Vector3(-60, 0, 5);
-      var v3 = new THREE.Vector3(-60, -60, 5);
+      var v1 = new THREE.Vector3(0, 10, 30);
+      var v2 = new THREE.Vector3(-30, -10, -30);
+      var v3 = new THREE.Vector3(30, 0, -30);
 
       geometry.vertices.push(v1);
       geometry.vertices.push(v2);
@@ -349,7 +350,7 @@ export default {
 
       let material = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 25,
+        size: 15,
         transparency: true,
         alphaTest: 0.9,
         map: new THREE.TextureLoader().load(particle)
@@ -368,21 +369,26 @@ export default {
       pointLightTwo.position.set(20, -10, -80);
       pointLightTwo.layers.set(1);
 
-      TweenMax.to(this.lightSphere.rotation, 5600.0, {
+      let box = new THREE.Box3().setFromObject(this.lightSphere);
+      box.center(this.lightSphere.position); // this re-sets the mesh position
+      this.lightSphere.position.multiplyScalar(0);
+
+      this.pivot = new THREE.Group();
+      this.pivot.add(this.lightSphere);
+
+      TweenMax.to(this.pivot.rotation, 5600.0, {
+        //5600
         y: -360,
         z: 180,
         repeat: -1,
         yoyo: true
       });
 
-      let R = 60;
+      let R = 20;
       let R2 = 20;
       let R3 = 30;
       let mult = 2;
-      TweenMax.set(this.lightSphere.geometry.vertices[0], { z: R });
-      TweenMax.set(this.lightSphere.geometry.vertices[1], { z: -200 });
-      TweenMax.set(this.lightSphere.geometry.vertices[2], { z: 20, x: 20 });
-      TweenMax.to(this.lightSphere.geometry.vertices[0], 20, {
+      TweenMax.to(this.lightSphere.geometry.vertices[0], 23, {
         bezier: {
           curviness: 1.5,
           values: [
@@ -398,18 +404,15 @@ export default {
         repeat: -1
       });
 
-      this.nightModeLightsGroup.add(this.lightSphere);
-
-      this.nMPoint1 = new THREE.PointLight(0xffffff, 1.9); //0x0000ff
+      this.nMPoint1 = new THREE.PointLight(0xffffff, 30, 60, 2); //0x0000ff
       this.nMPoint1.layers.set(1);
-      this.nMPoint2 = new THREE.PointLight(0xffffff, 1.9); //0xff0000
+      this.nMPoint2 = new THREE.PointLight(0xffffff, 30, 80, 2); //0xff0000
       this.nMPoint2.layers.set(1);
-      this.nMPoint3 = new THREE.PointLight(0xffffff, 1.3); //0xffff00
+      this.nMPoint3 = new THREE.PointLight(0xffffff, 30, 80, 2); //0xffff00
       this.nMPoint3.layers.set(1);
       this.nightModeLightsGroup.add(this.nMPoint1);
       this.nightModeLightsGroup.add(this.nMPoint2);
       this.nightModeLightsGroup.add(this.nMPoint3);
-    
 
       this.nightModeLightsGroup.layers.set(1);
       let renderPass = new RenderPass(this.scene, this.camera);
@@ -446,6 +449,7 @@ export default {
           this.objtemp.children[0].children[i].layers.set(1);
         }
         this.scene.add(this.nightModeLightsGroup);
+        this.scene.add(this.pivot);
         this.lights(true);
       } else {
         for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
@@ -459,7 +463,7 @@ export default {
           this.objtemp.children[0].children[i].layers.set(1);
         }
         this.scene.remove(this.nightModeLightsGroup);
-
+        this.scene.remove(this.pivot);
         this.lights();
       }
     },
@@ -1065,6 +1069,8 @@ export default {
         let vectorTwo = this.lightSphere.geometry.vertices[1].clone();
         let vectorThree = this.lightSphere.geometry.vertices[2].clone();
         vector.applyMatrix4(this.lightSphere.matrixWorld);
+        vectorTwo.applyMatrix4(this.lightSphere.matrixWorld);
+        vectorThree.applyMatrix4(this.lightSphere.matrixWorld);
 
         this.nMPoint1.position.set(vector.x, vector.y, vector.z);
         this.nMPoint2.position.set(vectorTwo.x, vectorTwo.y, vectorTwo.z);

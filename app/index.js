@@ -1,13 +1,12 @@
-// import './seedrandom.js'; // adds Math.seedrandom
+// parcel required for this import to work like that
+import seedrandom from 'seedrandom';
 
 const SALT = 'ds-glasses-app-2019';
 const ALPHABET = 'ABCDEFGHIJKLMNPQRSTUVWXYZ1234567890'; // no big O
-const INPUT_BASE = 100;
+let INPUT_BASE = 100;
 
 let alphabet = ALPHABET; // shuffled alphabet (according to salt)
 
-
-console.log(Math.seedrandom)
 
 function shuffleArray(array, random = Math.random) {
   let m = array.length;
@@ -23,13 +22,33 @@ function shuffleArray(array, random = Math.random) {
 }
 
 function seed(salt) {
-  const rng = new Math.seedrandom(salt);
+  const rng = new seedrandom(salt);
   alphabet = shuffleArray(alphabet.split(''), rng).join('');
+}
+
+function base(b) {
+  if (b >= 2) {
+    INPUT_BASE = b;
+  } else {
+    throw 'base needs to be >= 2'
+  }
 }
 
 (function init() {
   seed(SALT);
 })();
+
+
+// Power function for BigInt (to replace ** operator for <ES2016)
+function pow(base, exponent) {
+  if (exponent == BigInt(0)) return BigInt(1);
+  if (exponent < BigInt(0)) throw 'Exponent needs to be >= 0!';
+  let result = BigInt(1);
+  for (let i=BigInt(0); i<exponent; i++) {
+    result *= base;
+  }
+  return result;
+}
 
 // convert number system
 function cns(fromBase, toBase, inputArray) {
@@ -45,11 +64,14 @@ function cns(fromBase, toBase, inputArray) {
   // 
   // convert input to a proper js integer (ie. decimal)
   let input = BigInt(0);
+  // let exp = 1;
+  // console.log(inputArray);
   for (let [i, el] of inputArray.entries()) {
-    console.log(BigInt(el));
-    input += BigInt( (fromBase) ** (inputArray.length - i - 1) ) * BigInt(el);
+    // input += ( BigInt(fromBase) ** BigInt(inputArray.length - i - 1) ) * BigInt(el);
+    input += pow( BigInt(fromBase), BigInt(inputArray.length - i - 1) ) * BigInt(el);
   }
-
+  // console.log(input);
+  
   let outputArray = [];
   toBase = BigInt(toBase);
   
@@ -88,7 +110,6 @@ function checksum(arr) {
 }
 
 function encode2(arr) {
-  console.log("enter encode function")
   // check digits
   for (let d of arr) {
     if (d < 0 || d > INPUT_BASE-1) {
@@ -100,8 +121,6 @@ function encode2(arr) {
   arr = arr.slice(); // copy input
   arr.unshift(checksum(arr)); // add checksum
 
-  console.log("index")
-  console.log(arr)
   let enc = cns(INPUT_BASE, alphabet.length, arr);
   let str = enc.map(x => alphabet[x]).join('');
   str = add_dashes(str);
@@ -136,5 +155,7 @@ function decode2(str) {
 export {
   encode2 as encode,
   decode2 as decode,
-  seed
+  seed,
+  seed as salt,
+  base
 };
