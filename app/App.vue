@@ -15,8 +15,8 @@
       <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
       <span class="code">
         <span
-          :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
-        >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
+          :class="[copiedUrl ? (fullCode ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
+        >{{fullCode ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
 
         <!-- Teile deine Schwarz Brille -->
       </span>
@@ -150,10 +150,11 @@
             <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
             <a
-              :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+
-              model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +
-              '%0D%0AGlas:%20%20%20%20%20%20%20%20%20%20%20%20%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
-              '%0D%0A%0D%0APreis:%20%20%20%20%20%20%20%20%20%20%20%20'+ (useAsSunglasses ? (price + 40) : (price))+',00€'+ '%0D%0A%0D%0ABestellcode: ' + hashCode + '%0D%0A%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' +'%0D%0ADieser Link führt direkt zu deiner persönlichen Schwarz-Brille:%20'+currentUrl]"
+              :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0A%0D%0Aich würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20'+
+              model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
+              '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
+              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABestellcode:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' 
+              ]"
             >
               <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
               <button

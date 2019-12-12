@@ -8,7 +8,7 @@
         <span
           :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
         ></span>
-        <p class="text-button">Schichten ausklappen</p>
+        <p class="text-button">Toggle Schichten</p>
       </li>
       <li v-on:click="fullscreen()">
         <span
@@ -765,7 +765,7 @@ export default {
         this.scene.remove(pointLightBg);
         this.scene.remove(pointLightStart);
         this.scene.remove(this.pointLightBack);
-        this.scene.remove(this.ambientLight)
+        this.scene.remove(this.ambientLight);
       } else {
         this.scene.add(pointLightBg);
         this.scene.add(directionalLight);
@@ -864,16 +864,28 @@ export default {
         fog: true
       });
       let matStart = mat.clone();
-
-      let glass = new THREE.MeshPhysicalMaterial({
-        color: "#D2DDDE",
-        metalness: 0.0,
-        roughness: 0.0,
-        alphaTest: 0.5,
-        depthTest: true,
-        transparent: true,
-        transparency: 0.8
-      });
+      let glass;
+      if (!this.useAsSunglasses) {
+        glass = new THREE.MeshPhysicalMaterial({
+          color: "#D2DDDE",
+          metalness: 0.0,
+          roughness: 0.0,
+          alphaTest: 0.5,
+          depthTest: true,
+          transparent: true,
+          transparency: 0.8
+        });
+      } else {
+        glass = new THREE.MeshPhysicalMaterial({
+          color: "#000000",
+          metalness: 1.0,
+          roughness: 0.0,
+          alphaTest: 0.1,
+          depthTest: true,
+          transparent: true,
+          transparency: 0.2
+        });
+      }
       let metall = new THREE.MeshStandardMaterial({
         emissive: 0x1f1f1f, //6b6b6b
         roughness: 3.8,
@@ -1051,7 +1063,7 @@ export default {
         metalness: 0.0,
         roughness: 0.0,
         alphaTest: 0.5,
-        depthTest: false,
+        depthTest: true,
         transparent: true,
         transparency: 0.8
       });
@@ -1060,7 +1072,7 @@ export default {
         metalness: 1.0,
         roughness: 0.0,
         alphaTest: 0.1,
-        depthTest: false,
+        depthTest: true,
         transparent: true,
         transparency: 0.2
       });
@@ -1196,7 +1208,7 @@ export default {
       this.camera.aspect = container.offsetWidth / container.offsetHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(container.offsetWidth, container.offsetHeight);
-      if(this.composer){
+      if (this.composer) {
         this.composer.setSize(container.offsetWidth, container.offsetHeight);
       }
     }

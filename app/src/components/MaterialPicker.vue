@@ -5,7 +5,7 @@
     class="material-picker"
   >
     <ul :class="[!(index % 2 === 0) ?  'overview even' : 'overview']">
-      <span class="text-description material-index">{{index}}</span>
+      <span :class="[selectedMaterial !== 'empty' ? 'text-description material-index active' : 'text-description material-index']">{{index}}</span>
 
       <ul class="tab-overview">
         <li
