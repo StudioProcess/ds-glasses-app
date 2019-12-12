@@ -9,7 +9,7 @@
         class="copyright-remark description text-medium"
         target="_blanc"
         href="https://process.studio"
-      >A tool by Process Studio</a> -->
+      >A tool by Process Studio</a>-->
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
     </header>
@@ -96,11 +96,11 @@
           <p class="text text-description description">Produktinformation</p>
           <h2>{{model[0]}}</h2>
           <div class="material-display">
-            {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
+            <!-- {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
             {{materialTwo}}{{(materialTwo && ( materialThree || materialFour || materialFive) && ', ')}}
             {{materialThree}}{{(materialThree && ( materialFour || materialFive) && ', ')}}
             {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
-            {{materialFive}}
+            {{materialFive}}-->
           </div>
           <span class="sunglasses text-medium">
             Sonnenbrille (40€):
@@ -130,14 +130,24 @@
             <!-- <span class="sunglasses-info text-small">UV400 / schwarz</span> -->
           </span>
 
-          <p
+          <!-- <p
             class="text-medium infoGlass"
-          >Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!</p>
-          <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
+          >
+          Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!
+          </p>-->
+          <span class="code">
+            <span
+              :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
+            >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
+            <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
+            <!-- Teile deine Schwarz Brille -->
+          </span>
 
           <span
             :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'copy-buy active' : 'copy-buy']"
           >
+                    <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
+
             <a
               :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+
               model[0]+'%0D%0AMaterialien:%20%20%20'+materialOne+', ' + materialTwo+ ', ' + materialThree+ ', ' +  materialFour+ ', ' + materialFive +
@@ -149,12 +159,6 @@
                 :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'buy-button text-button active' : 'buy-button text-button ']"
               >jetzt bestellen</button>
             </a>
-            <span class="code">
-              <span
-                :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
-              >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
-              <a v-on:click="copyUrl()" class="text-small">Teile deine Schwarz Brille</a>
-            </span>
           </span>
         </div>
       </div>
@@ -240,7 +244,6 @@ export default {
       this.sentToEncode();
     },
     removeHashSunglasses(event) {
-
       if (this.useAsSunglasses) {
         if (this.encodedArray[6]) {
           this.encodedArray.splice(6, 1);

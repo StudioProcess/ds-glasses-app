@@ -16,11 +16,11 @@
         ></span>
         <p class="text-button">Fullscreen</p>
       </li>
-      <li v-on:click="nightmode()">
+      <li class="small" v-on:click="nightmode()">
         <span
           :class="[nightMode ? 'active navigation-element nightmode' : 'navigation-element nightmode']"
         ></span>
-        <p class="text-button">Nightmode</p>
+        <p class="text-button"></p>
       </li>
     </ul>
 
@@ -103,10 +103,11 @@ export default {
       modelHasLoaded: false,
       currentMaterials: [],
       nightMode: false,
-      pointLight: new THREE.PointLight(0xffffff, 3.9), //4.9 360
+      pointLight: new THREE.PointLight(0xffffff, 1.2), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
-      pointLightLeft: new THREE.PointLight(0xffffff, 1.9),
-      pointLightRight: new THREE.PointLight(0xffffff, 2.9),
+      pointLightLeft: new THREE.PointLight(0xffffff, 1.0),
+      pointLightRight: new THREE.PointLight(0xffffff, 1.0),
+      ambientLight: new THREE.AmbientLight(0x6a7c91, 6.0),
       objtemp: new THREE.Group(),
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
@@ -383,12 +384,15 @@ export default {
       this.pivot = new THREE.Group();
       this.pivot.add(this.lightSphere);
 
-      this.nMPoint1 = new THREE.PointLight(0xffffff, 30, 60, 2); //0x0000ff
+      this.nMPoint1 = new THREE.SpotLight(0xffffff, 3); //0x0000ff     30, 60, 2
       this.nMPoint1.layers.set(1);
-      this.nMPoint2 = new THREE.PointLight(0xffffff, 30, 80, 2); //0xff0000
+      this.nMPoint2 = new THREE.SpotLight(0xffffff, 3); //0xff0000     30, 80, 2
       this.nMPoint2.layers.set(1);
-      this.nMPoint3 = new THREE.PointLight(0xffffff, 30, 80, 2); //0xffff00
+      this.nMPoint3 = new THREE.SpotLight(0xffffff, 3); //0xffff00     30, 80, 2
       this.nMPoint3.layers.set(1);
+      this.nMPoint1.penumbra = 0.5;
+      this.nMPoint2.penumbra = 0.5;
+      this.nMPoint3.penumbra = 0.5;
       this.nightModeLightsGroup.add(this.nMPoint1);
       this.nightModeLightsGroup.add(this.nMPoint2);
       this.nightModeLightsGroup.add(this.nMPoint3);
@@ -731,7 +735,9 @@ export default {
       this.pointLightLeft.position.set(160, 20, 30);
       this.pointLightLeft.layers.set(1);
 
-      this.pointLightRight.position.set(-220, 20, 30);
+      this.ambientLight.layers.set(1);
+
+      this.pointLightRight.position.set(-180, 20, 30);
       this.pointLightRight.layers.set(1);
 
       let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -757,6 +763,7 @@ export default {
         this.scene.remove(pointLightBg);
         this.scene.remove(pointLightStart);
         this.scene.remove(this.pointLightBack);
+        this.scene.remove(this.ambientLight)
       } else {
         this.scene.add(pointLightBg);
         this.scene.add(directionalLight);
@@ -765,6 +772,8 @@ export default {
         this.scene.add(pointLightBg);
         this.scene.add(pointLightStart);
         this.scene.add(this.pointLightBack);
+        this.scene.add(this.ambientLight);
+        this.scene.add(this.pointLightRight);
       }
     },
     setup: function() {
@@ -779,7 +788,7 @@ export default {
       const H = container.clientHeight;
 
       this.renderer.setSize(W, H);
-      this.renderer.setPixelRatio(window.devicePixelRatio / 4); // / 4
+      this.renderer.setPixelRatio(window.devicePixelRatio); // / 4
       document
         .getElementById("three-model")
         .appendChild(this.renderer.domElement);
@@ -1185,6 +1194,9 @@ export default {
       this.camera.aspect = container.offsetWidth / container.offsetHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+      if(this.composer){
+        this.composer.setSize(container.offsetWidth, container.offsetHeight);
+      }
     }
   }
 };

@@ -172,9 +172,12 @@ body {
     overflow: hidden;
 
     li {
-      width: 33%;
+      width: 47.5%;
       &:not(:last-child) {
         border-right: 1px solid #00000020;
+      }
+      &:last-child {
+        width: 5%;
       }
       display: flex;
       align-items: center;
@@ -226,6 +229,8 @@ body {
         }
       }
       &.nightmode {
+        margin-right: 0px;
+        margin-left: 9px;
         &::after {
           content: "";
           position: absolute;
@@ -359,7 +364,7 @@ body {
       cursor: pointer;
     }
     img {
-      // margin-top: -13%;
+      margin-top: -1vw;
       width: 7.3vw;
     }
 
@@ -455,9 +460,6 @@ body {
         // margin-left: 28%;
         margin-right: 12px;
       }
-      &.reset {
-        // margin-left: 4%;
-      }
       &::before {
         content: "";
         position: absolute;
@@ -467,6 +469,12 @@ body {
         margin-left: -19px;
         margin-top: 3px;
         background-repeat: no-repeat;
+      }
+      &.reset {
+        // margin-left: 4%;
+        &::before {
+          background-image: url("../src/assets/reset.svg");
+        }
       }
     }
   }
@@ -517,6 +525,7 @@ body {
         &.active {
           border-bottom: 2px solid black;
           opacity: 1;
+          font-weight: 500;
         }
       }
       .detector {
@@ -544,7 +553,6 @@ body {
         width: 91%;
         padding: 35px 17px 20px 9px;
         padding: 30px 17px 14px 9px;
-        
 
         &-text-selected {
           position: absolute;
@@ -720,7 +728,24 @@ body {
   margin-left: 13.4%;
   position: absolute;
   bottom: 42px;
+  bottom: 24px;
   left: 0;
+  .share {
+    position: relative;
+    background-repeat: no-repeat;
+    display: block;
+    font-size: 12px;
+    &::before {
+      content: "";
+      position: absolute;
+      background-image: url(../src/assets/share.svg);
+      background-size: contain;
+      width: 16px;
+      height: 16px;
+      margin-left: -20px;
+      margin-top: 7px;
+    }
+  }
   .text-description {
     line-height: 3;
     border-top: 1px solid #00000020;
@@ -741,6 +766,8 @@ body {
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-size: 24px;
+    font-size: 24px;
+    margin-right: 16px;
   }
   h2 {
     font-family: "Aleksei", serif;
@@ -757,16 +784,16 @@ body {
     display: block;
     margin-top: 16px;
     pointer-events: none;
+    display: flex;
     &.active {
       pointer-events: all;
     }
   }
   .code {
-    max-width: 124px;
     cursor: pointer;
     text-decoration: underline;
     position: relative;
-    float: right;
+    left: 21px;
     line-height: 2.5;
     a {
       opacity: 0.8;
@@ -788,8 +815,8 @@ body {
       text-align: left;
       z-index: 999;
       width: fit-content;
-      visibility: hidden;
-      opacity: 0;
+      // visibility: hidden;
+      // opacity: 0;
       &::after {
         content: " ";
         position: absolute;
