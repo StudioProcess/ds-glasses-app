@@ -1,7 +1,7 @@
 <template>
   <div
     ref="three"
-    :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container']"
+    :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container', fullscreenToggled && 'toggledFullscreen']"
   >
     <ul :class="[nightMode ? 'three-navigation nightmode' :'three-navigation']">
       <li v-on:click="expand()">
@@ -80,6 +80,7 @@ export default {
     "hoveredMaterial",
     "allHashMaterialsModel",
     "useAsSunglasses",
+    "sunglassesFromHash",
     "resetMaterialsTrigger"
   ],
 
@@ -174,6 +175,12 @@ export default {
     },
     useAsSunglasses: function() {
       this.updateSunglasses();
+    },
+    sunglassesFromHash: function() {
+      if (this.sunglassesFromHash) {
+        console.log("sunglassesFromHash");
+        this.updateSunglasses();
+      }
     },
     allHashMaterialsModel: function() {
       if (this.allHashMaterialsModel[0]) {
@@ -376,34 +383,6 @@ export default {
       this.pivot = new THREE.Group();
       this.pivot.add(this.lightSphere);
 
-      TweenMax.to(this.pivot.rotation, 5600.0, {
-        //5600
-        y: -360,
-        z: 180,
-        repeat: -1,
-        yoyo: true
-      });
-
-      let R = 20;
-      let R2 = 20;
-      let R3 = 30;
-      let mult = 2;
-      TweenMax.to(this.lightSphere.geometry.vertices[0], 23, {
-        bezier: {
-          curviness: 1.5,
-          values: [
-            { x: 0 * mult, z: R * mult },
-            { x: (R / 2) * mult, z: (R / 2) * mult },
-            { x: 0 * mult, z: -40 * mult },
-            { x: (-R / 2) * mult, z: (R / 2) * mult },
-            { x: 0 * mult - 2.1, z: R * mult - 2.1 }
-          ],
-          autoRotate: 90
-        },
-        ease: Linear.easeNone,
-        repeat: -1
-      });
-
       this.nMPoint1 = new THREE.PointLight(0xffffff, 30, 60, 2); //0x0000ff
       this.nMPoint1.layers.set(1);
       this.nMPoint2 = new THREE.PointLight(0xffffff, 30, 80, 2); //0xff0000
@@ -451,6 +430,32 @@ export default {
         this.scene.add(this.nightModeLightsGroup);
         this.scene.add(this.pivot);
         this.lights(true);
+        TweenMax.to(this.pivot.rotation, 5600.0, {
+          y: -360,
+          z: 180,
+          repeat: -1,
+          yoyo: true
+        });
+
+        let R = 20;
+        let R2 = 20;
+        let R3 = 30;
+        let mult = 2;
+        TweenMax.to(this.lightSphere.geometry.vertices[0], 23, {
+          bezier: {
+            curviness: 1.5,
+            values: [
+              { x: 0 * mult, z: R * mult },
+              { x: (R / 2) * mult, z: (R / 2) * mult },
+              { x: 0 * mult, z: -40 * mult },
+              { x: (-R / 2) * mult, z: (R / 2) * mult },
+              { x: 0 * mult - 2.1, z: R * mult - 2.1 }
+            ],
+            autoRotate: 90
+          },
+          ease: Linear.easeNone,
+          repeat: -1
+        });
       } else {
         for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
           this.objtemp.children[0].children[i].material.emissiveIntensity = 0.5;
@@ -482,16 +487,26 @@ export default {
         if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
           expandingValue = 3.62;
         }
-
-        TweenMax.to(
-          this.objtemp.children[0].getObjectByName(name).position,
-          1.2,
-          {
-            y: expand === true ? 30 : 0,
-            z: expand === true ? expandingValue : 0, //3.8
-            ease: Power2.easeOut
-          }
-        );
+        if (this.expanded) {
+          TweenMax.to(
+            this.objtemp.children[0].getObjectByName(name).position,
+            1.2,
+            {
+              y: expand === true ? 30 : 0,
+              ease: Power2.easeOut
+            }
+          );
+        } else {
+          TweenMax.to(
+            this.objtemp.children[0].getObjectByName(name).position,
+            1.2,
+            {
+              y: expand === true ? 30 : 0,
+              z: expand === true ? expandingValue : 0, //3.8
+              ease: Power2.easeOut
+            }
+          );
+        }
         TweenMax.to(
           this.objtemp.children[0].getObjectByName(name).rotation,
           1.2,
@@ -764,7 +779,7 @@ export default {
       const H = container.clientHeight;
 
       this.renderer.setSize(W, H);
-      this.renderer.setPixelRatio(window.devicePixelRatio); // / 4
+      this.renderer.setPixelRatio(window.devicePixelRatio / 4); // / 4
       document
         .getElementById("three-model")
         .appendChild(this.renderer.domElement);
@@ -795,6 +810,8 @@ export default {
       this.pos2 = new THREE.Mesh(posGeo, posMat);
       this.pos1.position.set(20, -10, 10);
       this.pos2.position.set(-80, 0, 0);
+      this.pos1.visible = false;
+      this.pos2.visible = false;
       this.scene.add(this.pos1);
       this.scene.add(this.pos2);
 
@@ -871,7 +888,6 @@ export default {
             this.assignBasicMaterials(object, glass, metall, mat, matStart);
             this.objtemp.add(object);
             this.modelHasLoaded = true;
-            this.expanded = false;
             this.$emit("modelLoaded", true);
             object.getObjectByName("Scharnier").position.z += 1;
             if (model === model3 || model === model6) {
@@ -939,7 +955,11 @@ export default {
                 this.updateSunglasses();
               }
             }
-
+            if (this.expanded) {
+              console.log("model is expanded !!!!!!");
+              this.expanded = false;
+              this.expand();
+            }
             if (
               this.positionLocked &&
               this.$refs.posOne.classList.contains("active")
@@ -1033,12 +1053,16 @@ export default {
         transparent: true,
         transparency: 0.2
       });
-      if (this.useAsSunglasses) {
-        this.objtemp.children[0].getObjectByName(
-          "Glas"
-        ).material = sunglassesGlass;
-      } else {
-        this.objtemp.children[0].getObjectByName("Glas").material = glass;
+      if (this.modelHasLoaded) {
+        if (this.useAsSunglasses) {
+          console.log("UPDATE AS SUNGLASSES THREE.JS");
+
+          this.objtemp.children[0].getObjectByName(
+            "Glas"
+          ).material = sunglassesGlass;
+        } else if (this.objtemp.children[0]) {
+          this.objtemp.children[0].getObjectByName("Glas").material = glass;
+        }
       }
     },
     loop: function() {

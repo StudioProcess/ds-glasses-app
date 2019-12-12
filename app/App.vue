@@ -5,11 +5,11 @@
         <img :src="[logo]" />
       </a>
       <p class="text text-description">Schichtler — die App zum Brillen gestalten</p>
-      <a
+      <!-- <a
         class="copyright-remark description text-medium"
         target="_blanc"
         href="https://process.studio"
-      >A tool by Process Studio</a>
+      >A tool by Process Studio</a> -->
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
     </header>
@@ -20,6 +20,7 @@
       :hoveredMaterial="hoveredMaterial"
       :setModel="model"
       :mat="passedMaterial"
+      :sunglassesFromHash="setSunglassesFromHash"
       :resetMaterialsTrigger="resetMaterialsTrigger"
       :randomMaterialsTrigger="randomMaterialsTrigger"
     >{{passedMaterial}}</Threemodel>
@@ -103,22 +104,26 @@
           </div>
           <span class="sunglasses text-medium">
             Sonnenbrille (40€):
-            <input v-model="useAsSunglasses" type="checkbox" />
+            <input
+              v-on:click="removeHashSunglasses($event)"
+              v-model="useAsSunglasses"
+              type="checkbox"
+            />
             <div v-if="useAsSunglasses" class="dropdown">
               <button
                 :class="[sunglasses === '' ? 'dropbtn alert' : 'dropbtn']"
                 @mouseover="dropdownClicked = false"
               >{{sunglasses ? sunglasses : 'wähle ein Glas aus'}}</button>
               <div :class="[dropdownClicked ? 'dropdown-content clicked' : 'dropdown-content']">
-                <a class="text-medium" v-on:click="setSunglasses('Schwarz')">Schwarz</a>
-                <a class="text-medium" v-on:click="setSunglasses('Braun')">Braun</a>
+                <a class="text-medium" v-on:click="setSunglasses('Schwarz', 1)">Schwarz</a>
+                <a class="text-medium" v-on:click="setSunglasses('Braun', 2)">Braun</a>
                 <a
                   class="text-medium"
-                  v-on:click="setSunglasses('Schwarz verlaufend')"
+                  v-on:click="setSunglasses('Schwarz verlaufend', 3)"
                 >Schwarz verlaufend</a>
                 <a
                   class="text-medium"
-                  v-on:click="setSunglasses('Braun verlaufend')"
+                  v-on:click="setSunglasses('Braun verlaufend', 4)"
                 >Braun verlaufend</a>
               </div>
             </div>
@@ -204,27 +209,44 @@ export default {
       msg: "",
       useAsSunglasses: false,
       sunglasses: "",
+      setSunglassesFromHash: false,
       dropdownClicked: false,
       materialsLoadedFromHash: false
     };
   },
   watch: {
     modelHasLoaded: function() {
-      console.log(this.modelHasLoaded);
       if (this.modelHasLoaded) {
-        if (this.encodedArray[0] === undefined && !this.materialsLoadedFromHash) {
+        if (
+          this.encodedArray[0] === undefined &&
+          !this.materialsLoadedFromHash
+        ) {
           this.setCurrentModel(this.model);
         }
         if (this.allHashMaterials[1][0]) {
           this.allHashMaterialsModel.push(this.allHashMaterials);
         }
+        if (this.setSunglassesFromHash) {
+          this.useAsSunglasses = true;
+        }
       }
     }
   },
   methods: {
-    setSunglasses(glasses) {
+    setSunglasses(glasses, index) {
       this.sunglasses = glasses;
       this.dropdownClicked = true;
+      this.encodedArray[6] = index;
+      this.sentToEncode();
+    },
+    removeHashSunglasses(event) {
+
+      if (this.useAsSunglasses) {
+        if (this.encodedArray[6]) {
+          this.encodedArray.splice(6, 1);
+          this.sentToEncode();
+        }
+      }
     },
     resetMaterials() {
       this.resetMaterialsTrigger = true;
@@ -259,7 +281,6 @@ export default {
       setTimeout(() => {
         this.copiedUrl = false;
       }, 2000);
-      console.log("hashUpdate" + this.ignoreHashChange);
     },
     passRandomMaterials(material) {
       this.allHashMaterials[material[2]][0] = material[1];
@@ -285,8 +306,7 @@ export default {
       }
     },
     setCurrentModel(model) {
-      console.log("SET CURRENT MODEL")
-      console.log(model)
+      console.log(model);
       this.model = model;
       this.encodedArray[0] = Number(model[1]);
       this.sentToEncode(false, true);
@@ -312,7 +332,9 @@ export default {
         this.materialFive = material[0];
       }
     },
-    sentToEncode: function(noModel, noMaterials) {
+    sentToEncode: function() {
+      console.log("encode?");
+      console.log(this.encodedArray);
       if (!this.materialsLoadedFromHash) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
@@ -357,15 +379,39 @@ export default {
             this.encodedArray[i] = Number(layers[i]);
             tempArray[i - 1] = layers[i];
           }
+          console.log("USE AS SUNGLASSES");
+
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
-          console.log(this.setMaterialFromUrl)
+          console.log(this.setMaterialFromUrl);
           this.hashModelChange = true;
           this.validHash = true;
           console.log("Decode (from URL) OK");
           setTimeout(() => {
             this.materialsLoadedFromHash = false;
-          }, 300);
+
+            console.log("LAYERS");
+            console.log(layers);
+            if (layers[6]) {
+              this.setSunglassesFromHash = true;
+
+              if (layers[6] === 1) {
+                this.sunglasses = "Schwarz";
+              }
+              if (layers[6] === 2) {
+                this.sunglasses = "Braun";
+              }
+              if (layers[6] === 3) {
+                this.sunglasses = "Schwarz verlaufend";
+              }
+              if (layers[6] === 4) {
+                this.sunglasses = "Braun verlaufend";
+              }
+
+              console.log("USE AS SUNGLASSES");
+              console.log(this.useAsSunglasses);
+            }
+          }, 800);
         }
       }
     }
