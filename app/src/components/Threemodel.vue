@@ -461,8 +461,10 @@ export default {
           repeat: -1
         });
       } else {
+        this.scene.fog.near = 100;
+        this.scene.fog.color = new THREE.Color(0xfaf6f4);
         for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
-          this.objtemp.children[0].children[i].material.emissiveIntensity = 0.5;
+          this.objtemp.children[0].children[i].material.emissiveIntensity = 0.9;
           if (this.objtemp.children[0].children[i].material) {
             this.objtemp.children[0].children[
               i
@@ -868,7 +870,7 @@ export default {
         metalness: 0.0,
         roughness: 0.0,
         alphaTest: 0.5,
-        depthTest: false,
+        depthTest: true,
         transparent: true,
         transparency: 0.8
       });

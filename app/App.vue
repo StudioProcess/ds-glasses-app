@@ -4,7 +4,7 @@
       <a href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
-      <p class="text text-description">Schichtler — die App zum Brillen gestalten</p>
+      <p class="text text-description schichtler">Schichtler — die App zum Brillen gestalten</p>
       <!-- <a
         class="copyright-remark description text-medium"
         target="_blanc"
@@ -12,6 +12,14 @@
       >A tool by Process Studio</a>-->
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
+      <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
+      <span class="code">
+        <span
+          :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
+        >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
+
+        <!-- Teile deine Schwarz Brille -->
+      </span>
     </header>
     <Threemodel
       :useAsSunglasses="useAsSunglasses"
@@ -93,7 +101,7 @@
           </div>
         </div>
         <div class="payment-section">
-          <p class="text text-description description">Produktinformation</p>
+          <p class="text text-description description"></p>
           <h2>{{model[0]}}</h2>
           <div class="material-display">
             <!-- {{materialOne}}{{(materialOne && (materialTwo || materialThree || materialFour || materialFive) && ', ')}}
@@ -135,18 +143,11 @@
           >
           Erfahre hier welche Informationen dein Optiker braucht um dir die richtigen Gläser für deine neue Schwarz-Brille einzsutellen!
           </p>-->
-          <span class="code">
-            <span
-              :class="[copiedUrl ? (this.validHash ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
-            >{{this.validHash ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
-            <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
-            <!-- Teile deine Schwarz Brille -->
-          </span>
 
           <span
             :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'copy-buy active' : 'copy-buy']"
           >
-                    <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
+            <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
             <a
               :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0AIch würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20%20%20%20%20%20%20%20%20%20'+
@@ -157,7 +158,7 @@
               <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
               <button
                 :class="[fullCode && !useAsSunglasses || fullCode && (useAsSunglasses && sunglasses !== '') ? 'buy-button text-button active' : 'buy-button text-button ']"
-              >jetzt bestellen</button>
+              >Bestellen</button>
             </a>
           </span>
         </div>
@@ -425,7 +426,7 @@ export default {
 
     setTimeout(() => {
       if (!this.hashModelChange && this.model.length === 0) {
-        this.model = ["N°1 - Moluptatum", 1];
+        this.model = ["Model N°1", 1];
       }
     }, 50);
   },

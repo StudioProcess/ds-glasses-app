@@ -4,7 +4,6 @@
     @mouseleave="setHovered(index, false)"
     class="material-picker"
   >
-    <!-- <span class="index text-medium">{{index}}</span> -->
     <ul :class="[!(index % 2 === 0) ?  'overview even' : 'overview']">
       <span class="text-description material-index">{{index}}</span>
 
@@ -13,13 +12,13 @@
           v-on:click="setSliderContent('woods')"
           v-bind:class="[activeTab === 'woods' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
         >Holz</li>
+        <!-- v-on:click="setSliderContent('papers')" -->
         <li
-          v-on:click="setSliderContent('papers')"
-          v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+          v-bind:class="[activeTab === 'papers' ? 'active text-tab forbidden' : 'text-tab forbidden', selectedMaterial !== 'empty' && 'deactivated']"
         >Papier</li>
+        <!-- v-on:click="setSliderContent('fabrics')" -->
         <li
-          v-on:click="setSliderContent('fabrics')"
-          v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
+          v-bind:class="[activeTab === 'fabrics' ? 'active text-tab forbidden' : 'text-tab forbidden', selectedMaterial !== 'empty' && 'deactivated']"
         >Stoff</li>
       </ul>
       <span ref="detectorLeft" class="detector detector-left"></span>
@@ -383,18 +382,18 @@ export default {
         let item = this.woods[Math.floor(Math.random() * this.woods.length)];
         let randomNmbr = Math.floor(Math.random() * 3) + 1;
 
-        if (randomNmbr === 2) {
-          this.setSliderContent("papers");
-          this.activeMaterialTab = "papers";
-          item = this.papers[Math.floor(Math.random() * this.papers.length)];
-        } else if (randomNmbr === 3) {
-          this.setSliderContent("fabrics");
-          this.activeMaterialTab = "fabrics";
-          item = this.fabrics[Math.floor(Math.random() * this.fabrics.length)];
-        } else {
+        // if (randomNmbr === 2) {
+        //   this.setSliderContent("papers");
+        //   this.activeMaterialTab = "papers";
+        //   item = this.papers[Math.floor(Math.random() * this.papers.length)];
+        // } else if (randomNmbr === 3) {
+        //   this.setSliderContent("fabrics");
+        //   this.activeMaterialTab = "fabrics";
+        //   item = this.fabrics[Math.floor(Math.random() * this.fabrics.length)];
+        // } else {
           this.setSliderContent("woods");
           this.activeMaterialTab = "woods";
-        }
+        // }
 
         let array = [item.name, item.texture, this.index, item.index];
         this.$emit("passRandomMaterialBack", array);
