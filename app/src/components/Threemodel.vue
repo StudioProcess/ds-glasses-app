@@ -25,12 +25,12 @@
     </ul>
 
     <span
-      :class="[(positionLocked && !this.$refs.posOne.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
+      :class="[(positionLocked && !this.$refs.posOne.classList.contains('active')) ? 'view-plus hide' : 'view-plus', fullscreenToggled ? 'view-plus hide' : 'view-plus']"
       ref="posOne"
       v-on:click="setCameraPosition($event, 0, 0, -70, 0, '+=0.9', '-=0.9')"
     ></span>
     <span
-      :class="[(positionLocked && !this.$refs.posTwo.classList.contains('active')) || fullscreenToggled ? 'view-plus hide' : 'view-plus']"
+      :class="[(positionLocked && !this.$refs.posTwo.classList.contains('active')) ? 'view-plus hide' : 'view-plus', fullscreenToggled ? 'view-plus hide' : 'view-plus']"
       ref="posTwo"
       v-on:click="setCameraPosition($event, 0, -20, -220, 60, '-=0.9', '+=0.9')"
     ></span>
@@ -553,6 +553,8 @@ export default {
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
       if (this.fullscreenToggled) {
+        this.positionLocked = false;
+        this.resetCameraPosition();
         this.$refs.three.classList.add("toggledFullscreen");
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
@@ -1144,6 +1146,22 @@ export default {
       let style =
         "translate(-50%, -50%) translate(" + tempX + "px," + tempY + "px)";
       viewPlus.style.transform = style;
+    },
+    resetCameraPosition: function() {
+      this.controls.enabled = true;
+      this.controls.update();
+      TweenMax.to(this.camera.position, 1.0, {
+        x: 0,
+        y: -10,
+        z: -145
+      });
+      let currentRotation = this.objtemp.children[0].rotation;
+      TweenMax.to(this.objtemp.children[0].rotation, 1.0, {
+        y: "="+currentRotation
+      });
+      TweenMax.to(this.objtemp.children[0].position, 0.0, {
+        x: 0
+      });
     },
     setCameraPosition: function(
       event,
