@@ -444,6 +444,10 @@ body {
     font-weight: 500;
     text-align: center;
     font-size: 10px;
+    width: 14px;
+    height: 14px;
+    font-size: 12px;
+    margin-top: 35px;
     &.active {
       opacity: 0.2;
     }
@@ -837,14 +841,15 @@ header {
     width: 85px;
   }
   a img {
-    width: 165%;
+    padding-left: 0.2vw;
+    width: 177%;
   }
   .share {
     position: relative;
     background-repeat: no-repeat;
     display: block;
     font-size: 12px;
-    margin-left: calc(64.7vw - 16px);
+    margin-left: calc(68.7vw - 16px);
     font-size: 12px;
     cursor: pointer;
     padding-left: 16px;
@@ -1018,6 +1023,7 @@ header {
   }
   .schichtler {
     margin-left: 5vw;
+    white-space: nowrap;
   }
 }
 
@@ -1119,6 +1125,7 @@ header {
 .dropbtn {
   border: none;
   cursor: pointer;
+  background: inherit;
   &.alert {
     color: red;
   }
