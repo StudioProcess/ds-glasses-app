@@ -745,7 +745,9 @@ export default {
       this.pointLightRight.layers.set(1);
 
       let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      let directionalLightBack = new THREE.DirectionalLight(0xffffff, 1.5);
       directionalLight.position.set(0, -10, -20);//30
+      directionalLightBack.position.set(0, -10, 20);//30
       var helper = new THREE.DirectionalLightHelper(
         directionalLight,
         5,
@@ -759,6 +761,8 @@ export default {
       this.pointLight.layers.set(1);
       this.pointLightBack.layers.set(1);
       directionalLight.layers.set(2);
+      directionalLightBack.layers.set(2);
+      
 
       if (deactivate) {
         this.scene.remove(directionalLight);
@@ -771,6 +775,7 @@ export default {
       } else {
         this.scene.add(pointLightBg);
         this.scene.add(directionalLight);
+        this.scene.add(directionalLightBack);
         this.scene.add(this.pointLightLeft);
         this.scene.add(this.pointLight);
         this.scene.add(pointLightBg);
