@@ -8,20 +8,20 @@
         <span
           :class="[expanded ? 'active navigation-element expanded' : 'navigation-element expanded']"
         ></span>
-        <p class="text-button">Toggle Schichten</p>
+        <p class="text-button">Schichten Aus-/Einklappen</p>
       </li>
       <li v-on:click="fullscreen()">
         <span
           v-bind:class="[fullscreenToggled ? 'active navigation-element fullscreen': 'navigation-element fullscreen']"
         ></span>
-        <p class="text-button">Fullscreen</p>
+        <p class="text-button">Vollbild</p>
       </li>
-      <li class="small" v-on:click="nightmode()">
+      <!-- <li class="small" v-on:click="nightmode()">
         <span
           :class="[nightMode ? 'active navigation-element nightmode' : 'navigation-element nightmode']"
         ></span>
         <p class="text-button"></p>
-      </li>
+      </li> -->
     </ul>
 
     <span
@@ -745,7 +745,7 @@ export default {
       this.pointLightRight.layers.set(1);
 
       let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-      directionalLight.position.set(30, -10, -20);
+      directionalLight.position.set(0, -10, -20);//30
       var helper = new THREE.DirectionalLightHelper(
         directionalLight,
         5,
@@ -814,7 +814,7 @@ export default {
       this.camera.position.y = -10;
       this.controls.update();
 
-      this.setupPostprocessing();
+      // this.setupPostprocessing();
 
       // SETUP SPHERES FOR ZOOM VIEW
       let posGeo = new THREE.SphereBufferGeometry(0.5, 2, 2);
@@ -889,10 +889,11 @@ export default {
         });
       }
       let metall = new THREE.MeshStandardMaterial({
-        emissive: 0x1f1f1f, //6b6b6b
-        roughness: 3.8,
-        metalness: 0.9,
-        color: "#303030",
+        emissive: 0x9e9e9e, //6b6b6b
+        emissiveIntensity: 0.4,
+        roughness: 4.8,
+        metalness: 0.1,
+        color: "#404040",
         roughnessMap: new THREE.TextureLoader().load(roughness_map_metal),
         map: new THREE.TextureLoader().load(map_metal)
       });
@@ -914,7 +915,7 @@ export default {
             this.objtemp.add(object);
             this.modelHasLoaded = true;
             this.$emit("modelLoaded", true);
-            object.getObjectByName("Scharnier").position.z += 1;
+            // object.getObjectByName("Scharnier").position.z += 1;
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
@@ -1040,6 +1041,7 @@ export default {
         object.getObjectByName("Scharnier").material = metall;
       }
       object.getObjectByName("Glas").layers.set(2);
+      object.getObjectByName("Scharnier").layers.set(2);
       object.getObjectByName("Layer_1").material = mat;
       object.getObjectByName("Layer_1 Layer_1B").material = mat;
       object.getObjectByName("Layer_1 Layer_1N").material = mat;

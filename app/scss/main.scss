@@ -176,12 +176,13 @@ body {
     overflow: hidden;
 
     li {
-      width: 47.5%;
+      // width: 47.5%;
+      width: 50%;
       &:not(:last-child) {
         border-right: 1px solid #00000020;
       }
       &:last-child {
-        width: 5%;
+        // width: 5%;
       }
       display: flex;
       align-items: center;

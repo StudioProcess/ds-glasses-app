@@ -111,7 +111,7 @@
             {{materialFive}}-->
           </div>
           <span class="sunglasses text-medium">
-            Sonnenbrille (40€):
+            Sonnenbrille ( + 40€):
             <input
               v-on:click="removeHashSunglasses($event)"
               v-model="useAsSunglasses"
@@ -153,7 +153,7 @@
               :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0A%0D%0Aich würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20'+
               model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
               '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
-              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABestellcode:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' 
+              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' 
               ]"
             >
               <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
@@ -427,7 +427,7 @@ export default {
 
     setTimeout(() => {
       if (!this.hashModelChange && this.model.length === 0) {
-        this.model = ["Model N°1", 1];
+        this.model = ["Modell N°1", 1];
       }
     }, 50);
   },
