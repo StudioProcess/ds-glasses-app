@@ -21,7 +21,7 @@
           :class="[nightMode ? 'active navigation-element nightmode' : 'navigation-element nightmode']"
         ></span>
         <p class="text-button"></p>
-      </li> -->
+      </li>-->
     </ul>
 
     <span
@@ -190,12 +190,15 @@ export default {
           loader.load(
             this.allHashMaterialsModel[0][i][0],
             function(texture) {
-              texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-              texture.offset.set(0, 0);
+              texture.wrapT = THREE.MirroredRepeatWrapping;
+              texture.wrapS = THREE.MirroredRepeatWrapping;
+              texture.center.set(0.5, 0.5);
+
+              texture.offset.set(10, 0);
               texture.repeat.set(1, 1);
-              texture.rotation = 0;
+              texture.rotation = 1.57;
               if ((i + 1) % 2 === 0) {
-                texture.rotation = 1.57;
+                texture.rotation = 0;
               }
               if (this.allHashMaterialsModel[0][i][1] === "1") {
                 this.assignMaterial(texture, "Layer_1");
@@ -299,7 +302,7 @@ export default {
         this.modelHasLoaded)
     ) {
       console.log("update materials");
-      let texture = new THREE.TextureLoader().load(this.mat[0]);
+      // let texture = new THREE.TextureLoader().load(this.mat[0]);
       var loader = new THREE.TextureLoader();
 
       let temp = eval(this.mat[1]) + 1;
@@ -308,16 +311,27 @@ export default {
         this.mat[0],
 
         function(texture) {
-          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-          texture.offset.set(0, 0);
-          texture.repeat.set(1, 1);
-          tempTexture = texture;
+          texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
+          // texture.wrapT = THREE.ClampToEdgeWrapping;
+          // texture.wrapS = THREE.ClampToEdgeWrapping;
 
+          // texture.center.set(.5, .5);
+
+          // texture.offset.set(10, 0);
+          // texture.repeat.set(1, 1);
+
+          texture.offset.set(0, 0);
+          texture.repeat.set(1.2, 1.2);
+          texture.repeat.set(1.2, 1.2);
+          texture.offset.set(2.9, 0.2);
           texture.rotation = 0;
           if (this.mat[1] % 2 === 0) {
             texture.rotation = 1.57;
           }
+
+          tempTexture = texture;
           if (this.mat[1] === "1") {
+            // texture.offset.set(0, 0);//texture.offset.set(1.5, 0);2.9
             this.assignMaterial(texture, "Layer_1");
             this.assignMaterial(texture, "Layer_1 Layer_1B");
           } else if (this.mat[1] === "2") {
@@ -524,10 +538,6 @@ export default {
     },
     assignMaterial: function(texture, name) {
       if (this.modelHasLoaded) {
-        console.log("assign material:");
-        console.log(name);
-        console.log(texture.image.currentSrc);
-
         this.objtemp.children[0].getObjectByName(name).material.map = texture;
         this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
 
@@ -616,43 +626,39 @@ export default {
         return positions;
       });
 
-      let glasAndScharnier = this.objtemp.children[0].children
-        .slice(0)
-        // .reverse()
-        .map(o => {
+      if (!this.expanded) {
+        this.objtemp.children[0].getObjectByName("Glas").visible = false;
+        this.objtemp.children[0].getObjectByName("Scharnier").visible = false;
+        let child = this.objtemp.children[0].children.slice(0).map(o => {
           let positions = [];
-          if (o.name === "Glas") {
+          if (
+            o.name !== "Glas" &&
+            o.name !== "Scharnier" &&
+            o.name !== "Layer_1 Layer_1B" &&
+            o.name !== "Layer_2 Layer_2B" &&
+            o.name !== "Layer_3 Layer_3B" &&
+            o.name !== "Layer_4 Layer_4B" &&
+            o.name !== "Layer_5 Layer_5B" &&
+            o.name !== "Layer_1 Layer_1N" &&
+            o.name !== "Layer_2 Layer_2N" &&
+            o.name !== "Layer_3 Layer_3N" &&
+            o.name !== "Layer_4 Layer_4N" &&
+            o.name !== "Layer_5 Layer_5N"
+          ) {
             positions = o.position;
           }
           return positions;
         });
-      if (!this.expanded) {
-        this.objtemp.children[0].getObjectByName("Glas").visible = false;
-        let child = this.objtemp.children[0].children
-          .slice(0)
-          // .reverse()
-          .map(o => {
-            let positions = [];
-            if (
-              o.name !== "Glas" &&
-              o.name !== "Scharnier" &&
-              o.name !== "Layer_1 Layer_1B" &&
-              o.name !== "Layer_2 Layer_2B" &&
-              o.name !== "Layer_3 Layer_3B" &&
-              o.name !== "Layer_4 Layer_4B" &&
-              o.name !== "Layer_5 Layer_5B" &&
-              o.name !== "Layer_1 Layer_1N" &&
-              o.name !== "Layer_2 Layer_2N" &&
-              o.name !== "Layer_3 Layer_3N" &&
-              o.name !== "Layer_4 Layer_4N" &&
-              o.name !== "Layer_5 Layer_5N"
-            ) {
-              positions = o.position;
-            }
-            return positions;
-          });
-
-        console.log("expand 1, 3, 5, 6, 8");
+        let distance = 0.75;
+        if (this.currentModelIndex === 1) {
+          distance = 0.2;
+        }
+        if (this.currentModelIndex === 3 || this.currentModelIndex === 6) {
+          distance = 1.3;
+        }
+        if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
+          distance = -4;
+        }
         tl.staggerTo(
           child,
           0.4,
@@ -661,10 +667,10 @@ export default {
               z:
                 this.currentModelIndex !== 2 && this.currentModelIndex !== 5
                   ? function(j) {
-                      return 40 - j * 3;
+                      return 40 - (j - distance) * 3;
                     }
                   : function(j) {
-                      return 40 - j * 6;
+                      return 40 - (j + 1.4) * 6;
                     },
               delay: function(j) {
                 return Math.sin(0.003) * j;
@@ -676,6 +682,7 @@ export default {
       } else {
         // INFLATE
         this.objtemp.children[0].getObjectByName("Glas").visible = true;
+        this.objtemp.children[0].getObjectByName("Scharnier").visible = true;
         let child = this.objtemp.children[0].children
           .slice(0)
           .reverse()
@@ -746,8 +753,8 @@ export default {
 
       let directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
       let directionalLightBack = new THREE.DirectionalLight(0xffffff, 1.5);
-      directionalLight.position.set(0, -10, -20);//30
-      directionalLightBack.position.set(0, -10, 20);//30
+      directionalLight.position.set(0, -10, -20); //30
+      directionalLightBack.position.set(0, -10, 20); //30
       var helper = new THREE.DirectionalLightHelper(
         directionalLight,
         5,
@@ -762,7 +769,6 @@ export default {
       this.pointLightBack.layers.set(1);
       directionalLight.layers.set(2);
       directionalLightBack.layers.set(2);
-      
 
       if (deactivate) {
         this.scene.remove(directionalLight);
@@ -792,6 +798,10 @@ export default {
         preserveDrawingBuffer: true
       });
       const container = this.$refs.three;
+      container.oncontextmenu = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      };
 
       const W = container.clientWidth;
       const H = container.clientHeight;
@@ -920,7 +930,6 @@ export default {
             this.objtemp.add(object);
             this.modelHasLoaded = true;
             this.$emit("modelLoaded", true);
-            // object.getObjectByName("Scharnier").position.z += 1;
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
@@ -987,9 +996,10 @@ export default {
               }
             }
             if (this.expanded) {
-              console.log("model is expanded !!!!!!");
               this.expanded = false;
-              this.expand();
+              setTimeout(() => {
+                this.expand();
+              }, 100);
             }
             if (
               this.positionLocked &&
@@ -1164,7 +1174,7 @@ export default {
       });
       let currentRotation = this.objtemp.children[0].rotation;
       TweenMax.to(this.objtemp.children[0].rotation, 1.0, {
-        y: "="+currentRotation
+        y: "=" + currentRotation
       });
       TweenMax.to(this.objtemp.children[0].position, 0.0, {
         x: 0

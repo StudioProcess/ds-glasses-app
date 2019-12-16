@@ -1,6 +1,9 @@
 <template>
   <div class="main">
     <header>
+       <a class="back-button" href="https://schwarztest.azurewebsites.net/">
+        <img :src="[backButton]" />
+      </a>
       <a href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
@@ -176,6 +179,7 @@ import Threemodel from "./src/components/Threemodel";
 import { encode, decode } from "./index.js";
 
 import logoPath from "./src/assets/logo.svg";
+import backButtonPath from "./src/assets/back-button.svg";
 
 export default {
   name: "App",
@@ -185,6 +189,7 @@ export default {
       price: 280.0,
       passedMaterial: ["Ahorn", 0],
       logo: logoPath,
+      backButton: backButtonPath,
       materialOne: "",
       materialTwo: "",
       materialThree: "",
@@ -216,6 +221,7 @@ export default {
       useAsSunglasses: false,
       sunglasses: "",
       setSunglassesFromHash: false,
+      currentSunglasses: [],
       dropdownClicked: false,
       materialsLoadedFromHash: false
     };
@@ -243,15 +249,25 @@ export default {
       this.sunglasses = glasses;
       this.dropdownClicked = true;
       this.encodedArray[6] = index;
+      this.currentSunglasses[0] = index;
       this.sentToEncode();
     },
     removeHashSunglasses(event) {
-      if (this.useAsSunglasses) {
-        if (this.encodedArray[6]) {
-          this.encodedArray.splice(6, 1);
+
+      console.log(this.encodedArray[6]);
+      // if (this.useAsSunglasses) {
+        // if (this.encodedArray.length > 5) {
+          console.log(this.currentSunglasses[0] )
+          if(this.useAsSunglasses){
+            console.log("set to 0")
+          this.encodedArray[6] = 0;
+          }else if(this.currentSunglasses[0] !== undefined) {
+            this.encodedArray[6] = this.currentSunglasses[0];
+          }
+          console.log("sent to encode");
           this.sentToEncode();
-        }
-      }
+        // }
+
     },
     resetMaterials() {
       this.resetMaterialsTrigger = true;
@@ -322,7 +338,7 @@ export default {
       this.passedMaterial[0] = material[1];
       this.passedMaterial[1] = material[2]; // chosen layer
       this.encodedArray[material[2]] = Number(material[3]);
-
+      console.log(this.encodedArray)
       this.sentToEncode(true, false);
 
       if (material[2] === "1") {
@@ -399,7 +415,7 @@ export default {
             console.log(layers);
             if (layers[6]) {
               this.setSunglassesFromHash = true;
-
+              this.currentSunglasses[0] = layers[6];
               if (layers[6] === 1) {
                 this.sunglasses = "Schwarz";
               }
@@ -424,7 +440,9 @@ export default {
   mounted() {
     document.addEventListener("DOMContentLoaded", this.loadFromHash);
     window.addEventListener("hashchange", this.loadFromHash);
-
+    if (!this.useAsSunglasses) {
+      this.encodedArray[6] = 0;
+    }
     setTimeout(() => {
       if (!this.hashModelChange && this.model.length === 0) {
         this.model = ["Modell N°1", 1];

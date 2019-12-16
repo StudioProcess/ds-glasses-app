@@ -5,7 +5,9 @@
     class="material-picker"
   >
     <ul :class="[!(index % 2 === 0) ?  'overview even' : 'overview']">
-      <span :class="[selectedMaterial !== 'empty' ? 'text-description material-index active' : 'text-description material-index']">{{index}}</span>
+      <span
+        :class="[selectedMaterial !== 'empty' ? 'text-description material-index active' : 'text-description material-index']"
+      >{{index}}</span>
 
       <ul class="tab-overview">
         <li
@@ -19,7 +21,7 @@
         <!-- v-on:click="setSliderContent('fabrics')" -->
         <li
           v-bind:class="[activeTab === 'fabrics' ? 'active text-tab forbidden' : 'text-tab forbidden', selectedMaterial !== 'empty' && 'deactivated']"
-        >Stoff</li>
+        >Textil</li>
       </ul>
       <span ref="detectorLeft" class="detector detector-left"></span>
       <span ref="detectorRight" class="detector detector-right"></span>
@@ -85,7 +87,7 @@
               v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === paper.name ? paper.texture : paper.thumb) + ')' }"
               :class="selectedMaterial !== 'empty' ? 'bg selected ' : 'bg'"
             ></h3>
-             <span class="tooltip-material-box hovering-next">
+            <span class="tooltip-material-box hovering-next">
               <span
                 class="text-product-description swiper-description tooltip-material"
               >{{paper.name}}</span>
@@ -130,7 +132,7 @@ export default {
       woods: [
         {
           name: "Ahorn",
-          texture: images["wood"]["ahorn"],
+          texture: images["wood"]["uv_grid"],
           thumb: thumbs["wood"]["thumbnails"]["ahorn"],
           index: 1
         },
@@ -391,16 +393,16 @@ export default {
         //   this.activeMaterialTab = "fabrics";
         //   item = this.fabrics[Math.floor(Math.random() * this.fabrics.length)];
         // } else {
-          this.setSliderContent("woods");
-          this.activeMaterialTab = "woods";
+        this.setSliderContent("woods");
+        this.activeMaterialTab = "woods";
         // }
 
         let array = [item.name, item.texture, this.index, item.index];
         this.$emit("passRandomMaterialBack", array);
-        this.activeMaterial = item.name;
         setTimeout(() => {
+          this.activeMaterial = item.name;
           this.selectedMaterial = item.name;
-        }, 200);
+        }, 20);
       }
     },
     resetMaterialsTrigger: function() {
@@ -559,7 +561,7 @@ export default {
       //   }
       // }
       // if (!overlapButtonPrev && !overlapButtonNext) {
-        // event.currentTarget.children[1].classList.remove("blocked");
+      // event.currentTarget.children[1].classList.remove("blocked");
       // }
     },
     deactivateSwiper: function(reactivate) {

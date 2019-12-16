@@ -404,13 +404,11 @@ body {
         content: "";
         position: absolute;
         left: 0;
-        // background-color: $color-emphasize;
         height: 10%;
         width: 100%;
         height: 24px;
         width: 24px;
         border-radius: 9999px;
-        // background-image: url(../src/assets/check-icon.svg);
         background-repeat: no-repeat;
         background-size: 8px;
         background-position: center center;
@@ -832,7 +830,7 @@ header {
   height: 6vh;
   position: absolute;
   width: 100%;
-  padding-left: 0.8vw;
+  padding-left: 4vw;
   background-color: #fff;
   border-bottom: 1px solid #00000020;
   z-index: 99;
@@ -844,6 +842,24 @@ header {
   a img {
     padding-left: 0.2vw;
     width: 177%;
+  }
+  .back-button {
+    height: 6.2vh;
+    display: flex;
+    left: 0;
+    position: absolute;
+    width: fit-content;
+    transition: 0.5s all ease-out;
+    background: $color-emphasize;
+    &:hover {
+      transform: perspective(1000px) translateZ(24px);
+      box-shadow: 7px 9px 40px 0px rgb(0, 0, 0, 0.2);
+    }
+    img {
+      width: 100%;
+      height: auto;
+      padding: inherit;
+    }
   }
   .share {
     position: relative;
