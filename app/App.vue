@@ -4,7 +4,7 @@
        <a class="back-button" href="https://schwarztest.azurewebsites.net/">
         <img :src="[backButton]" />
       </a>
-      <a href="https://schwarztest.azurewebsites.net/">
+      <a class="logo" href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
       <p class="text text-description schichtler">Schichtler — die App zum Brillen gestalten</p>
@@ -15,6 +15,7 @@
       >A tool by Process Studio</a>-->
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
+      <span class="share-container">
       <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
       <span class="code">
         <span
@@ -22,6 +23,7 @@
         >{{fullCode ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
 
         <!-- Teile deine Schwarz Brille -->
+      </span>
       </span>
     </header>
     <Threemodel
