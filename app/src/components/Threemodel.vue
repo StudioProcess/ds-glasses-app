@@ -112,6 +112,7 @@ export default {
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
       normal_m: new THREE.TextureLoader().load(normal_map),
+
       isLoading: false,
       pos1: null,
       pos2: null,
@@ -925,16 +926,16 @@ export default {
             }),
               (object.rotation.y += 179);
             object.position.y += 10;
-
+            console.log("model loaded")
+            console.log(this.objtemp)
             this.assignBasicMaterials(object, glass, metall, mat, matStart);
             this.objtemp.add(object);
             this.modelHasLoaded = true;
             this.$emit("modelLoaded", true);
+
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
             }
-            console.log("LOAD MODEL:");
-            console.log(this.currentMaterials);
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
@@ -1059,6 +1060,7 @@ export default {
       object.getObjectByName("Scharnier").layers.set(2);
       object.getObjectByName("Layer_1").material = mat;
       object.getObjectByName("Layer_1 Layer_1B").material = mat;
+        this.assignMaterial(this.roughness_metall, "Layer_1")
       object.getObjectByName("Layer_1 Layer_1N").material = mat;
       object.getObjectByName("Layer_2").material = mat2;
       object.getObjectByName("Layer_2 Layer_2B").material = mat2;
@@ -1072,7 +1074,7 @@ export default {
       object.getObjectByName("Layer_5").material = mat5;
       object.getObjectByName("Layer_5 Layer_5B").material = mat5;
       object.getObjectByName("Layer_5 Layer_5N").material = mat5;
-      console.log(object.getObjectByName("Layer_5 Layer_5N"));
+      // console.log(object.getObjectByName("Layer_5 Layer_5N"));
       console.log("???");
     },
 

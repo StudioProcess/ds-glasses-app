@@ -155,7 +155,7 @@
             <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
             <a
-              :href="['mailto:dominik@schwarz.work?subject=Bestellung Schwarz Brille&body=Lieber Dominik,%0D%0A%0D%0Aich würde gerne folgende Brille bei dir bestellen:%0D%0A%0D%0A'+'Modell:%20'+
+              :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
               model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
               '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
               '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' 
