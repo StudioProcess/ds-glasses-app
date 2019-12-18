@@ -1,13 +1,13 @@
 <template>
   <div class="main">
     <header>
-      <a class="back-button" href="https://schwarztest.azurewebsites.net/">
+      <!-- <a class="back-button" href="https://schwarztest.azurewebsites.net/">
         <img :src="[backButton]" />
-      </a>
+      </a> -->
       <a class="logo" href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
-      <p class="text text-description schichtler">Schichtler — die App zum Brillen gestalten</p>
+      <p class="text text-description schichtler">App zum Brillen gestalten</p>
       <!-- <a
         class="copyright-remark description text-medium"
         target="_blanc"
@@ -257,6 +257,7 @@ export default {
     removeHashSunglasses(event) {
       if (this.useAsSunglasses) {
         this.encodedArray[6] = 0;
+        this.sunglasses = "";
       } else if (this.currentSunglasses[0] !== undefined) {
         this.encodedArray[6] = this.currentSunglasses[0];
       }

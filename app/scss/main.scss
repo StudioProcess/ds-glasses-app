@@ -571,9 +571,8 @@ body {
         position: absolute;
         display: block;
         width: 91%;
-        padding: 35px 17px 20px 9px;
-        padding: 30px 17px 14px 9px;
-
+        padding: 30px 17px 14px 0;
+        margin-left: 9px;
         &-text-selected {
           position: absolute;
           z-index: 4;

@@ -2,6 +2,7 @@
   <div
     ref="three"
     :class="[nightMode ? 'three-model-container nightmode' : 'three-model-container', fullscreenToggled && 'toggledFullscreen']"
+    v-on:click="fullscreenClick()"
   >
     <ul :class="[nightMode ? 'three-navigation nightmode' :'three-navigation']">
       <li v-on:click="expand()">
@@ -94,6 +95,7 @@ export default {
       currentMaterialIndex: 0,
       currentModel: model,
       fullscreenToggled: false,
+      fullscreenRotationPaused: false,
       mHoveredMaterial: [0][false],
       scene: null,
       camera: null,
@@ -142,7 +144,6 @@ export default {
   },
   watch: {
     resetMaterialsTrigger: function() {
-
       this.currentMaterials = [];
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
@@ -353,6 +354,10 @@ export default {
     this.currentMaterialIndex = this.mat[1];
   },
   methods: {
+    fullscreenClick: function() {
+      this.fullscreenRotationPaused = !this.fullscreenRotationPaused;
+      console.log(this.fullscreenRotationPaused)
+    },
     setupPostprocessing: function() {
       var geometry = new THREE.Geometry();
       var v1 = new THREE.Vector3(0, 10, 30);
@@ -565,11 +570,21 @@ export default {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        console.log(this.fullscreenRotationPaused);
 
-        TweenMax.to(this.objtemp.children[0].rotation, 5600.0, {
-          y: 360,
-          repeat: -1
-        });
+        let tween = TweenMax.to(
+          this.objtemp.children[0].rotation,
+          5600.0,
+          {
+            y: 360,
+            repeat: -1
+          }
+        );
+        //  rotateModel.resume();
+        if (this.fullscreenRotationPaused) {
+          console.log("??????")
+          tween.paused();
+        }
       } else {
         TweenMax.to(this.objtemp.children[0].rotation, 0.0, {
           y: 3.1
@@ -1052,7 +1067,7 @@ export default {
       object.getObjectByName("Scharnier").layers.set(2);
       object.getObjectByName("Layer_1").material = mat;
       object.getObjectByName("Layer_1 Layer_1B").material = mat;
-        this.assignMaterial(this.roughness_metall, "Layer_1")
+      this.assignMaterial(this.roughness_metall, "Layer_1");
       object.getObjectByName("Layer_1 Layer_1N").material = mat;
       object.getObjectByName("Layer_2").material = mat2;
       object.getObjectByName("Layer_2 Layer_2B").material = mat2;

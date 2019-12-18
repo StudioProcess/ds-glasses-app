@@ -19,7 +19,7 @@
   "keywords": [],
   "license": "AGPL-3.0",
   "dependencies": {
-    "ds-glasses-code": "github:StudioProcess/ds-glasses-code",
+    "ds-glasses-code": "git+https://github.com/StudioProcess/ds-glasses-code.git#0.3.0",
     "postprocessing": "^6.8.9",
     "seedrandom": "^3.0.5",
     "three": "^0.110.0",
