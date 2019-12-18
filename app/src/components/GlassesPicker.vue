@@ -82,12 +82,9 @@ export default {
     };
   },
   watch: {
-    modelHasLoaded: function(){
-        console.log("modelhasloaded" + this.currentModelLoaded);
-    },
+    // modelHasLoaded: function(){
+    // },
     hashModelNumber: function(){
-      console.log("HASHMODELNUMBER")
-      console.log(this.hashModelNumber)
     if(this.hashModelNumber !== 0){
       this.isSelected = true;
       this.currentIndex = this.hashModelNumber-1;
@@ -96,7 +93,6 @@ export default {
   },
   methods: {
     clickedGlasses: function(index, name, model) {
-      console.log("modelhasloaded" + this.currentModelLoaded);
       this.isSelected = true;
       this.currentIndex = index;
       this.$emit("sendMessage", [name, model]);

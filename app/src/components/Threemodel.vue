@@ -50,6 +50,7 @@ import model4 from "../assets/models/new_models/model4.obj";
 import model5 from "../assets/models/new_models/model2sl.obj";
 import model6 from "../assets/models/new_models/model3sl.obj";
 import model7 from "../assets/models/new_models/model4sl.obj";
+
 import { OrbitControls } from "../../../node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLoader.js";
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
@@ -57,8 +58,7 @@ import roughness_map_metal from "../assets/materials/maps/Metal_rgh.jpg";
 import map_metal from "../assets/materials/maps/Metal_col.jpg";
 
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
-import displacement_map from "../assets/materials/maps/Wood24_disp.jpg";
-import shadow from "../assets/shadow.png";
+import shadow from "../assets/materials/maps/shadow.png";
 import particle from "../assets/particle.png";
 import { encode, decode } from "../../index.js";
 
@@ -142,7 +142,7 @@ export default {
   },
   watch: {
     resetMaterialsTrigger: function() {
-      console.log("RESET MATERIAL TRIGGER");
+
       this.currentMaterials = [];
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
@@ -180,7 +180,6 @@ export default {
     },
     sunglassesFromHash: function() {
       if (this.sunglassesFromHash) {
-        console.log("sunglassesFromHash");
         this.updateSunglasses();
       }
     },
@@ -231,8 +230,6 @@ export default {
 
   updated() {
     if (this.setModel[1] !== this.currentModelIndex) {
-      console.log("update model");
-      console.log(this.currentMaterials);
       this.$emit("modelLoaded", false);
       this.modelHasLoaded = false;
       // setTimeout(() => {
@@ -302,8 +299,6 @@ export default {
         this.objtemp.children[0] &&
         this.modelHasLoaded)
     ) {
-      console.log("update materials");
-      // let texture = new THREE.TextureLoader().load(this.mat[0]);
       var loader = new THREE.TextureLoader();
 
       let temp = eval(this.mat[1]) + 1;
@@ -707,7 +702,6 @@ export default {
             }
             return positions;
           });
-        console.log("inflate 1, 3, 4, 6");
         tl.staggerTo(
           child,
           0.5,
@@ -926,8 +920,6 @@ export default {
             }),
               (object.rotation.y += 179);
             object.position.y += 10;
-            console.log("model loaded")
-            console.log(this.objtemp)
             this.assignBasicMaterials(object, glass, metall, mat, matStart);
             this.objtemp.add(object);
             this.modelHasLoaded = true;
@@ -1074,8 +1066,6 @@ export default {
       object.getObjectByName("Layer_5").material = mat5;
       object.getObjectByName("Layer_5 Layer_5B").material = mat5;
       object.getObjectByName("Layer_5 Layer_5N").material = mat5;
-      // console.log(object.getObjectByName("Layer_5 Layer_5N"));
-      console.log("???");
     },
 
     updateSunglasses: function() {
@@ -1099,8 +1089,6 @@ export default {
       });
       if (this.modelHasLoaded) {
         if (this.useAsSunglasses) {
-          console.log("UPDATE AS SUNGLASSES THREE.JS");
-
           this.objtemp.children[0].getObjectByName(
             "Glas"
           ).material = sunglassesGlass;

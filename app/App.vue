@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <header>
-       <a class="back-button" href="https://schwarztest.azurewebsites.net/">
+      <a class="back-button" href="https://schwarztest.azurewebsites.net/">
         <img :src="[backButton]" />
       </a>
       <a class="logo" href="https://schwarztest.azurewebsites.net/">
@@ -16,14 +16,14 @@
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
       <span class="share-container">
-      <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
-      <span class="code">
-        <span
-          :class="[copiedUrl ? (fullCode ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
-        >{{fullCode ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
+        <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
+        <span class="code">
+          <span
+            :class="[copiedUrl ? (fullCode ? 'tooltip active valid text-small' : 'tooltip active invalid text-small') : 'tooltip text-small']"
+          >{{fullCode ? 'Dein individueller Link wurde in die Zwischenablage kopiert!' : 'Definiere zuerst alle Materialien!'}}</span>
 
-        <!-- Teile deine Schwarz Brille -->
-      </span>
+          <!-- Teile deine Schwarz Brille -->
+        </span>
       </span>
     </header>
     <Threemodel
@@ -255,21 +255,12 @@ export default {
       this.sentToEncode();
     },
     removeHashSunglasses(event) {
-
-      console.log(this.encodedArray[6]);
-      // if (this.useAsSunglasses) {
-        // if (this.encodedArray.length > 5) {
-          console.log(this.currentSunglasses[0] )
-          if(this.useAsSunglasses){
-            console.log("set to 0")
-          this.encodedArray[6] = 0;
-          }else if(this.currentSunglasses[0] !== undefined) {
-            this.encodedArray[6] = this.currentSunglasses[0];
-          }
-          console.log("sent to encode");
-          this.sentToEncode();
-        // }
-
+      if (this.useAsSunglasses) {
+        this.encodedArray[6] = 0;
+      } else if (this.currentSunglasses[0] !== undefined) {
+        this.encodedArray[6] = this.currentSunglasses[0];
+      }
+      this.sentToEncode();
     },
     resetMaterials() {
       this.resetMaterialsTrigger = true;
@@ -329,11 +320,8 @@ export default {
       }
     },
     setCurrentModel(model) {
-      console.log(model);
       this.model = model;
       this.encodedArray[0] = Number(model[1]);
-      console.log("encode:")
-      console.log(this.encodedArray[0] )
       this.sentToEncode(false, true);
       this.currentUrl = window.location.href;
     },
@@ -342,7 +330,6 @@ export default {
       this.passedMaterial[0] = material[1];
       this.passedMaterial[1] = material[2]; // chosen layer
       this.encodedArray[material[2]] = Number(material[3]);
-      console.log(this.encodedArray)
       this.sentToEncode(true, false);
 
       if (material[2] === "1") {
@@ -358,27 +345,24 @@ export default {
       }
     },
     sentToEncode: function() {
-      console.log("send to encode?");
-      console.log(this.encodedArray);
       if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
-          console.log(this.encodedArray);
-          console.log("layers incomplete");
+          // console.log("layers incomplete");
           return;
         }
         let arr = this.encodedArray.map(i => parseInt(i));
 
         let id = encode(arr);
         if (id === false) {
-          console.log("Encode Error");
+          // console.log("Encode Error");
           this.validHash = false;
         } else {
           this.hashCode = id;
           location.hash = id;
           this.fullCode = true;
           this.ignoreHashChange = true;
-          console.log("Encode OK");
+          // console.log("Encode OK");
           this.validHash = true;
           this.currentUrl = window.location.href;
         }
@@ -396,7 +380,7 @@ export default {
         this.materialsLoadedFromHash = true;
         let layers = decode(code);
         if (layers === false) {
-          console.log("Decode (from URL) Error");
+          // console.log("Decode (from URL) Error");
         } else {
           this.setModelFromUrl = layers[0];
           let tempArray = [];
@@ -404,19 +388,13 @@ export default {
             this.encodedArray[i] = Number(layers[i]);
             tempArray[i - 1] = layers[i];
           }
-          console.log("USE AS SUNGLASSES");
-
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
-          console.log(this.setMaterialFromUrl);
           this.hashModelChange = true;
           this.validHash = true;
-          console.log("Decode (from URL) OK");
+          // console.log("Decode (from URL) OK");
           setTimeout(() => {
             this.materialsLoadedFromHash = false;
-
-            console.log("LAYERS");
-            console.log(layers);
             if (layers[6]) {
               this.setSunglassesFromHash = true;
               this.currentSunglasses[0] = layers[6];
@@ -432,9 +410,6 @@ export default {
               if (layers[6] === 4) {
                 this.sunglasses = "Braun verlaufend";
               }
-
-              console.log("USE AS SUNGLASSES");
-              console.log(this.useAsSunglasses);
             }
           }, 800);
         }
