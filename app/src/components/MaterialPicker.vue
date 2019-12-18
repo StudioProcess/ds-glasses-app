@@ -132,7 +132,7 @@ export default {
       woods: [
         {
           name: "Ahorn",
-          texture: images["wood"]["uv_grid"],
+          texture: images["wood"]["ahorn"],
           thumb: thumbs["wood"]["thumbnails"]["ahorn"],
           index: 1
         },

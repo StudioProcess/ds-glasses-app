@@ -332,6 +332,8 @@ export default {
       console.log(model);
       this.model = model;
       this.encodedArray[0] = Number(model[1]);
+      console.log("encode:")
+      console.log(this.encodedArray[0] )
       this.sentToEncode(false, true);
       this.currentUrl = window.location.href;
     },
@@ -356,9 +358,9 @@ export default {
       }
     },
     sentToEncode: function() {
-      console.log("encode?");
+      console.log("send to encode?");
       console.log(this.encodedArray);
-      if (!this.materialsLoadedFromHash) {
+      if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
           console.log(this.encodedArray);
