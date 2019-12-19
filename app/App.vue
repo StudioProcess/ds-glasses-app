@@ -3,7 +3,7 @@
     <header>
       <!-- <a class="back-button" href="https://schwarztest.azurewebsites.net/">
         <img :src="[backButton]" />
-      </a> -->
+      </a>-->
       <a class="logo" href="https://schwarztest.azurewebsites.net/">
         <img :src="[logo]" />
       </a>
@@ -101,6 +101,7 @@
             :randomMaterialsTrigger="randomMaterialsTrigger"
           ></Materials>
           <div class="random-butons">
+            <span v-on:click="toggleInfo = !toggleInfo" class="random info text-button">Info</span>
             <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
             <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
           </div>
@@ -171,6 +172,43 @@
       </div>
     </div>
     <footer></footer>
+    <div v-if="toggleInfo" class="info-overlay text-description">
+      <div class="info-overlay-overlay">
+      <button v-on:click="toggleInfo = !toggleInfo" class="close"></button>
+      <ul>
+        <li>
+          <h3>Modelle</h3>Es stehen vier Standardmodelle zur Auswahl. Die Modelle gibt es in verschiedenen Varianten in unterschiedlichen Materialien.
+        </li>
+        <li>
+          <h3>Material</h3>Die Idee der schichtweisen Verleimung von Holz möchten wir in Zukunft um Altpapier, Altkleidung und nicht mehr verwendete Textilien erweitern.
+        </li>
+        <li>
+          <h3>Aufbau</h3>Die Brillen bestehen aus fünf Holzschichten. Die einzelnen Furniere werden zu Sperrholz verleimt. Die Quell- und Schwindeigenschaften des Holzes werden damit gesperrt. Das Material bleibt formstabil.
+          Für einen guten Tragekomfort werden die Bügel am Ende ausgedünnt. Die Metallscharniere sind genietet und somit austauschbar. Die Oberfläche ist mit einem natürlichen Hartöl versiegelt und für alle Wetterlagen geeignet.
+        </li>
+        <li>
+          <h3>Vor- und Nachteile</h3>Die Holzbrillen sind federleicht und sorgen mit ihren am Ende ausgedünnten Bügeln für einen guten Tragekomfort. Die Holzbügel können nicht durch einfaches Nachbiegen angepasst werden, sondern müssen vom Hersteller angepasst werden.
+        </li>
+        <li>
+          <h3>Verglasung</h3>In den Holzrahmen können von jeder OptikerIn sowohl Sonnenbrillengläser als auch optische Gläser eingesetzt werden. Beim Kauf einer Holzbrille erhältst Du eine Begleitinformation für OptikerInnen.
+        </li>
+        <li>
+          <h3>Finish</h3>Die individuelle Anfertigung und das hochwertige Naturöl verleihen den Brillen ihren ganz besonderen Charme.
+        </li>
+        <li>
+          <h3>Produktion</h3>Die Holzbrillen werden in einer kleinen Manufaktur in Wien hergestellt. In feiner Handarbeit werden die einzelnen Holzschichten ausgewählt und mit umweltfreundlichen Klebestoffen verleimt. Die ausschließlich heimischen Hölzer sind dabei größtenteils Reste der Industrie.
+        </li>
+        <li>
+          <h3>Service</h3>Wir machen jeden Arbeitsschritt selbst und können daher ein umfassendes Service anbieten.
+          Für Fragen rund ums Service und alle anderen Fragen, schreib uns auf: office@schwarz.work
+        </li>
+        <li>
+          <h3>Bestellinfo</h3>Bei erfolgreicher Bestellung erhältst Du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben.
+          Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
+        </li>
+      </ul>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -225,7 +263,8 @@ export default {
       setSunglassesFromHash: false,
       currentSunglasses: [],
       dropdownClicked: false,
-      materialsLoadedFromHash: false
+      materialsLoadedFromHash: false,
+      toggleInfo: false,
     };
   },
   watch: {
