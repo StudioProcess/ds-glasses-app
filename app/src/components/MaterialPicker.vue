@@ -45,7 +45,7 @@
             <!--    @mouseover="detectFirstChild(true, $event)"
             @mouseleave="detectFirstChild(false, $event)"-->
             <h3
-              v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.texture : wood.thumb)  + ')' }"
+              v-bind:style="{ backgroundImage: 'url(' + (selectedMaterial === wood.name ? wood.thumb : wood.thumb)  + ')' }"
               :class="[selectedMaterial !== 'empty' ? 'bg selected' : 'bg']"
             ></h3>
             <span class="tooltip-material-box hovering-next">
@@ -115,7 +115,9 @@ export default {
     "swiperClass",
     "hashMaterial",
     "resetMaterialsTrigger",
-    "randomMaterialsTrigger"
+    "randomMaterialsTrigger",
+    "materialNameSet",
+    "randomArray"
   ],
   data: function() {
     return {
@@ -380,10 +382,12 @@ export default {
   watch: {
     randomMaterialsTrigger: function() {
       // set random materials
-      if (this.randomMaterialsTrigger == true) {
-        let item = this.woods[Math.floor(Math.random() * this.woods.length)];
+      if (this.randomMaterialsTrigger === true) {
+        let item = this.woods[Math.floor(this.randomArray[this.index] * this.woods.length)];
         let randomNmbr = Math.floor(Math.random() * 3) + 1;
 
+          // console.log("INDEX "+this.index);
+          // console.log(item.name);
         // if (randomNmbr === 2) {
         //   this.setSliderContent("papers");
         //   this.activeMaterialTab = "papers";
@@ -397,14 +401,24 @@ export default {
         this.activeMaterialTab = "woods";
         // }
 
-        let array = [item.name, item.texture, this.index, item.index];
+        let array = [item.name, item.texture, this.index, item.index, () => {
+          // console.log('fertig')
+        }];
         this.$emit("passRandomMaterialBack", array);
-        setTimeout(() => {
-          this.activeMaterial = item.name;
-          this.selectedMaterial = item.name;
-        }, 20);
+
+        this.activeMaterial = item.name;
+        this.selectedMaterial = item.name;
+
+        // setTimeout(() => {
+        if (this.materialNameSet) {
+          // this.activeMaterial = item.name;
+          // this.selectedMaterial = item.name;
+        }
+        // }, 20);
+        // console.log("SET RANDOM MATERIAL");
       }
     },
+
     resetMaterialsTrigger: function() {
       // reset material hover and selection
       if (this.resetMaterialsTrigger) {
@@ -416,34 +430,37 @@ export default {
     },
     hashMaterial: function() {
       // set materials from hash
-      for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
-        if (Number(this.index) === i) {
-          if (this.hashMaterial[0][i - 1] <= this.woods.length) {
-            this.setHashMaterial(
-              this.woods,
-              i,
-              this.hashMaterial[0][i - 1],
-              "woods"
-            );
-          } else if (
-            //is paper
-            this.hashMaterial[0][i - 1] <=
-            this.woods.length + this.papers.length
-          ) {
-            this.setHashMaterial(
-              this.papers,
-              i,
-              this.hashMaterial[0][i - 1],
-              "papers"
-            );
-          } else {
-            //is fabric
-            this.setHashMaterial(
-              this.fabrics,
-              i,
-              this.hashMaterial[0][i - 1],
-              "fabrics"
-            );
+      if (this.randomMaterialsTrigger === false) {
+        console.log("SET MATERIALS FROM HASH PROBLEM!!");
+        for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
+          if (Number(this.index) === i) {
+            if (this.hashMaterial[0][i - 1] <= this.woods.length) {
+              this.setHashMaterial(
+                this.woods,
+                i,
+                this.hashMaterial[0][i - 1],
+                "woods"
+              );
+            } else if (
+              //is paper
+              this.hashMaterial[0][i - 1] <=
+              this.woods.length + this.papers.length
+            ) {
+              this.setHashMaterial(
+                this.papers,
+                i,
+                this.hashMaterial[0][i - 1],
+                "papers"
+              );
+            } else {
+              //is fabric
+              this.setHashMaterial(
+                this.fabrics,
+                i,
+                this.hashMaterial[0][i - 1],
+                "fabrics"
+              );
+            }
           }
         }
       }
@@ -475,6 +492,7 @@ export default {
   },
   methods: {
     setHashMaterial: function(materialArr, i, hashIndex, arrayName) {
+      console.log("SET HASH MATEIRAL");
       let tempArray = [];
       for (let j = 0; j < materialArr.length; j++) {
         if (materialArr[j].index === hashIndex) {

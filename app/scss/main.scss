@@ -494,6 +494,7 @@ body {
         }
       }
       &.info {
+        margin-left: 32px;
         &::before {
           background-image: url("../src/assets/info.png");
           background-size: cover;
@@ -747,6 +748,10 @@ body {
     // background-size: 54%;
     background-position: left center;
     width: 100%;
+
+    background-repeat: repeat;
+    width: 100%;
+    background-size: 17%;
   }
 }
 

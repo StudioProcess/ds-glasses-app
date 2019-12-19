@@ -31,6 +31,7 @@
       :sunglasses="sunglasses"
       v-on:modelLoaded="modelHasLoaded = $event"
       :allHashMaterialsModel="allHashMaterialsModel"
+      v-on:loadedAllHashMaterials="allHashMaterialsHaveLoaded = $event"
       :hoveredMaterial="hoveredMaterial"
       :setModel="model"
       :mat="passedMaterial"
@@ -48,63 +49,73 @@
         <div class="material-picker-stretch">
           <Materials
             index="1"
-            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             v-on:setAllHashMaterials="passRandomMaterials($event)"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             :hashMaterial="setMaterialFromUrl"
             v-on:setHoveredMaterial="setHoveredMaterial($event)"
             v-on:setMaterial="setMaterialName($event)"
             swiperClass="Swiper1"
             :resetMaterialsTrigger="resetMaterialsTrigger"
             :randomMaterialsTrigger="randomMaterialsTrigger"
+            :randomArray="randomArray"
+            :materialNameSet="materialNameSet"
           ></Materials>
           <Materials
             index="2"
-            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             v-on:setAllHashMaterials="collectHashMaterials($event)"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             :hashMaterial="setMaterialFromUrl"
             v-on:setHoveredMaterial="setHoveredMaterial($event)"
             v-on:setMaterial="setMaterialName($event)"
             swiperClass="Swiper2"
             :resetMaterialsTrigger="resetMaterialsTrigger"
             :randomMaterialsTrigger="randomMaterialsTrigger"
+            :randomArray="randomArray"
+            :materialNameSet="materialNameSet"
           ></Materials>
           <Materials
             index="3"
-            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             v-on:setAllHashMaterials="collectHashMaterials($event)"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             :hashMaterial="setMaterialFromUrl"
             v-on:setHoveredMaterial="setHoveredMaterial($event)"
             v-on:setMaterial="setMaterialName($event)"
             swiperClass="Swiper3"
             :resetMaterialsTrigger="resetMaterialsTrigger"
             :randomMaterialsTrigger="randomMaterialsTrigger"
+            :randomArray="randomArray"
+            :materialNameSet="materialNameSet"
           ></Materials>
           <Materials
             index="4"
-            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             v-on:setAllHashMaterials="collectHashMaterials($event)"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             :hashMaterial="setMaterialFromUrl"
             v-on:setHoveredMaterial="setHoveredMaterial($event)"
             v-on:setMaterial="setMaterialName($event)"
             swiperClass="Swiper4"
             :resetMaterialsTrigger="resetMaterialsTrigger"
             :randomMaterialsTrigger="randomMaterialsTrigger"
+            :randomArray="randomArray"
+            :materialNameSet="materialNameSet"
           ></Materials>
           <Materials
             index="5"
-            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             v-on:setAllHashMaterials="collectHashMaterials($event)"
+            v-on:passRandomMaterialBack="passRandomMaterials($event)"
             :hashMaterial="setMaterialFromUrl"
             v-on:setHoveredMaterial="setHoveredMaterial($event)"
             v-on:setMaterial="setMaterialName($event)"
             swiperClass="Swiper5"
             :resetMaterialsTrigger="resetMaterialsTrigger"
             :randomMaterialsTrigger="randomMaterialsTrigger"
+            :randomArray="randomArray"
+            :materialNameSet="materialNameSet"
           ></Materials>
           <div class="random-butons">
-            <span v-on:click="toggleInfo = !toggleInfo" class="random info text-button">Info</span>
             <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
             <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
+            <span v-on:click="toggleInfo = !toggleInfo" class="random info text-button">Info</span>
           </div>
         </div>
         <div class="payment-section">
@@ -157,11 +168,11 @@
             <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
             <a
-              :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
+              :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=SCHWARZ e.U.%0D%0AJheringgasse 15/24%0D%0A1150 Wien%0D%0A-----%0D%0A%0D%0A%0D%0A'+
+              'Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
               model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
               '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
-              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A'+
-              '%0D%0A%0D%0A%0D%0A%0D%0A SCHWARZ e.U.%0D%0AJheringgasse 15/24%0D%0A1150 Wien' 
+              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+',–'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A'
               ]"
             >
               <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
@@ -176,47 +187,47 @@
     <footer></footer>
     <div v-if="toggleInfo" class="info-overlay text-description">
       <div class="info-overlay-overlay">
-      <button v-on:click="toggleInfo = !toggleInfo" class="close"></button>
-      <ul>
-        <li>
-          <h3>Modelle</h3>Es stehen vier Standardmodelle zur Auswahl. Die Modelle gibt es in verschiedenen Varianten in unterschiedlichen Materialien.
-        </li>
-        <li>
-          <h3>Material</h3>Die Idee der schichtweisen Verleimung von Holz möchten wir in Zukunft um Altpapier, Altkleidung und nicht mehr verwendete Textilien erweitern.
-        </li>
-        <li>
-          <h3>Aufbau</h3>Die Brillen bestehen aus fünf Holzschichten. Die einzelnen Furniere werden zu Sperrholz verleimt. Die Quell- und Schwindeigenschaften des Holzes werden damit gesperrt. Das Material bleibt formstabil.
-          Für einen guten Tragekomfort werden die Bügel am Ende ausgedünnt. Die Metallscharniere sind genietet und somit austauschbar. Die Oberfläche ist mit einem natürlichen Hartöl versiegelt und für alle Wetterlagen geeignet.
-        </li>
-        <li>
-          <h3>Vor- und Nachteile</h3>Die Holzbrillen sind federleicht und sorgen mit ihren am Ende ausgedünnten Bügeln für einen guten Tragekomfort. Die Holzbügel können nicht durch einfaches Nachbiegen angepasst werden, sondern müssen vom Hersteller angepasst werden.
-        </li>
-        <li>
-          <h3>Verglasung</h3>In den Holzrahmen können von jeder OptikerIn sowohl Sonnenbrillengläser als auch optische Gläser eingesetzt werden. Beim Kauf einer Holzbrille erhältst Du eine Begleitinformation für OptikerInnen.
-        </li>
-        <li>
-          <h3>Finish</h3>Die individuelle Anfertigung und das hochwertige Naturöl verleihen den Brillen ihren ganz besonderen Charme.
-        </li>
-        <li>
-          <h3>Produktion</h3>Die Holzbrillen werden in einer kleinen Manufaktur in Wien hergestellt. In feiner Handarbeit werden die einzelnen Holzschichten ausgewählt und mit umweltfreundlichen Klebestoffen verleimt. Die ausschließlich heimischen Hölzer sind dabei größtenteils Reste der Industrie.
-        </li>
-        <li>
-          <h3>Service</h3>Wir machen jeden Arbeitsschritt selbst und können daher ein umfassendes Service anbieten.
-          Für Fragen rund ums Service und alle anderen Fragen, schreib uns auf: office@schwarz.work
-        </li>
-        <li>
-          <h3>Bestellinfo</h3>Bei erfolgreicher Bestellung erhältst Du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben.
-          Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
-        </li>
-        <li>
-          <a
-        class="copyright-remark description text-medium"
-        target="_blanc"
-        href="https://process.studio"
-      >A tool by Process Studio</a>
-      </li>
-      </ul>
-    </div>
+        <button v-on:click="toggleInfo = !toggleInfo" class="close"></button>
+        <ul>
+          <li>
+            <h3>Modelle</h3>Es stehen vier Standardmodelle zur Auswahl. Die Modelle gibt es in verschiedenen Varianten in unterschiedlichen Materialien.
+          </li>
+          <li>
+            <h3>Material</h3>Die Idee der schichtweisen Verleimung von Holz möchten wir in Zukunft um Altpapier, Altkleidung und nicht mehr verwendete Textilien erweitern.
+          </li>
+          <li>
+            <h3>Aufbau</h3>Die Brillen bestehen aus fünf Holzschichten. Die einzelnen Furniere werden zu Sperrholz verleimt. Die Quell- und Schwindeigenschaften des Holzes werden damit gesperrt. Das Material bleibt formstabil.
+            Für einen guten Tragekomfort werden die Bügel am Ende ausgedünnt. Die Metallscharniere sind genietet und somit austauschbar. Die Oberfläche ist mit einem natürlichen Hartöl versiegelt und für alle Wetterlagen geeignet.
+          </li>
+          <li>
+            <h3>Vor- und Nachteile</h3>Die Holzbrillen sind federleicht und sorgen mit ihren am Ende ausgedünnten Bügeln für einen guten Tragekomfort. Die Holzbügel können nicht durch einfaches Nachbiegen angepasst werden, sondern müssen vom Hersteller angepasst werden.
+          </li>
+          <li>
+            <h3>Verglasung</h3>In den Holzrahmen können von jeder OptikerIn sowohl Sonnenbrillengläser als auch optische Gläser eingesetzt werden. Beim Kauf einer Holzbrille erhältst Du eine Begleitinformation für OptikerInnen.
+          </li>
+          <li>
+            <h3>Finish</h3>Die individuelle Anfertigung und das hochwertige Naturöl verleihen den Brillen ihren ganz besonderen Charme.
+          </li>
+          <li>
+            <h3>Produktion</h3>Die Holzbrillen werden in einer kleinen Manufaktur in Wien hergestellt. In feiner Handarbeit werden die einzelnen Holzschichten ausgewählt und mit umweltfreundlichen Klebestoffen verleimt. Die ausschließlich heimischen Hölzer sind dabei größtenteils Reste der Industrie.
+          </li>
+          <li>
+            <h3>Service</h3>Wir machen jeden Arbeitsschritt selbst und können daher ein umfassendes Service anbieten.
+            Für Fragen rund ums Service und alle anderen Fragen, schreib uns auf: office@schwarz.work
+          </li>
+          <li>
+            <h3>Bestellinfo</h3>Bei erfolgreicher Bestellung erhältst Du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben.
+            Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
+          </li>
+          <li>
+            <!-- <a
+              class="copyright-remark description text-medium"
+              target="_blanc"
+              href="https://process.studio"
+            >A tool by Process Studio</a> -->
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -227,7 +238,7 @@ import Materials from "./src/components/MaterialPicker";
 import Threemodel from "./src/components/Threemodel";
 import { encode, decode } from "./index.js";
 
-import logoPath from "./src/assets/logo.svg";
+import logoPath from "./src/assets/logo.png";
 import backButtonPath from "./src/assets/back-button.svg";
 
 export default {
@@ -274,6 +285,8 @@ export default {
       dropdownClicked: false,
       materialsLoadedFromHash: false,
       toggleInfo: false,
+      materialNameSet: false,
+      randomArray: []
     };
   },
   watch: {
@@ -316,7 +329,7 @@ export default {
       setTimeout(() => {
         this.resetMaterialsTrigger = false;
       }, 10);
-      this.encodedArray.splice(1, 5);
+      this.encodedArray.splice(1, 6);
       this.allHashMaterials = [{}, {}, {}, {}, {}, {}];
       this.allHashMaterialsModel = [];
       setTimeout(() => {
@@ -326,10 +339,15 @@ export default {
       }, 100);
     },
     randomMaterials() {
-      this.randomMaterialsTrigger = true;
-      setTimeout(() => {
-        this.randomMaterialsTrigger = false;
-      }, 10);
+      if (this.allHashMaterialsHaveLoaded) {
+        this.randomMaterialsTrigger = true;
+        for (let i = 1; i < 6; i++) {
+          this.randomArray[i] = Math.random();
+        }
+        setTimeout(() => {
+          this.randomMaterialsTrigger = false;
+        }, 10);
+      }
     },
     copyUrl() {
       let dummy = document.createElement("input");
@@ -346,10 +364,17 @@ export default {
       }, 2000);
     },
     passRandomMaterials(material) {
+      this.materialNameSet = false;
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
       this.setMaterialName(material);
-      this.allHashMaterialsModel.push(this.allHashMaterials);
+      if (!this.useAsSunglasses) {
+        this.encodedArray[6] = 0;
+      }
+      
+      if (material[2] === "5") {
+        this.allHashMaterialsModel.push(this.allHashMaterials);
+      }
     },
     collectHashMaterials(material) {
       this.allHashMaterials[material[2]][0] = material[1];
@@ -392,12 +417,12 @@ export default {
       } else if (material[2] === "5") {
         this.materialFive = material[0];
       }
+      this.materialNameSet = true;
     },
     sentToEncode: function() {
       if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
-          // console.log("layers incomplete");
           return;
         }
         let arr = this.encodedArray.map(i => parseInt(i));
@@ -433,7 +458,7 @@ export default {
         } else {
           this.setModelFromUrl = layers[0];
           let tempArray = [];
-          for (let i = 1; i < 6; i++) {
+          for (let i = 1; i < 7; i++) {
             this.encodedArray[i] = Number(layers[i]);
             tempArray[i - 1] = layers[i];
           }
@@ -442,24 +467,25 @@ export default {
           this.hashModelChange = true;
           this.validHash = true;
           // console.log("Decode (from URL) OK");
+          if (layers[6]) {
+            this.setSunglassesFromHash = true;
+            this.currentSunglasses[0] = layers[6];
+            if (layers[6] === 1) {
+              this.sunglasses = "Schwarz";
+            }
+            if (layers[6] === 2) {
+              this.sunglasses = "Braun";
+            }
+            if (layers[6] === 3) {
+              this.sunglasses = "Schwarz verlaufend";
+            }
+            if (layers[6] === 4) {
+              this.sunglasses = "Braun verlaufend";
+            }
+            this.currentSunglasses[0] = layers[6];
+          }
           setTimeout(() => {
             this.materialsLoadedFromHash = false;
-            if (layers[6]) {
-              this.setSunglassesFromHash = true;
-              this.currentSunglasses[0] = layers[6];
-              if (layers[6] === 1) {
-                this.sunglasses = "Schwarz";
-              }
-              if (layers[6] === 2) {
-                this.sunglasses = "Braun";
-              }
-              if (layers[6] === 3) {
-                this.sunglasses = "Schwarz verlaufend";
-              }
-              if (layers[6] === 4) {
-                this.sunglasses = "Braun verlaufend";
-              }
-            }
           }, 800);
         }
       }

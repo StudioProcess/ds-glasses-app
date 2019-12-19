@@ -106,6 +106,7 @@ export default {
       positionLocked: false,
       modelHasLoaded: false,
       currentMaterials: [],
+      currentSunglasses: "",
       nightMode: false,
       pointLight: new THREE.PointLight(0xffffff, 1.2), //4.9 360
       pointLightBack: new THREE.PointLight(0xffffff, 1.0, 0),
@@ -117,7 +118,7 @@ export default {
       roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
       normal_m: new THREE.TextureLoader().load(normal_map),
       sunglasses_alpha_m: new THREE.TextureLoader().load(alpha_glass),
-
+      finishedLoadingAllHashMaterials: false,
       isLoading: false,
       pos1: null,
       pos2: null,
@@ -140,6 +141,7 @@ export default {
 
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener("onmousemove", this.onMouseMove);
+      this.$emit("loadedAllHashMaterials", true);
   },
   beforeDestroy: function() {
     window.removeEventListener("resize", this.onWindowResize, false);
@@ -148,6 +150,7 @@ export default {
   watch: {
     resetMaterialsTrigger: function() {
       this.currentMaterials = [];
+      this.currentSunglasses = "";
       for (let i = 0; i < this.objtemp.children[0].children.length; i++) {
         if (
           this.objtemp.children[0].children[i].name !== "Glas" &&
@@ -191,6 +194,9 @@ export default {
       }
     },
     allHashMaterialsModel: function() {
+      this.finishedLoadingAllHashMaterials = false;
+      this.$emit("loadedAllHashMaterials", false);
+
       if (this.allHashMaterialsModel[0]) {
         for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
           var loader = new THREE.TextureLoader();
@@ -207,26 +213,40 @@ export default {
               if ((i + 1) % 2 === 0) {
                 texture.rotation = 0;
               }
-              if (this.allHashMaterialsModel[0][i][1] === "1") {
+              if (this.allHashMaterialsModel[0][i][1] === "1" && i === 1) {
                 this.assignMaterial(texture, "Layer_1");
                 this.assignMaterial(texture, "Layer_1 Layer_1B");
                 this.assignMaterial(texture, "Layer_1 Layer_1N");
-              } else if (this.allHashMaterialsModel[0][i][1] === "2") {
+              } else if (
+                this.allHashMaterialsModel[0][i][1] === "2" &&
+                i === 2
+              ) {
                 this.assignMaterial(texture, "Layer_2");
                 this.assignMaterial(texture, "Layer_2 Layer_2B");
                 this.assignMaterial(texture, "Layer_2 Layer_2N");
-              } else if (this.allHashMaterialsModel[0][i][1] === "3") {
+              } else if (
+                this.allHashMaterialsModel[0][i][1] === "3" &&
+                i === 3
+              ) {
                 this.assignMaterial(texture, "Layer_3");
                 this.assignMaterial(texture, "Layer_3 Layer_3B");
                 this.assignMaterial(texture, "Layer_3 Layer_3N");
-              } else if (this.allHashMaterialsModel[0][i][1] === "4") {
+              } else if (
+                this.allHashMaterialsModel[0][i][1] === "4" &&
+                i === 4
+              ) {
                 this.assignMaterial(texture, "Layer_4");
                 this.assignMaterial(texture, "Layer_4 Layer_4B");
                 this.assignMaterial(texture, "Layer_4 Layer_4N");
-              } else if (this.allHashMaterialsModel[0][i][1] === "5") {
+              } else if (
+                this.allHashMaterialsModel[0][i][1] === "5" &&
+                i === 5
+              ) {
                 this.assignMaterial(texture, "Layer_5");
                 this.assignMaterial(texture, "Layer_5 Layer_5B");
                 this.assignMaterial(texture, "Layer_5 Layer_5N");
+                this.finishedLoadingAllHashMaterials = true;
+                this.$emit("loadedAllHashMaterials", true);
               }
             }.bind(this)
           );
@@ -315,14 +335,6 @@ export default {
 
         function(texture) {
           texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-          // texture.wrapT = THREE.ClampToEdgeWrapping;
-          // texture.wrapS = THREE.ClampToEdgeWrapping;
-
-          // texture.center.set(.5, .5);
-
-          // texture.offset.set(10, 0);
-          // texture.repeat.set(1, 1);
-
           texture.offset.set(0, 0);
           texture.repeat.set(1.2, 1.2);
           texture.repeat.set(1.2, 1.2);
@@ -333,8 +345,8 @@ export default {
           }
 
           tempTexture = texture;
-          if (this.mat[1] === "1") {
-            // texture.offset.set(0, 0);//texture.offset.set(1.5, 0);2.9
+          if (this.mat[1] === "1" && this.finishedLoadingAllHashMaterials) {
+            texture.offset.set(0, 0); //texture.offset.set(1.5, 0);2.9
             this.assignMaterial(texture, "Layer_1");
             this.assignMaterial(texture, "Layer_1 Layer_1B");
           } else if (this.mat[1] === "2") {
@@ -894,26 +906,28 @@ export default {
       });
       let matStart = mat.clone();
       let glass;
+      glass = new THREE.MeshPhysicalMaterial({
+        color: "#D2DDDE",
+        metalness: 0.0,
+        roughness: 0.0,
+        alphaTest: 0.5,
+        depthTest: true,
+        transparent: true,
+        transparency: 0.8
+      });
       if (!this.useAsSunglasses) {
-        glass = new THREE.MeshPhysicalMaterial({
-          color: "#D2DDDE",
-          metalness: 0.0,
-          roughness: 0.0,
-          alphaTest: 0.5,
-          depthTest: true,
-          transparent: true,
-          transparency: 0.8
-        });
       } else {
-        glass = new THREE.MeshPhysicalMaterial({
-          color: "#000000",
-          metalness: 1.0,
-          roughness: 0.0,
-          alphaTest: 0.1,
-          depthTest: true,
-          transparent: true,
-          transparency: 0.2
-        });
+        // this.updateSunglasses();
+        // glass = new THREE.MeshPhysicalMaterial({
+        //   color: "#000000",
+        //   metalness: 1.0,
+        //   roughness: 0.0,
+        //   alphaTest: 0.1,
+        //   depthTest: true,
+        //   transparent: true,
+        //   transparency: 0.2
+        // }
+        // );
       }
       let metall = new THREE.MeshStandardMaterial({
         emissive: 0x9e9e9e, //6b6b6b
@@ -944,6 +958,9 @@ export default {
 
             if (model === model3 || model === model6) {
               object.getObjectByName("Layer_2 Layer_2B").position.x += 0.03;
+            }
+            if (this.currentSunglasses !== "") {
+              this.updateSunglasses();
             }
             if (this.currentMaterials.length > 0) {
               if (this.currentMaterials[1] !== undefined) {
@@ -1005,6 +1022,8 @@ export default {
                 this.updateSunglasses();
               }
             }
+            this.updateSunglasses();
+
             if (this.expanded) {
               this.expanded = false;
               setTimeout(() => {
@@ -1100,13 +1119,27 @@ export default {
       this.sunglasses_alpha_m.wrapT = THREE.MirroredRepeatWrapping;
       this.sunglasses_alpha_m.wrapS = THREE.MirroredRepeatWrapping;
       this.sunglasses_alpha_m.center.set(0, -40);
-      this.sunglasses_alpha_m.repeat.set(5, 5);
+      if (this.currentModelIndex === 2 || this.currentModelIndex === 5) {
+        this.sunglasses_alpha_m.repeat.set(5, 5); // 2 2sl 5 / 5
+      }
+      if (this.currentModelIndex === 1) {
+        this.sunglasses_alpha_m.repeat.set(4.5, 4.5); // 2 2sl 5 / 5
+        this.sunglasses_alpha_m.center.set(0, -10);
+      }
+      if (this.currentModelIndex === 3 || this.currentModelIndex === 6) {
+        this.sunglasses_alpha_m.repeat.set(3, 3); // 2 2sl 5 / 5
+        this.sunglasses_alpha_m.center.set(0, -185);
+      }
+      if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
+        this.sunglasses_alpha_m.repeat.set(3, 3); // 2 2sl 5 / 5
+        this.sunglasses_alpha_m.center.set(0, 60);
+      }
       this.sunglasses_alpha_m.rotation = 1.57;
 
       let sunglassesGlass = new THREE.MeshPhysicalMaterial({
         color:
-          this.sunglasses === "Schwarz" ||
-          this.sunglasses === "Schwarz verlaufend"
+          (this.sunglasses || this.currentSunglasses) === "Schwarz" ||
+          (this.sunglasses || this.currentSunglasses) === "Schwarz verlaufend"
             ? "#000000"
             : "#331a11",
         metalness: 0.0,
@@ -1114,10 +1147,16 @@ export default {
         // alphaTest: 0.1,
         // depthTest: true,
         transparent: true,
-        transparency: this.sunglasses === "Braun verlaufend" ||
-          this.sunglasses === "Schwarz verlaufend" ? 0.1 : 0.4,
-        alphaMap: this.sunglasses === "Braun verlaufend" ||
-          this.sunglasses === "Schwarz verlaufend" ? this.sunglasses_alpha_m : undefined,
+        transparency:
+          (this.sunglasses || this.currentSunglasses) === "Braun verlaufend" ||
+          (this.sunglasses || this.currentSunglasses) === "Schwarz verlaufend"
+            ? 0.1
+            : 0.4,
+        alphaMap:
+          (this.sunglasses || this.currentSunglasses) === "Braun verlaufend" ||
+          (this.sunglasses || this.currentSunglasses) === "Schwarz verlaufend"
+            ? this.sunglasses_alpha_m
+            : undefined
       });
       if (this.modelHasLoaded) {
         if (this.useAsSunglasses) {
