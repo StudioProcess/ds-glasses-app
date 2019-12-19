@@ -28,6 +28,7 @@
     </header>
     <Threemodel
       :useAsSunglasses="useAsSunglasses"
+      :sunglasses="sunglasses"
       v-on:modelLoaded="modelHasLoaded = $event"
       :allHashMaterialsModel="allHashMaterialsModel"
       :hoveredMaterial="hoveredMaterial"
@@ -159,7 +160,8 @@
               :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
               model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
               '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
-              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A' 
+              '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+', –'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten: %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A'+
+              '%0D%0A%0D%0A%0D%0A%0D%0A SCHWARZ e.U.%0D%0AJheringgasse 15/24%0D%0A1150 Wien' 
               ]"
             >
               <!-- + (useAsSunglasses && Number(price + 40) +',00€') + (!useAsSunglasses &&  price+',00€') -->
@@ -206,6 +208,13 @@
           <h3>Bestellinfo</h3>Bei erfolgreicher Bestellung erhältst Du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben.
           Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
         </li>
+        <li>
+          <a
+        class="copyright-remark description text-medium"
+        target="_blanc"
+        href="https://process.studio"
+      >A tool by Process Studio</a>
+      </li>
       </ul>
     </div>
     </div>

@@ -57,6 +57,7 @@ import { OBJLoader } from "../../../node_modules/three/examples/js/loaders/OBJLo
 import roughness_map from "../assets/materials/maps/Wood24_rgh.jpg";
 import roughness_map_metal from "../assets/materials/maps/Metal_rgh.jpg";
 import map_metal from "../assets/materials/maps/Metal_col.jpg";
+import alpha_glass from "../assets/materials/maps/sunglasses-alpha.png";
 
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import shadow from "../assets/materials/maps/shadow.png";
@@ -81,6 +82,7 @@ export default {
     "hoveredMaterial",
     "allHashMaterialsModel",
     "useAsSunglasses",
+    "sunglasses",
     "sunglassesFromHash",
     "resetMaterialsTrigger"
   ],
@@ -114,6 +116,7 @@ export default {
       roughness_m: new THREE.TextureLoader().load(roughness_map),
       roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
       normal_m: new THREE.TextureLoader().load(normal_map),
+      sunglasses_alpha_m: new THREE.TextureLoader().load(alpha_glass),
 
       isLoading: false,
       pos1: null,
@@ -175,6 +178,9 @@ export default {
           this.objtemp.children[0].children[i].material.needsUpdate = true;
         }
       }
+    },
+    sunglasses: function() {
+      this.updateSunglasses();
     },
     useAsSunglasses: function() {
       this.updateSunglasses();
@@ -356,7 +362,7 @@ export default {
   methods: {
     fullscreenClick: function() {
       this.fullscreenRotationPaused = !this.fullscreenRotationPaused;
-      console.log(this.fullscreenRotationPaused)
+      console.log(this.fullscreenRotationPaused);
     },
     setupPostprocessing: function() {
       var geometry = new THREE.Geometry();
@@ -572,17 +578,13 @@ export default {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         console.log(this.fullscreenRotationPaused);
 
-        let tween = TweenMax.to(
-          this.objtemp.children[0].rotation,
-          5600.0,
-          {
-            y: 360,
-            repeat: -1
-          }
-        );
+        let tween = TweenMax.to(this.objtemp.children[0].rotation, 5600.0, {
+          y: 360,
+          repeat: -1
+        });
         //  rotateModel.resume();
         if (this.fullscreenRotationPaused) {
-          console.log("??????")
+          console.log("??????");
           tween.paused();
         }
       } else {
@@ -1084,6 +1086,8 @@ export default {
     },
 
     updateSunglasses: function() {
+      console.log("sunglasses:");
+      console.log(this.sunglasses);
       let glass = new THREE.MeshPhysicalMaterial({
         color: "#D2DDDE",
         metalness: 0.0,
@@ -1093,14 +1097,27 @@ export default {
         transparent: true,
         transparency: 0.8
       });
+      this.sunglasses_alpha_m.wrapT = THREE.MirroredRepeatWrapping;
+      this.sunglasses_alpha_m.wrapS = THREE.MirroredRepeatWrapping;
+      this.sunglasses_alpha_m.center.set(0, -40);
+      this.sunglasses_alpha_m.repeat.set(5, 5);
+      this.sunglasses_alpha_m.rotation = 1.57;
+
       let sunglassesGlass = new THREE.MeshPhysicalMaterial({
-        color: "#000000",
-        metalness: 1.0,
+        color:
+          this.sunglasses === "Schwarz" ||
+          this.sunglasses === "Schwarz verlaufend"
+            ? "#000000"
+            : "#331a11",
+        metalness: 0.0,
         roughness: 0.0,
-        alphaTest: 0.1,
-        depthTest: true,
+        // alphaTest: 0.1,
+        // depthTest: true,
         transparent: true,
-        transparency: 0.2
+        transparency: this.sunglasses === "Braun verlaufend" ||
+          this.sunglasses === "Schwarz verlaufend" ? 0.1 : 0.4,
+        alphaMap: this.sunglasses === "Braun verlaufend" ||
+          this.sunglasses === "Schwarz verlaufend" ? this.sunglasses_alpha_m : undefined,
       });
       if (this.modelHasLoaded) {
         if (this.useAsSunglasses) {
