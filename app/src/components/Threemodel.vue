@@ -131,7 +131,9 @@ export default {
       nMPoint1: null,
       nMPoint2: null,
       nMPoint3: null,
-      time: 0.0
+      time: 0.0,
+      tweenFullscreen: null,
+      fullscreenStopable: false
     };
   },
 
@@ -148,6 +150,15 @@ export default {
     window.removeEventListener("onmousemove", this.onMouseMove, false);
   },
   watch: {
+    fullscreenRotationPaused: function() {
+      if (this.fullscreenToggled && this.fullscreenStopable) {
+        if (this.fullscreenRotationPaused) {
+          this.tweenFullscreen.pause(undefined, false);
+        } else {
+          this.tweenFullscreen.resume();
+        }
+      }
+    },
     resetMaterialsTrigger: function() {
       this.currentMaterials = [];
       this.currentSunglasses = "";
@@ -374,7 +385,6 @@ export default {
   methods: {
     fullscreenClick: function() {
       this.fullscreenRotationPaused = !this.fullscreenRotationPaused;
-      console.log(this.fullscreenRotationPaused);
     },
     setupPostprocessing: function() {
       var geometry = new THREE.Geometry();
@@ -582,6 +592,7 @@ export default {
     },
     fullscreen: function() {
       this.fullscreenToggled = !this.fullscreenToggled;
+
       if (this.fullscreenToggled) {
         this.positionLocked = false;
         this.resetCameraPosition();
@@ -589,20 +600,22 @@ export default {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        // console.log(this.fullscreenRotationPaused);
-
-        let tween = TweenMax.to(this.objtemp.children[0].rotation, 5600.0, {
-          y: 360,
-          repeat: -1
-        });
-        //  rotateModel.resume();
-        if (this.fullscreenRotationPaused) {
-          tween.paused();
-        }
+        this.tweenFullscreen = TweenMax.to(
+          this.objtemp.children[0].rotation,
+          5600.0,
+          {
+            y: 360,
+            repeat: -1
+          }
+        );
+        setTimeout(() => {
+          this.fullscreenStopable = true;
+        }, 300);
       } else {
         TweenMax.to(this.objtemp.children[0].rotation, 0.0, {
           y: 3.1
         });
+        this.fullscreenStopable = false;
         this.$refs.three.classList.remove("toggledFullscreen");
         this.camera.aspect = window.innerWidth / 2 / window.innerHeight;
         this.camera.updateProjectionMatrix();
@@ -949,9 +962,10 @@ export default {
             if (this.currentSunglasses !== "") {
               this.updateSunglasses();
             }
-            console.log(this.allHashMaterialsModel[0])
-            if (this.currentMaterials.length > 0 && !this.allHashMaterialsModel[0] ) {
-
+            if (
+              this.currentMaterials.length > 0 &&
+              !this.allHashMaterialsModel[0]
+            ) {
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
                 this.assignMaterial(

@@ -428,7 +428,7 @@ export default {
       this.materialNameSet = true;
     },
     sentToEncode: function() {
-      console.log(this.encodedArray);
+      // console.log(this.encodedArray);
       if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined && this.encodedArray[4] !== undefined && this.encodedArray[3] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[1] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
