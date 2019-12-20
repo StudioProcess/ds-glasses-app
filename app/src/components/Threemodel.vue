@@ -963,6 +963,7 @@ export default {
             object.rotation.y = 0;
             object.rotation.z = 0;
             object.getObjectByName("Glas").material = glass;
+            object.getObjectByName("Glas").visible = true;
             object.traverse(
               function(child) {
                 if (child instanceof THREE.Mesh) {
