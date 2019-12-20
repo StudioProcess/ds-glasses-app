@@ -15,7 +15,7 @@ export function getTexture(path, onLoad, onProgress, onError) {
   
   if (!tex_cache[path]) {
     
-    console.log('LOADING texture: ', path);
+    // console.log('LOADING texture: ', path);
     
     let cached = {
       texture: null,
@@ -23,16 +23,18 @@ export function getTexture(path, onLoad, onProgress, onError) {
       loadPromise: null,
     };
     
-    cached.loadPromise = new Promise((resolve, reject) => {
-      cached.texture = tex_loader.load(path, texture => {
-        cached.textureRotated = texture.clone();
-        cached.textureRotated.rotation = Math.PI/2;
-        resolve(texture);
-      }, onProgress, reject);
-    });
+    cached.loadPromise = Promise.all([
+      new Promise((resolve, reject) => {
+        cached.texture = tex_loader.load(path, resolve, onProgress, reject);
+      }),
+      new Promise((resolve, reject) => {
+        cached.textureRotated = tex_loader.load(path, resolve, onProgress, reject);
+        cached.textureRotated.rotation = 1.57;
+      }),
+    ]);
     
     cached.loadPromise.then(() => {
-      if (onLoad) onLoad(cached.texture, cached.textureRotated);
+      if (onLoad instanceof Function) onLoad(cached.texture, cached.textureRotated);
     }, onError); // don't chain with previous call!
     
     tex_cache[path] = cached;
@@ -41,12 +43,12 @@ export function getTexture(path, onLoad, onProgress, onError) {
     
   } else {
     
-    console.log('GOT cached texture: ', path);
+    // console.log('GOT cached texture: ', path);
     
     let cached = tex_cache[path];
     
     cached.loadPromise.then(() => {
-      if (onLoad) onLoad(cached.texture, cached.textureRotated);
+      if (onLoad instanceof Function) onLoad(cached.texture, cached.textureRotated);
     }, onError);
     
     return cached.texture;
@@ -74,7 +76,7 @@ export function getOBJ(path, onLoad, onProgress, onError) {
   
   if (!obj_cache[path]) {
     
-    console.log('LOADING OBJ: ', path);
+    // console.log('LOADING OBJ: ', path);
     
     let cached = {
       obj: null,
@@ -93,7 +95,7 @@ export function getOBJ(path, onLoad, onProgress, onError) {
     
   } else {
     
-    console.log('GOT cached OBJ: ', path);
+    // console.log('GOT cached OBJ: ', path);
     
     let cached = obj_cache[path];
     

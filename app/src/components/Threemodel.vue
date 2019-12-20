@@ -217,7 +217,8 @@ export default {
             function(texture, texturerotated) {
               let tempTexture = texture;
               // tempTexture.rotation = 1.57;
-              if ((i + 1) % 2 === 0) {
+              if (i % 2 === 0) {
+                console.log(i + "TEMP TEXTURE");
                 tempTexture = texturerotated;
               }
               tempTexture.wrapT = THREE.MirroredRepeatWrapping;
@@ -348,14 +349,17 @@ export default {
       ) {
         getTexture(
           this.mat[0],
-          function(texture) {
-            texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-            texture.repeat.set(1.2, 1.2);
-            texture.offset.set(2.9, 0.2);
-            // texture.rotation = 0;
-            // if (this.mat[1] % 2 === 0) {
-            //   texture.rotation = 1.57;
-            // }
+          function(texture, textureRotated) {
+            if (Number(this.mat[1]) % 2 === 0) {
+              texture = textureRotated;
+            }
+
+            texture.wrapT = THREE.MirroredRepeatWrapping;
+            texture.wrapS = THREE.MirroredRepeatWrapping;
+            texture.center.set(0.5, 0.5);
+            texture.offset.set(10, 0);
+            texture.repeat.set(1, 1);
+
             if (this.mat[1] === "1") {
               texture.offset.set(0, 0); //texture.offset.set(1.5, 0);2.9
               this.assignMaterial(texture, "Layer_1");
@@ -1321,4 +1325,3 @@ export default {
   }
 };
 </script>
-
