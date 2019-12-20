@@ -19,18 +19,21 @@ export function getTexture(path, onLoad, onProgress, onError) {
     
     let cached = {
       texture: null,
+      textureRotated: null,
       loadPromise: null,
     };
     
     cached.loadPromise = new Promise((resolve, reject) => {
-      cached.texture = tex_loader.load(path, resolve, onProgress, reject);
+      cached.texture = tex_loader.load(path, texture => {
+        cached.textureRotated = texture.clone();
+        cached.textureRotated.rotation = Math.PI/2;
+        resolve(texture);
+      }, onProgress, reject);
     });
     
-    cached.loadPromise.then(onLoad, onError); // don't chain with previous call!
-    
-    // cached.loadPromise.then(x => {
-    //   console.log('first onload', x);
-    // }); 
+    cached.loadPromise.then(() => {
+      if (onLoad) onLoad(cached.texture, cached.textureRotated);
+    }, onError); // don't chain with previous call!
     
     tex_cache[path] = cached;
     
@@ -42,11 +45,9 @@ export function getTexture(path, onLoad, onProgress, onError) {
     
     let cached = tex_cache[path];
     
-    cached.loadPromise.then(onLoad, onError);
-    
-    // cached.loadPromise.then(x => {
-    //   console.log('cached onload', x);
-    // }); 
+    cached.loadPromise.then(() => {
+      if (onLoad) onLoad(cached.texture, cached.textureRotated);
+    }, onError);
     
     return cached.texture;
     
