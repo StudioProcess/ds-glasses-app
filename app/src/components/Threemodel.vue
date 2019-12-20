@@ -214,7 +214,8 @@ export default {
           // var loader = new THREE.TextureLoader();
           getTexture(
             this.allHashMaterialsModel[0][i][0],
-            function(texture) {
+            function(texture, textureRotated) {
+              console.log('CALLBACK', texture, textureRotated);
               texture.wrapT = THREE.MirroredRepeatWrapping;
               texture.wrapS = THREE.MirroredRepeatWrapping;
               texture.center.set(0.5, 0.5);
@@ -341,7 +342,9 @@ export default {
       ) {
         getTexture(
           this.mat[0],
-          function(texture) {
+          function(texture, textureRotated) {
+            console.log('CALLBACK', texture, textureRotated);
+            if (Math.random() < 0.5) texture = textureRotated;
             texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
             texture.repeat.set(1.2, 1.2);
             texture.offset.set(2.9, 0.2);
@@ -1309,4 +1312,3 @@ export default {
   }
 };
 </script>
-
