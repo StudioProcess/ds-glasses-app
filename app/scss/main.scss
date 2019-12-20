@@ -707,11 +707,13 @@ body {
   background-image: url(../src/assets/arrow-left.svg);
   margin-left: -14px;
   margin-top: -8px;
+  height: 36px;
 }
 .swiper-button-next {
   background-image: url(../src/assets/arrow-right.svg);
   right: -3px;
   margin-top: -8px;
+  height: 36px;
   transform: translateX(12px);
 }
 
@@ -931,7 +933,7 @@ header {
         margin-top: -0.9px;
       }
     }
-   
+
     .code {
       cursor: pointer;
       text-decoration: underline;
@@ -1114,6 +1116,7 @@ header {
   line-height: 1.2;
   position: absolute;
   width: 120px;
+  width: auto;
   background-color: #000000;
   box-shadow: 2px 2px 14px #00000063;
   color: #fff;
@@ -1282,7 +1285,6 @@ header {
       position: absolute;
       margin: 11px 0 0 8px;
       box-shadow: none;
-
     }
   }
   ul {
