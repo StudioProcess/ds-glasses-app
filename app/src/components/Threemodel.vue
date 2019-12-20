@@ -214,53 +214,60 @@ export default {
           // var loader = new THREE.TextureLoader();
           getTexture(
             this.allHashMaterialsModel[0][i][0],
-            function(texture) {
-              texture.wrapT = THREE.MirroredRepeatWrapping;
-              texture.wrapS = THREE.MirroredRepeatWrapping;
-              texture.center.set(0.5, 0.5);
-              texture.offset.set(10, 0);
-              texture.repeat.set(1, 1);
-              texture.rotation = 1.57;
+            function(texture, texturerotated) {
+              let tempTexture = texture;
+              // tempTexture.rotation = 1.57;
               if ((i + 1) % 2 === 0) {
-                texture.rotation = 0;
+                tempTexture = texturerotated;
               }
+              tempTexture.wrapT = THREE.MirroredRepeatWrapping;
+              tempTexture.wrapS = THREE.MirroredRepeatWrapping;
+              tempTexture.center.set(0.5, 0.5);
+              tempTexture.offset.set(10, 0);
+              tempTexture.repeat.set(1, 1);
               if (this.allHashMaterialsModel[0][i][1] === "1" && i === 1) {
-                this.assignMaterial(texture, "Layer_1");
-                this.assignMaterial(texture, "Layer_1 Layer_1B");
-                this.assignMaterial(texture, "Layer_1 Layer_1N");
+                this.assignMaterial(tempTexture, "Layer_1");
+                this.assignMaterial(tempTexture, "Layer_1 Layer_1B");
+                this.assignMaterial(tempTexture, "Layer_1 Layer_1N");
               } else if (
                 this.allHashMaterialsModel[0][i][1] === "2" &&
                 i === 2
               ) {
-                this.assignMaterial(texture, "Layer_2");
-                this.assignMaterial(texture, "Layer_2 Layer_2B");
-                this.assignMaterial(texture, "Layer_2 Layer_2N");
+                this.assignMaterial(tempTexture, "Layer_2");
+                this.assignMaterial(tempTexture, "Layer_2 Layer_2B");
+                this.assignMaterial(tempTexture, "Layer_2 Layer_2N");
               } else if (
                 this.allHashMaterialsModel[0][i][1] === "3" &&
                 i === 3
               ) {
-                this.assignMaterial(texture, "Layer_3");
-                this.assignMaterial(texture, "Layer_3 Layer_3B");
-                this.assignMaterial(texture, "Layer_3 Layer_3N");
+                this.assignMaterial(tempTexture, "Layer_3");
+                this.assignMaterial(tempTexture, "Layer_3 Layer_3B");
+                this.assignMaterial(tempTexture, "Layer_3 Layer_3N");
               } else if (
                 this.allHashMaterialsModel[0][i][1] === "4" &&
                 i === 4
               ) {
-                this.assignMaterial(texture, "Layer_4");
-                this.assignMaterial(texture, "Layer_4 Layer_4B");
-                this.assignMaterial(texture, "Layer_4 Layer_4N");
+                this.assignMaterial(tempTexture, "Layer_4");
+                this.assignMaterial(tempTexture, "Layer_4 Layer_4B");
+                this.assignMaterial(tempTexture, "Layer_4 Layer_4N");
               } else if (
                 this.allHashMaterialsModel[0][i][1] === "5" &&
                 i === 5
               ) {
-                this.assignMaterial(texture, "Layer_5");
-                this.assignMaterial(texture, "Layer_5 Layer_5B");
-                this.assignMaterial(texture, "Layer_5 Layer_5N");
+                this.assignMaterial(tempTexture, "Layer_5");
+                this.assignMaterial(tempTexture, "Layer_5 Layer_5B");
+                this.assignMaterial(tempTexture, "Layer_5 Layer_5N");
                 this.finishedLoadingAllHashMaterials = true;
                 this.$emit("loadedAllHashMaterials", true);
               }
             }.bind(this)
           );
+          //        this.objtemp.children[i].material.texture.rotation = 1.57;
+          // if ((i + 1) % 2 === 0) {
+          //   this.objtemp.children[0].children[i].material.texture.rotation = 0;
+          // }
+          //      for (let i = 1; i < this.objtemp.children[0].children.length - 1; i++) {
+          // this.objtemp.children[0].children[i].material.emissiveIntensity = 0;
         }
       }
     },
@@ -345,10 +352,10 @@ export default {
             texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
             texture.repeat.set(1.2, 1.2);
             texture.offset.set(2.9, 0.2);
-            texture.rotation = 0;
-            if (this.mat[1] % 2 === 0) {
-              texture.rotation = 1.57;
-            }
+            // texture.rotation = 0;
+            // if (this.mat[1] % 2 === 0) {
+            //   texture.rotation = 1.57;
+            // }
             if (this.mat[1] === "1") {
               texture.offset.set(0, 0); //texture.offset.set(1.5, 0);2.9
               this.assignMaterial(texture, "Layer_1");
@@ -375,6 +382,10 @@ export default {
             this.$set(this.currentMaterials, this.mat[1], texture);
           }.bind(this)
         );
+        // this.objtemp.material.texture.rotation = 1.57;
+        //     if ((i + 1) % 2 === 0) {
+        //       this.objtemp.material.texture.rotation = 0;
+        //     }
       }
       this.currentMaterialName = this.mat[0];
       this.currentMaterialIndex = this.mat[1];
@@ -570,7 +581,6 @@ export default {
       if (this.modelHasLoaded) {
         this.objtemp.children[0].getObjectByName(name).material.map = texture;
         this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
-
         this.objtemp.children[0].getObjectByName(name).material.roughness = 3.0;
         this.objtemp.children[0].getObjectByName(name).color = 0xa1a1a1;
         this.objtemp.children[0].getObjectByName(
@@ -949,14 +959,15 @@ export default {
             object.rotation.y = 0;
             object.rotation.z = 0;
             object.getObjectByName("Glas").material = glass;
-            object.traverse(function(child) {
-              if (child instanceof THREE.Mesh) {
-                child.material = matStart;
-                child.layers.set(0);
-                console.log(child.position)
-                child.position.z = 0;
-              }
-            }.bind(this)),
+            object.traverse(
+              function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material = matStart;
+                  child.layers.set(0);
+                  child.position.z = 0;
+                }
+              }.bind(this)
+            ),
               (object.rotation.y += 179);
             object.position.y += 10;
             this.assignBasicMaterials(object, glass, metall, mat, matStart);
@@ -1136,7 +1147,8 @@ export default {
 
       let sunglassesGlass = new THREE.MeshPhysicalMaterial({
         color:
-          ((this.sunglasses || this.currentSunglasses) === "Schwarz" || this.sunglasses === "" )||
+          (this.sunglasses || this.currentSunglasses) === "Schwarz" ||
+          this.sunglasses === "" ||
           (this.sunglasses || this.currentSunglasses) === "Schwarz verlaufend"
             ? "#000000"
             : "#331a11",
