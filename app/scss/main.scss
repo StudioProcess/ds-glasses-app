@@ -852,6 +852,12 @@ header {
     text-transform: inherit;
     cursor: pointer;
     opacity: 0.4;
+    transition: 1s all ease-out;
+
+    &:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
     &::before {
       content: "";
       position: absolute;
