@@ -937,25 +937,26 @@ export default {
         roughnessMap: getTexture(roughness_map_metal),
         map: getTexture(map_metal)
       });
- 
+
       if (!this.isLoading) {
         getOBJ(
           model,
           function(object) {
-            
-             object.position.y = 0;
-             object.position.x = 0;
-             object.position.z = 0;
-             object.rotation.x = 0;
-             object.rotation.y = 0;
-             object.rotation.z = 0;
+            object.position.y = 0;
+            object.position.x = 0;
+            object.position.z = 0;
+            object.rotation.x = 0;
+            object.rotation.y = 0;
+            object.rotation.z = 0;
 
             object.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
                 child.material = matStart;
                 child.layers.set(0);
+                console.log(child.position)
+                child.position.z = 0;
               }
-            }),
+            }.bind(this)),
               (object.rotation.y += 179);
             object.position.y += 10;
             this.assignBasicMaterials(object, glass, metall, mat, matStart);
