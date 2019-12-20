@@ -1,3 +1,8 @@
+/*
+ * This is a drop-in replacement for TextureLoader.load() with memoization
+ * Each texture is also provided 90-degrees rotated
+ * Since Texture.clone() doesn't seem to work, we just load it two times...
+ */
 const tex_loader = new THREE.TextureLoader();
 
 const tex_cache = {};
@@ -22,6 +27,7 @@ export function getTexture(path, onLoad, onProgress, onError) {
       textureRotated: null,
       loadPromise: null,
     };
+    tex_cache[path] = cached;
     
     cached.loadPromise = Promise.all([
       new Promise((resolve, reject) => {
@@ -29,15 +35,18 @@ export function getTexture(path, onLoad, onProgress, onError) {
       }),
       new Promise((resolve, reject) => {
         cached.textureRotated = tex_loader.load(path, resolve, onProgress, reject);
-        cached.textureRotated.rotation = 1.57;
+        cached.textureRotated.rotation = 1.57; // ca. Math.PI/2 ;)
       }),
     ]);
     
     cached.loadPromise.then(() => {
       if (onLoad instanceof Function) onLoad(cached.texture, cached.textureRotated);
-    }, onError); // don't chain with previous call!
+    }, onError).catch(() => {}); // don't chain with previous call!
     
-    tex_cache[path] = cached;
+    cached.loadPromise.catch(() => {
+      console.warn('Error loading texture', path);
+      tex_cache[path] = undefined; // unset cache, so it can be retried
+    });
     
     return cached.texture;
     
@@ -49,16 +58,18 @@ export function getTexture(path, onLoad, onProgress, onError) {
     
     cached.loadPromise.then(() => {
       if (onLoad instanceof Function) onLoad(cached.texture, cached.textureRotated);
-    }, onError);
+    }, onError).catch(() => {});
     
     return cached.texture;
-    
   }
 }
 
 
 
-
+/*
+ * This is a drop-in replacement for OBJLoader.load() with memoization
+ * https://en.wikipedia.org/wiki/Memoization
+ */
 const obj_loader = new THREE.OBJLoader();
 
 const obj_cache = {};
