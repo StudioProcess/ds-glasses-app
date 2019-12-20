@@ -15,6 +15,11 @@
       >A tool by Process Studio</a>-->
       <p class="text text-description description models">Modelle</p>
       <p class="text text-description description materials">Materialien</p>
+      <span
+        v-on:click="toggleInfo = !toggleInfo"
+        class="random info text-button text-description"
+      >Info</span>
+
       <span class="share-container">
         <a v-on:click="copyUrl()" class="text-small share">Teilen</a>
         <span class="code">
@@ -115,7 +120,6 @@
           <div class="random-butons">
             <span v-on:click="randomMaterials()" class="random text-button">Zufällig</span>
             <span v-on:click="resetMaterials()" class="random reset text-button">Zurücksetzen</span>
-            <span v-on:click="toggleInfo = !toggleInfo" class="random info text-button">Info</span>
           </div>
         </div>
         <div class="payment-section">
@@ -168,8 +172,7 @@
             <h3 class="price">{{useAsSunglasses ? price + 40 +",00€" : price+",00€"}}</h3>
 
             <a
-              :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=SCHWARZ e.U.%0D%0AJheringgasse 15/24%0D%0A1150 Wien%0D%0A-----%0D%0A%0D%0A%0D%0A'+
-              'Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
+              :href="['mailto:office@schwarz.work?subject=Bestellung Schwarz Brille&body=Guten Tag,%0D%0A%0D%0Aich würde gerne folgende Brille bestellen:%0D%0A%0D%0A'+'Modell:%20'+
               model[0]+'%0D%0AMaterialien:%20'+materialOne+',%20' + materialTwo+ ',%20' + materialThree+ ',%20' +  materialFour+ ',%20' + materialFive +
               '%0D%0AGlas:%20' + (useAsSunglasses ? ('Sonnenbrille mit Gläsern: ' + sunglasses): 'optische Gläser (nicht enthalten)') + 
               '%0D%0A%0D%0APreis:%20EUR%20'+ (useAsSunglasses ? (price + 40) : (price))+',–'+ '%0D%0A%0D%0ABrillennummer:%20' + hashCode + '%0D%0ALink:%20'+currentUrl+'%0D%0A%0D%0A%0D%0AMeine Kontaktdaten %0D%0A%0D%0A Name: %0D%0A Telefonnummer: %0D%0A Adresse: %0D%0A'
@@ -224,7 +227,7 @@
               class="copyright-remark description text-medium"
               target="_blanc"
               href="https://process.studio"
-            >A tool by Process Studio</a> -->
+            >A tool by Process Studio</a>-->
           </li>
         </ul>
       </div>
@@ -281,7 +284,7 @@ export default {
       useAsSunglasses: false,
       sunglasses: "",
       setSunglassesFromHash: false,
-      currentSunglasses: [],
+      currentSunglasses: 0,
       dropdownClicked: false,
       materialsLoadedFromHash: false,
       toggleInfo: false,
@@ -312,15 +315,15 @@ export default {
       this.sunglasses = glasses;
       this.dropdownClicked = true;
       this.encodedArray[6] = index;
-      this.currentSunglasses[0] = index;
+      this.currentSunglasses = index;
       this.sentToEncode();
     },
     removeHashSunglasses(event) {
       if (this.useAsSunglasses) {
         this.encodedArray[6] = 0;
         this.sunglasses = "";
-      } else if (this.currentSunglasses[0] !== undefined) {
-        this.encodedArray[6] = this.currentSunglasses[0];
+      } else if (this.currentSunglasses !== 0) {
+        this.encodedArray[6] = this.currentSunglasses;
       }
       this.sentToEncode();
     },
@@ -329,17 +332,22 @@ export default {
       setTimeout(() => {
         this.resetMaterialsTrigger = false;
       }, 10);
-      this.encodedArray.splice(1, 6);
+
+      this.encodedArray[6] = this.currentSunglasses;
       this.allHashMaterials = [{}, {}, {}, {}, {}, {}];
       this.allHashMaterialsModel = [];
+      this.encodedArray.splice(1, 5);
       setTimeout(() => {
         this.sentToEncode(); // reset if less than 5 materials are set
         location.hash = "";
         this.fullCode = false;
       }, 100);
+      this.allHashMaterialsHaveLoaded = true;
     },
     randomMaterials() {
-      if (this.allHashMaterialsHaveLoaded) {
+      if ((this.allHashMaterialsHaveLoaded) || 
+      (!this.allHashMaterialsModel[0][1][0] || !this.allHashMaterialsModel[0][2][0] || !this.allHashMaterialsModel[0][3][0] || !this.allHashMaterialsModel[0][4][0] || !this.allHashMaterialsModel[0][5][0] )
+      ) {
         this.randomMaterialsTrigger = true;
         for (let i = 1; i < 6; i++) {
           this.randomArray[i] = Math.random();
@@ -367,11 +375,9 @@ export default {
       this.materialNameSet = false;
       this.allHashMaterials[material[2]][0] = material[1];
       this.allHashMaterials[material[2]][1] = material[2];
-      this.setMaterialName(material);
-      if (!this.useAsSunglasses) {
-        this.encodedArray[6] = 0;
-      }
-      
+      this.encodedArray[material[2]] = Number(material[3]);
+      this.sentToEncode(true, false);
+      this.encodedArray[6] = this.currentSunglasses;
       if (material[2] === "5") {
         this.allHashMaterialsModel.push(this.allHashMaterials);
       }
@@ -401,8 +407,10 @@ export default {
     },
 
     setMaterialName(material) {
-      this.passedMaterial[0] = material[1];
-      this.passedMaterial[1] = material[2]; // chosen layer
+      this.$set(this.passedMaterial, 0, material[1]);
+      this.$set(this.passedMaterial, 1, material[2]);
+      this.allHashMaterials[material[2]][0] = material[1];
+      this.allHashMaterials[material[2]][1] = material[2];
       this.encodedArray[material[2]] = Number(material[3]);
       this.sentToEncode(true, false);
 
@@ -420,6 +428,7 @@ export default {
       this.materialNameSet = true;
     },
     sentToEncode: function() {
+      console.log(this.encodedArray);
       if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
@@ -462,14 +471,16 @@ export default {
             this.encodedArray[i] = Number(layers[i]);
             tempArray[i - 1] = layers[i];
           }
+
           this.fullCode = true;
           this.setMaterialFromUrl.push(tempArray);
           this.hashModelChange = true;
           this.validHash = true;
+          
           // console.log("Decode (from URL) OK");
           if (layers[6]) {
             this.setSunglassesFromHash = true;
-            this.currentSunglasses[0] = layers[6];
+            this.currentSunglasses = layers[6];
             if (layers[6] === 1) {
               this.sunglasses = "Schwarz";
             }
@@ -482,7 +493,8 @@ export default {
             if (layers[6] === 4) {
               this.sunglasses = "Braun verlaufend";
             }
-            this.currentSunglasses[0] = layers[6];
+            this.currentSunglasses = layers[6];
+            this.encodedArray[6] = layers[6];
           }
           setTimeout(() => {
             this.materialsLoadedFromHash = false;

@@ -383,11 +383,11 @@ export default {
     randomMaterialsTrigger: function() {
       // set random materials
       if (this.randomMaterialsTrigger === true) {
-        let item = this.woods[Math.floor(this.randomArray[this.index] * this.woods.length)];
+        let item = this.woods[
+          Math.floor(this.randomArray[this.index] * this.woods.length)
+        ];
         let randomNmbr = Math.floor(Math.random() * 3) + 1;
 
-          // console.log("INDEX "+this.index);
-          // console.log(item.name);
         // if (randomNmbr === 2) {
         //   this.setSliderContent("papers");
         //   this.activeMaterialTab = "papers";
@@ -400,22 +400,12 @@ export default {
         this.setSliderContent("woods");
         this.activeMaterialTab = "woods";
         // }
-
-        let array = [item.name, item.texture, this.index, item.index, () => {
-          // console.log('fertig')
-        }];
+        this.mSwiperClass.slideTo(0, 0.0);
+        this.mSwiperClass.update();
+        let array = [item.name, item.texture, this.index, item.index];
         this.$emit("passRandomMaterialBack", array);
-
         this.activeMaterial = item.name;
         this.selectedMaterial = item.name;
-
-        // setTimeout(() => {
-        if (this.materialNameSet) {
-          // this.activeMaterial = item.name;
-          // this.selectedMaterial = item.name;
-        }
-        // }, 20);
-        // console.log("SET RANDOM MATERIAL");
       }
     },
 
@@ -431,7 +421,6 @@ export default {
     hashMaterial: function() {
       // set materials from hash
       if (this.randomMaterialsTrigger === false) {
-        console.log("SET MATERIALS FROM HASH PROBLEM!!");
         for (let i = 1; i < this.hashMaterial[0].length + 1; i++) {
           if (Number(this.index) === i) {
             if (this.hashMaterial[0][i - 1] <= this.woods.length) {
@@ -492,7 +481,6 @@ export default {
   },
   methods: {
     setHashMaterial: function(materialArr, i, hashIndex, arrayName) {
-      console.log("SET HASH MATEIRAL");
       let tempArray = [];
       for (let j = 0; j < materialArr.length; j++) {
         if (materialArr[j].index === hashIndex) {
@@ -534,18 +522,6 @@ export default {
       let buttonPrev = this.$refs.buttonPrev.getBoundingClientRect();
       let buttonNext = this.$refs.buttonNext.getBoundingClientRect();
 
-      // let overlapButtonPrev = !(
-      //   buttonPrev.right < currentElement.left ||
-      //   buttonPrev.left > currentElement.right ||
-      //   buttonPrev.bottom < currentElement.top ||
-      //   buttonPrev.top > currentElement.bottom
-      // );
-      // let overlapButtonNext = !(
-      //   buttonNext.right < currentElement.left ||
-      //   buttonNext.left > currentElement.right ||
-      //   buttonNext.bottom < currentElement.top ||
-      //   buttonNext.top > currentElement.bottom
-      // );
       let overlapPrev = !(
         detectorLeft.right < currentElement.left ||
         detectorLeft.left > currentElement.right ||
@@ -572,15 +548,6 @@ export default {
       if (!overlapPrev) {
         event.currentTarget.children[1].classList.remove("hovering-prev");
       }
-      // if (overlapButtonPrev || overlapButtonNext) {
-      //   console.log(event.currentTarget.id);
-      //   if (event.currentTarget.id !== "1" || this.activeTab) {
-      //     console.log("blocked");
-      //   }
-      // }
-      // if (!overlapButtonPrev && !overlapButtonNext) {
-      // event.currentTarget.children[1].classList.remove("blocked");
-      // }
     },
     deactivateSwiper: function(reactivate) {
       this.mSwiperClass.allowSlideNext = reactivate ? true : false;
@@ -596,6 +563,8 @@ export default {
     setMaterial: function(name, texture, index, tab) {
       let array = [name, texture, this.index, index];
       this.$emit("setMaterial", array);
+      this.mSwiperClass.slideTo(1, 0.0);
+      this.mSwiperClass.update();
       this.activeMaterial = name;
       this.activeMaterialTab = tab;
       this.deactivateSwiper();

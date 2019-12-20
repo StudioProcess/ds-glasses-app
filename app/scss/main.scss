@@ -493,16 +493,6 @@ body {
           background-image: url("../src/assets/reset.svg");
         }
       }
-      &.info {
-        margin-left: 32px;
-        &::before {
-          background-image: url("../src/assets/info.png");
-          background-size: cover;
-          margin-top: 1px;
-          height: 14px;
-          width: 14px;
-        }
-      }
     }
   }
 
@@ -853,6 +843,25 @@ header {
   display: flex;
   align-items: center;
 
+  .info {
+    position: absolute;
+    margin-left: 86vw;
+    font-weight: 400;
+    display: inline-block;
+    letter-spacing: 0.25px;
+    text-transform: inherit;
+    cursor: pointer;
+    opacity: 0.4;
+    &::before {
+      content: "";
+      position: absolute;
+      background-image: url("../src/assets/info.svg");
+      background-size: cover;
+      margin-left: -20px;
+      height: 14px;
+      width: 14px;
+    }
+  }
   .back-button {
     height: 6.2vh;
     display: flex;
@@ -916,7 +925,7 @@ header {
         margin-top: -0.9px;
       }
     }
-
+   
     .code {
       cursor: pointer;
       text-decoration: underline;

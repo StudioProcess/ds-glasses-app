@@ -141,7 +141,7 @@ export default {
 
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener("onmousemove", this.onMouseMove);
-      this.$emit("loadedAllHashMaterials", true);
+    this.$emit("loadedAllHashMaterials", true);
   },
   beforeDestroy: function() {
     window.removeEventListener("resize", this.onWindowResize, false);
@@ -181,6 +181,7 @@ export default {
           this.objtemp.children[0].children[i].material.needsUpdate = true;
         }
       }
+      this.$emit("loadedAllHashMaterials", true);
     },
     sunglasses: function() {
       this.updateSunglasses();
@@ -196,7 +197,6 @@ export default {
     allHashMaterialsModel: function() {
       this.finishedLoadingAllHashMaterials = false;
       this.$emit("loadedAllHashMaterials", false);
-
       if (this.allHashMaterialsModel[0]) {
         for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
           var loader = new THREE.TextureLoader();
@@ -206,7 +206,6 @@ export default {
               texture.wrapT = THREE.MirroredRepeatWrapping;
               texture.wrapS = THREE.MirroredRepeatWrapping;
               texture.center.set(0.5, 0.5);
-
               texture.offset.set(10, 0);
               texture.repeat.set(1, 1);
               texture.rotation = 1.57;
@@ -252,125 +251,126 @@ export default {
           );
         }
       }
+    },
+    hoveredMaterial: function() {
+      if (this.hoveredMaterial) {
+        if (this.hoveredMaterial[1] === true) {
+          if (this.hoveredMaterial[0] === "1") {
+            this.hoverMaterial("Layer_1", true);
+            this.hoverMaterial("Layer_1 Layer_1B", true);
+          } else if (this.hoveredMaterial[0] === "2") {
+            this.hoverMaterial("Layer_2", true);
+            this.hoverMaterial("Layer_2 Layer_2B", true);
+          } else if (this.hoveredMaterial[0] === "3") {
+            this.hoverMaterial("Layer_3", true);
+            this.hoverMaterial("Layer_3 Layer_3B", true);
+          } else if (this.hoveredMaterial[0] === "4") {
+            this.hoverMaterial("Layer_4", true);
+            this.hoverMaterial("Layer_4 Layer_4B", true);
+          } else if (this.hoveredMaterial[0] === "5") {
+            this.hoverMaterial("Layer_5", true);
+            this.hoverMaterial("Layer_5 Layer_5B", true);
+          }
+        }
+        if (this.hoveredMaterial[1] === false) {
+          if (this.hoveredMaterial[0] === "1") {
+            this.hoverMaterial("Layer_1");
+            this.hoverMaterial("Layer_1 Layer_1B");
+          } else if (this.hoveredMaterial[0] === "2") {
+            this.hoverMaterial("Layer_2");
+            this.hoverMaterial("Layer_2 Layer_2B");
+          } else if (this.hoveredMaterial[0] === "3") {
+            this.hoverMaterial("Layer_3");
+            this.hoverMaterial("Layer_3 Layer_3B");
+          } else if (this.hoveredMaterial[0] === "4") {
+            this.hoverMaterial("Layer_4");
+            this.hoverMaterial("Layer_4 Layer_4B");
+          } else if (this.hoveredMaterial[0] === "5") {
+            this.hoverMaterial("Layer_5");
+            this.hoverMaterial("Layer_5 Layer_5B");
+          }
+        }
+      }
+    },
+    setModel: function() {
+      if (this.setModel[1] !== this.currentModelIndex) {
+        this.$emit("modelLoaded", false);
+        this.modelHasLoaded = false;
+        if (!this.isLoading) {
+          if (this.setModel[1] === 1) {
+            this.loadModel(model);
+          } else if (this.setModel[1] === 2) {
+            this.loadModel(model2);
+          } else if (this.setModel[1] === 3) {
+            this.loadModel(model3);
+          } else if (this.setModel[1] === 4) {
+            this.loadModel(model4);
+          } else if (this.setModel[1] === 5) {
+            this.loadModel(model5);
+          } else if (this.setModel[1] === 6) {
+            this.loadModel(model6);
+          } else if (this.setModel[1] === 7) {
+            this.loadModel(model7);
+          }
+          this.objtemp.remove(this.objtemp.children[0]);
+        }
+      }
+      this.currentModelIndex = this.setModel[1];
+    },
+    mat: function() {
+      if (
+        (this.currentMaterialName !== this.mat[0] &&
+          this.objtemp.children[0] &&
+          this.modelHasLoaded) ||
+        (this.currentMaterialName === this.mat[0] &&
+          this.mat[1] !== this.currentMaterialIndex &&
+          this.objtemp.children[0] &&
+          this.modelHasLoaded)
+      ) {
+        var loader = new THREE.TextureLoader();
+        loader.load(
+          this.mat[0],
+          function(texture) {
+            texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
+            texture.repeat.set(1.2, 1.2);
+            texture.offset.set(2.9, 0.2);
+            texture.rotation = 0;
+            if (this.mat[1] % 2 === 0) {
+              texture.rotation = 1.57;
+            }
+            if (this.mat[1] === "1") {
+              texture.offset.set(0, 0); //texture.offset.set(1.5, 0);2.9
+              this.assignMaterial(texture, "Layer_1");
+              this.assignMaterial(texture, "Layer_1 Layer_1B");
+              this.assignMaterial(texture, "Layer_1 Layer_1N");
+            } else if (this.mat[1] === "2") {
+              this.assignMaterial(texture, "Layer_2");
+              this.assignMaterial(texture, "Layer_2 Layer_2B");
+              this.assignMaterial(texture, "Layer_2 Layer_2N");
+            } else if (this.mat[1] === "3") {
+              this.assignMaterial(texture, "Layer_3");
+              this.assignMaterial(texture, "Layer_3 Layer_3B");
+              this.assignMaterial(texture, "Layer_3 Layer_3N");
+            } else if (this.mat[1] === "4") {
+              this.assignMaterial(texture, "Layer_4");
+              this.assignMaterial(texture, "Layer_4 Layer_4B");
+              this.assignMaterial(texture, "Layer_4 Layer_4N");
+            } else if (this.mat[1] === "5") {
+              this.assignMaterial(texture, "Layer_5");
+              this.assignMaterial(texture, "Layer_5 Layer_5B");
+              this.assignMaterial(texture, "Layer_5 Layer_5N");
+            }
+
+            this.$set(this.currentMaterials, this.mat[1], texture);
+          }.bind(this)
+        );
+      }
+      this.currentMaterialName = this.mat[0];
+      this.currentMaterialIndex = this.mat[1];
     }
   },
 
-  updated() {
-    if (this.setModel[1] !== this.currentModelIndex) {
-      this.$emit("modelLoaded", false);
-      this.modelHasLoaded = false;
-      // setTimeout(() => {
-      if (!this.isLoading) {
-        if (this.setModel[1] === 1) {
-          this.loadModel(model);
-        } else if (this.setModel[1] === 2) {
-          this.loadModel(model2);
-        } else if (this.setModel[1] === 3) {
-          this.loadModel(model3);
-        } else if (this.setModel[1] === 4) {
-          this.loadModel(model4);
-        } else if (this.setModel[1] === 5) {
-          this.loadModel(model5);
-        } else if (this.setModel[1] === 6) {
-          this.loadModel(model6);
-        } else if (this.setModel[1] === 7) {
-          this.loadModel(model7);
-        }
-        this.objtemp.remove(this.objtemp.children[0]);
-      }
-      // }, 30);
-    } else if (this.hoveredMaterial) {
-      if (this.hoveredMaterial[1] === true) {
-        if (this.hoveredMaterial[0] === "1") {
-          this.hoverMaterial("Layer_1", true);
-          this.hoverMaterial("Layer_1 Layer_1B", true);
-        } else if (this.hoveredMaterial[0] === "2") {
-          this.hoverMaterial("Layer_2", true);
-          this.hoverMaterial("Layer_2 Layer_2B", true);
-        } else if (this.hoveredMaterial[0] === "3") {
-          this.hoverMaterial("Layer_3", true);
-          this.hoverMaterial("Layer_3 Layer_3B", true);
-        } else if (this.hoveredMaterial[0] === "4") {
-          this.hoverMaterial("Layer_4", true);
-          this.hoverMaterial("Layer_4 Layer_4B", true);
-        } else if (this.hoveredMaterial[0] === "5") {
-          this.hoverMaterial("Layer_5", true);
-          this.hoverMaterial("Layer_5 Layer_5B", true);
-        }
-      }
-      if (this.hoveredMaterial[1] === false) {
-        if (this.hoveredMaterial[0] === "1") {
-          this.hoverMaterial("Layer_1");
-          this.hoverMaterial("Layer_1 Layer_1B");
-        } else if (this.hoveredMaterial[0] === "2") {
-          this.hoverMaterial("Layer_2");
-          this.hoverMaterial("Layer_2 Layer_2B");
-        } else if (this.hoveredMaterial[0] === "3") {
-          this.hoverMaterial("Layer_3");
-          this.hoverMaterial("Layer_3 Layer_3B");
-        } else if (this.hoveredMaterial[0] === "4") {
-          this.hoverMaterial("Layer_4");
-          this.hoverMaterial("Layer_4 Layer_4B");
-        } else if (this.hoveredMaterial[0] === "5") {
-          this.hoverMaterial("Layer_5");
-          this.hoverMaterial("Layer_5 Layer_5B");
-        }
-      }
-    }
-    if (
-      (this.currentMaterialName !== this.mat[0] &&
-        this.objtemp.children[0] &&
-        this.modelHasLoaded) ||
-      (this.currentMaterialName === this.mat[0] &&
-        this.mat[1] !== this.currentMaterialIndex &&
-        this.objtemp.children[0] &&
-        this.modelHasLoaded)
-    ) {
-      var loader = new THREE.TextureLoader();
-
-      let temp = eval(this.mat[1]) + 1;
-      let tempTexture;
-      loader.load(
-        this.mat[0],
-
-        function(texture) {
-          texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-          texture.offset.set(0, 0);
-          texture.repeat.set(1.2, 1.2);
-          texture.repeat.set(1.2, 1.2);
-          texture.offset.set(2.9, 0.2);
-          texture.rotation = 0;
-          if (this.mat[1] % 2 === 0) {
-            texture.rotation = 1.57;
-          }
-
-          tempTexture = texture;
-          if (this.mat[1] === "1" && this.finishedLoadingAllHashMaterials) {
-            texture.offset.set(0, 0); //texture.offset.set(1.5, 0);2.9
-            this.assignMaterial(texture, "Layer_1");
-            this.assignMaterial(texture, "Layer_1 Layer_1B");
-          } else if (this.mat[1] === "2") {
-            this.assignMaterial(texture, "Layer_2");
-            this.assignMaterial(texture, "Layer_2 Layer_2B");
-          } else if (this.mat[1] === "3") {
-            this.assignMaterial(texture, "Layer_3");
-            this.assignMaterial(texture, "Layer_3 Layer_3B");
-          } else if (this.mat[1] === "4") {
-            this.assignMaterial(texture, "Layer_4");
-            this.assignMaterial(texture, "Layer_4 Layer_4B");
-          } else if (this.mat[1] === "5") {
-            this.assignMaterial(texture, "Layer_5");
-            this.assignMaterial(texture, "Layer_5 Layer_5B");
-          }
-
-          this.$set(this.currentMaterials, Number(this.mat[1]), tempTexture);
-        }.bind(this)
-      );
-    }
-    this.currentModelIndex = this.setModel[1];
-    this.currentMaterialName = this.mat[0];
-    this.currentMaterialIndex = this.mat[1];
-  },
+  updated() {},
   methods: {
     fullscreenClick: function() {
       this.fullscreenRotationPaused = !this.fullscreenRotationPaused;
@@ -556,6 +556,7 @@ export default {
       }
     },
     assignMaterial: function(texture, name) {
+      // debugger;
       if (this.modelHasLoaded) {
         this.objtemp.children[0].getObjectByName(name).material.map = texture;
         this.objtemp.children[0].getObjectByName(name).material.metalness = 0.0;
@@ -588,7 +589,7 @@ export default {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        console.log(this.fullscreenRotationPaused);
+        // console.log(this.fullscreenRotationPaused);
 
         let tween = TweenMax.to(this.objtemp.children[0].rotation, 5600.0, {
           y: 360,
@@ -596,7 +597,6 @@ export default {
         });
         //  rotateModel.resume();
         if (this.fullscreenRotationPaused) {
-          console.log("??????");
           tween.paused();
         }
       } else {
@@ -915,20 +915,7 @@ export default {
         transparent: true,
         transparency: 0.8
       });
-      if (!this.useAsSunglasses) {
-      } else {
-        // this.updateSunglasses();
-        // glass = new THREE.MeshPhysicalMaterial({
-        //   color: "#000000",
-        //   metalness: 1.0,
-        //   roughness: 0.0,
-        //   alphaTest: 0.1,
-        //   depthTest: true,
-        //   transparent: true,
-        //   transparency: 0.2
-        // }
-        // );
-      }
+
       let metall = new THREE.MeshStandardMaterial({
         emissive: 0x9e9e9e, //6b6b6b
         emissiveIntensity: 0.4,
@@ -962,7 +949,9 @@ export default {
             if (this.currentSunglasses !== "") {
               this.updateSunglasses();
             }
-            if (this.currentMaterials.length > 0) {
+            console.log(this.allHashMaterialsModel[0])
+            if (this.currentMaterials.length > 0 && !this.allHashMaterialsModel[0] ) {
+
               if (this.currentMaterials[1] !== undefined) {
                 this.assignMaterial(this.currentMaterials[1], "Layer_1");
                 this.assignMaterial(
@@ -1105,8 +1094,6 @@ export default {
     },
 
     updateSunglasses: function() {
-      console.log("sunglasses:");
-      console.log(this.sunglasses);
       let glass = new THREE.MeshPhysicalMaterial({
         color: "#D2DDDE",
         metalness: 0.0,
@@ -1128,7 +1115,7 @@ export default {
       }
       if (this.currentModelIndex === 3 || this.currentModelIndex === 6) {
         this.sunglasses_alpha_m.repeat.set(3, 3); // 2 2sl 5 / 5
-        this.sunglasses_alpha_m.center.set(0, -185);
+        this.sunglasses_alpha_m.center.set(0, -400);
       }
       if (this.currentModelIndex === 4 || this.currentModelIndex === 7) {
         this.sunglasses_alpha_m.repeat.set(3, 3); // 2 2sl 5 / 5
