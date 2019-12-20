@@ -62,7 +62,7 @@ import alpha_glass from "../assets/materials/maps/sunglasses-alpha.png";
 import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import shadow from "../assets/materials/maps/shadow.png";
 import particle from "../assets/particle.png";
-import { encode, decode } from "../../index.js";
+import { encode, decode } from "ds-glasses-code";
 
 import {
   BloomEffect,

@@ -239,7 +239,7 @@
 import Glasses from "./src/components/GlassesPicker";
 import Materials from "./src/components/MaterialPicker";
 import Threemodel from "./src/components/Threemodel";
-import { encode, decode } from "./index.js";
+import { encode, decode } from "ds-glasses-code";
 
 import logoPath from "./src/assets/logo.png";
 import backButtonPath from "./src/assets/back-button.svg";
