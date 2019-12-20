@@ -565,8 +565,8 @@ export default {
     setMaterial: function(name, texture, index, tab) {
       let array = [name, texture, this.index, index];
       this.$emit("setMaterial", array);
-      this.mSwiperClass.slideTo(1, 0.0);
-      this.mSwiperClass.update();
+      // this.mSwiperClass.slideTo(1, 0.0);
+      // this.mSwiperClass.update();
       this.activeMaterial = name;
       this.activeMaterialTab = tab;
       this.deactivateSwiper();
