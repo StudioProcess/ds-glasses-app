@@ -948,7 +948,7 @@ export default {
             object.rotation.x = 0;
             object.rotation.y = 0;
             object.rotation.z = 0;
-
+            object.getObjectByName("Glas").material = glass;
             object.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
                 child.material = matStart;
@@ -1016,17 +1016,6 @@ export default {
                 this.assignMaterial(
                   this.currentMaterials[4],
                   "Layer_4 Layer_4N"
-                );
-              }
-              if (this.currentMaterials[5] !== undefined) {
-                this.assignMaterial(this.currentMaterials[5], "Layer_5");
-                this.assignMaterial(
-                  this.currentMaterials[5],
-                  "Layer_5 Layer_5B"
-                );
-                this.assignMaterial(
-                  this.currentMaterials[5],
-                  "Layer_5 Layer_5N"
                 );
               }
               if (this.useAsSunglasses) {
@@ -1147,7 +1136,7 @@ export default {
 
       let sunglassesGlass = new THREE.MeshPhysicalMaterial({
         color:
-          (this.sunglasses || this.currentSunglasses) === "Schwarz" ||
+          ((this.sunglasses || this.currentSunglasses) === "Schwarz" || this.sunglasses === "" )||
           (this.sunglasses || this.currentSunglasses) === "Schwarz verlaufend"
             ? "#000000"
             : "#331a11",

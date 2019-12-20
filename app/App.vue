@@ -321,6 +321,7 @@ export default {
     removeHashSunglasses(event) {
       if (this.useAsSunglasses) {
         this.encodedArray[6] = 0;
+        this.currentSunglasses = 0;
         this.sunglasses = "";
       } else if (this.currentSunglasses !== 0) {
         this.encodedArray[6] = this.currentSunglasses;
