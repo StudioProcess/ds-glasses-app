@@ -130,7 +130,7 @@
             {{materialTwo}}{{(materialTwo && ( materialThree || materialFour || materialFive) && ', ')}}
             {{materialThree}}{{(materialThree && ( materialFour || materialFive) && ', ')}}
             {{materialFour}}{{(materialFour && ( materialFive) && ', ')}}
-            {{materialFive}}-->
+            {{materialFive}} -->
           </div>
           <span class="sunglasses text-medium">
             Sonnenbrille ( + 40€):
@@ -345,8 +345,13 @@ export default {
       this.allHashMaterialsHaveLoaded = true;
     },
     randomMaterials() {
-      if ((this.allHashMaterialsHaveLoaded) || 
-      (!this.allHashMaterialsModel[0][1][0] || !this.allHashMaterialsModel[0][2][0] || !this.allHashMaterialsModel[0][3][0] || !this.allHashMaterialsModel[0][4][0] || !this.allHashMaterialsModel[0][5][0] )
+      if (
+        this.allHashMaterialsHaveLoaded ||
+        (!this.allHashMaterialsModel[0][1][0] ||
+          !this.allHashMaterialsModel[0][2][0] ||
+          !this.allHashMaterialsModel[0][3][0] ||
+          !this.allHashMaterialsModel[0][4][0] ||
+          !this.allHashMaterialsModel[0][5][0])
       ) {
         this.randomMaterialsTrigger = true;
         for (let i = 1; i < 6; i++) {
@@ -380,6 +385,18 @@ export default {
       this.encodedArray[6] = this.currentSunglasses;
       if (material[2] === "5") {
         this.allHashMaterialsModel.push(this.allHashMaterials);
+      }
+
+      if (material[2] === "1") {
+        this.materialOne = material[0];
+      } else if (material[2] === "2") {
+        this.materialTwo = material[0];
+      } else if (material[2] === "3") {
+        this.materialThree = material[0];
+      } else if (material[2] === "4") {
+        this.materialFour = material[0];
+      } else if (material[2] === "5") {
+        this.materialFive = material[0];
       }
     },
     collectHashMaterials(material) {
@@ -429,7 +446,15 @@ export default {
     },
     sentToEncode: function() {
       // console.log(this.encodedArray);
-      if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined && this.encodedArray[4] !== undefined && this.encodedArray[3] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[1] !== undefined) {
+      if (
+        !this.materialsLoadedFromHash &&
+        this.encodedArray[5] !== undefined &&
+        this.encodedArray[4] !== undefined &&
+        this.encodedArray[3] !== undefined &&
+        this.encodedArray[2] !== undefined &&
+        this.encodedArray[2] !== undefined &&
+        this.encodedArray[1] !== undefined
+      ) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
           return;
@@ -476,7 +501,7 @@ export default {
           this.setMaterialFromUrl.push(tempArray);
           this.hashModelChange = true;
           this.validHash = true;
-          
+
           // console.log("Decode (from URL) OK");
           if (layers[6]) {
             this.setSunglassesFromHash = true;
