@@ -507,6 +507,8 @@ export default {
       }
       if (hovered === false) {
         if (this.activeMaterial !== "empty") {
+          this.mSwiperClass.slideTo(0, 0.0);
+        this.mSwiperClass.update();
           this.deactivateSwiper();
           if (this.activeMaterialTab !== this.activeTab) {
             this.activeTab = this.activeMaterialTab;

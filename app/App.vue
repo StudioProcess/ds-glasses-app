@@ -17,7 +17,7 @@
       <p class="text text-description description materials">Materialien</p>
       <span
         v-on:click="toggleInfo = !toggleInfo"
-        class="random info text-button text-description"
+        class="random info text-button share text-description"
       >Info</span>
 
       <span class="share-container">
@@ -429,7 +429,7 @@ export default {
     },
     sentToEncode: function() {
       console.log(this.encodedArray);
-      if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined) {
+      if (!this.materialsLoadedFromHash && this.encodedArray[5] !== undefined && this.encodedArray[4] !== undefined && this.encodedArray[3] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[2] !== undefined && this.encodedArray[1] !== undefined) {
         let incomplete = this.encodedArray.length < 6;
         if (incomplete) {
           return;
