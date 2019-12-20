@@ -63,6 +63,7 @@ import normal_map from "../assets/materials/maps/Wood24_nrm.jpg";
 import shadow from "../assets/materials/maps/shadow.png";
 import particle from "../assets/particle.png";
 import { encode, decode } from "ds-glasses-code";
+import { getTexture, getOBJ } from "../../cache.js";
 
 import {
   BloomEffect,
@@ -114,10 +115,10 @@ export default {
       pointLightRight: new THREE.PointLight(0xffffff, 1.0),
       ambientLight: new THREE.AmbientLight(0x6a7c91, 6.0),
       objtemp: new THREE.Group(),
-      roughness_m: new THREE.TextureLoader().load(roughness_map),
-      roughness_metall: new THREE.TextureLoader().load(roughness_map_metal),
-      normal_m: new THREE.TextureLoader().load(normal_map),
-      sunglasses_alpha_m: new THREE.TextureLoader().load(alpha_glass),
+      roughness_m: new getTexture(roughness_map),
+      roughness_metall: new getTexture(roughness_map_metal),
+      normal_m: new getTexture(normal_map),
+      sunglasses_alpha_m: new getTexture(alpha_glass),
       finishedLoadingAllHashMaterials: false,
       isLoading: false,
       pos1: null,
@@ -210,8 +211,8 @@ export default {
       this.$emit("loadedAllHashMaterials", false);
       if (this.allHashMaterialsModel[0]) {
         for (let i = 0; i < this.allHashMaterialsModel[0].length; i++) {
-          var loader = new THREE.TextureLoader();
-          loader.load(
+          // var loader = new THREE.TextureLoader();
+          getTexture(
             this.allHashMaterialsModel[0][i][0],
             function(texture) {
               texture.wrapT = THREE.MirroredRepeatWrapping;
@@ -338,8 +339,7 @@ export default {
           this.objtemp.children[0] &&
           this.modelHasLoaded)
       ) {
-        var loader = new THREE.TextureLoader();
-        loader.load(
+        getTexture(
           this.mat[0],
           function(texture) {
             texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
@@ -404,7 +404,7 @@ export default {
         size: 15,
         transparency: true,
         alphaTest: 0.9,
-        map: new THREE.TextureLoader().load(particle)
+        map: getTexture(particle)
       });
 
       let materialTwo = new THREE.MeshNormalMaterial({
@@ -881,8 +881,7 @@ export default {
       this.scene.add(this.pos2);
 
       let planeGeo = new THREE.PlaneGeometry(200, 100, 10, 10);
-      let planeTexLoader = new THREE.TextureLoader();
-      planeTexLoader.load(
+      getTexture(
         shadow,
         function(texture) {
           texture.rotation;
@@ -913,7 +912,7 @@ export default {
         transparent: true,
         opacity: 1.0,
         wireframe: false,
-        normalMap: new THREE.TextureLoader().load(normal_map),
+        normalMap: getTexture(normal_map),
 
         fog: true
       });
@@ -935,14 +934,22 @@ export default {
         roughness: 4.8,
         metalness: 0.1,
         color: "#404040",
-        roughnessMap: new THREE.TextureLoader().load(roughness_map_metal),
-        map: new THREE.TextureLoader().load(map_metal)
+        roughnessMap: getTexture(roughness_map_metal),
+        map: getTexture(map_metal)
       });
-      const loader = new THREE.OBJLoader();
+ 
       if (!this.isLoading) {
-        loader.load(
+        getOBJ(
           model,
           function(object) {
+            
+             object.position.y = 0;
+             object.position.x = 0;
+             object.position.z = 0;
+             object.rotation.x = 0;
+             object.rotation.y = 0;
+             object.rotation.z = 0;
+
             object.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
                 child.material = matStart;
