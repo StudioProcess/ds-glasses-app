@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "parcel index.html --open",
-    "build": "rm -rf dist; parcel build index.html --public-url /schichtler/",
+    "build": "rm -rf dist; parcel build index.html --public-url /schichtler/; cp .htaccess dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
