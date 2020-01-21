@@ -289,7 +289,8 @@ export default {
       materialsLoadedFromHash: false,
       toggleInfo: false,
       materialNameSet: false,
-      randomArray: []
+      randomArray: [],
+      allRandomMaterialsHaveLoaded: false,
     };
   },
   watch: {
@@ -360,7 +361,7 @@ export default {
         }
         setTimeout(() => {
           this.randomMaterialsTrigger = false;
-        }, 10);
+        }, 50);
       }
     },
     copyUrl() {
@@ -386,8 +387,11 @@ export default {
       this.encodedArray[6] = this.currentSunglasses;
       if (material[2] === "5") {
         this.allHashMaterialsModel.push(this.allHashMaterials);
+        this.allRandomMaterialsHaveLoaded = true;
       }
-
+      setTimeout(() => {
+        this.allRandomMaterialsHaveLoaded = false;
+      }, 20);
       if (material[2] === "1") {
         this.materialOne = material[0];
       } else if (material[2] === "2") {
