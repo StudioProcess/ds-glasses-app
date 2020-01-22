@@ -189,6 +189,7 @@ body {
       cursor: pointer;
       justify-content: center;
       transition: 1s all cubic-bezier(0.075, 0.82, 0.165, 1);
+      height: 100%;
       &:hover {
         background: #00000010;
       }
@@ -737,13 +738,14 @@ body {
 
   &.selected {
     background-repeat: no-repeat;
-    // background-size: 54%;
     background-position: left center;
     width: 100%;
-
     background-repeat: repeat;
     width: 100%;
     background-size: 17%;
+    @media only screen and (min-width: 1500px) {
+      background-size: 23%;
+    }
   }
 }
 

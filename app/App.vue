@@ -543,7 +543,7 @@ export default {
       if (!this.hashModelChange && this.model.length === 0) {
         this.model = ["Modell N°1", 1];
       }
-    }, 50);
+    }, 100);
   },
   upated() {},
   components: {
