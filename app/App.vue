@@ -4,7 +4,7 @@
       <!-- <a class="back-button" href="https://schwarztest.azurewebsites.net/">
         <img :src="[backButton]" />
       </a>-->
-      <a class="logo" href="https://schwarztest.azurewebsites.net/">
+      <a class="logo" href="https://schwarz.work/">
         <img :src="[logo]" />
       </a>
       <p class="text text-description schichtler">App zum Brillen gestalten</p>
@@ -189,6 +189,7 @@
     </div>
     <footer></footer>
     <div v-if="toggleInfo" class="info-overlay text-description">
+      <div v-on:click="toggleInfo = !toggleInfo" class="info-overlay--background"></div>
       <div class="info-overlay-overlay">
         <button v-on:click="toggleInfo = !toggleInfo" class="close"></button>
         <ul>

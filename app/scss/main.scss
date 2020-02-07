@@ -517,6 +517,11 @@ body {
       margin-top: 8px;
       margin-top: 2px;
     }
+
+    @media only screen and (max-height: 680px) {
+      height: 18%;
+    }
+
     .index {
       line-height: 7.2;
       margin-left: -18%;
@@ -709,6 +714,9 @@ body {
   margin-left: -14px;
   margin-top: -8px;
   height: 36px;
+  @media only screen and (max-height: 680px) {
+    margin-top: -0.8vh;
+  }
 }
 .swiper-button-next {
   background-image: url(../src/assets/arrow-right.svg);
@@ -716,6 +724,10 @@ body {
   margin-top: -8px;
   height: 36px;
   transform: translateX(12px);
+  @media only screen and (max-height: 680px) {
+    margin-top: -0.8vh;
+    right: -8px;
+  }
 }
 
 .overview:hover .swiper-button-next {
@@ -761,6 +773,10 @@ body {
   left: 0;
   background-color: #f6f6f680;
   min-height: 24%;
+  @media only screen and (max-height: 680px) {
+    min-height: 21%;
+    bottom: 0px;
+  }
   .text-description {
     line-height: 3;
     border-top: 1px solid #00000020;
@@ -1250,11 +1266,18 @@ header {
 }
 .info-overlay {
   position: absolute;
-  background: #00000090;
   z-index: 99;
   width: 100%;
   height: 100vh;
   font-size: 13px;
+  &--background {
+    background: #00000090;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+  }
   &-overlay {
     position: absolute;
     margin: 0 auto;
