@@ -16,12 +16,14 @@
         >Holz</li>
         <!-- v-on:click="setSliderContent('papers')" -->
         <li
-          v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-        v-on:click="setSliderContent('papers')">Papier</li>
+          v-bind:class="[activeTab === 'papers' ? 'active text-tab' : 'text-tab forbidden', selectedMaterial !== 'empty' && 'deactivated']"
+        >Papier
+        </li>
         <!-- v-on:click="setSliderContent('fabrics')" -->
         <li
-          v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab', selectedMaterial !== 'empty' && 'deactivated']"
-        v-on:click="setSliderContent('fabrics')">Textil</li>
+          v-bind:class="[activeTab === 'fabrics' ? 'active text-tab' : 'text-tab forbidden', selectedMaterial !== 'empty' && 'deactivated']"
+        
+        >Textil</li>
       </ul>
       <span ref="detectorLeft" class="detector detector-left"></span>
       <span ref="detectorRight" class="detector detector-right"></span>
