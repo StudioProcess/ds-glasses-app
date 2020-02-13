@@ -58,7 +58,7 @@ body {
 }
 .main {
   display: flex;
-  width: 100%;
+  width: fit-content;
 }
 
 .text {
@@ -345,6 +345,7 @@ body {
   height: 100vh;
   width: 40vw;
   display: flex;
+  overflow: hidden;
 }
 
 .glasses-picker-container {
@@ -425,7 +426,7 @@ body {
 .material-picker-container {
   width: calc(100% - 4px);
   background: #ffffff;
-  box-shadow: 22px -26px 24px #000;
+  box-shadow: -4px -69px 45px #00000011;
   z-index: 10;
   padding-top: 44px;
   position: relative;

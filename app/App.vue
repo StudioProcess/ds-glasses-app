@@ -221,7 +221,10 @@
           </li>
           <li>
             <h3>Bestellinfo</h3>Bei erfolgreicher Bestellung erhältst Du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben.
-            Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
+            Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work <br>
+            <br>Du kannst deine Brille auch einfach per Mail bestellen. Schreibe uns deine Auswahl oder schicke mit der Funktion „Teilen“  einen Link 
+an: office@schwarz.work
+Bei erfolgreicher Bestellung erhältst du ein Bestätigungsmail und eine Zahlungsaufforderung. Bitte vergiss nicht deine Kontaktdaten bekannt zu geben. Sollte bei der Bestellung ein Fehler aufgetreten sein, schicke ein Mail an: office@schwarz.work
           </li>
           <li>
             <!-- <a
