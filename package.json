@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.0.1",
-    "parcel": "^1.12.4",
+    "parcel": "^2.8.2",
     "sass": "^1.23.3",
     "vue-template-compiler": "^2.6.10"
   }
